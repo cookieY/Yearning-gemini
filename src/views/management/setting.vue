@@ -13,7 +13,7 @@
                                 <p slot="title">消息推送</p>
                                 <Form :label-width="120">
                                     <FormItem label="webhook地址:">
-                                        <Input placeholder="支持钉钉/企业微信 webhook机器人" v-model="message.web_hook"></Input>
+                                        <Input placeholder="支持钉钉/企业微信(赞助版本) webhook机器人" v-model="message.web_hook"></Input>
                                     </FormItem>
                                     <FormItem label="邮件SMTP服务地址:">
                                         <Input placeholder="STMP服务 地址" v-model="message.host"></Input>
@@ -39,7 +39,7 @@
                                             <span slot="close">关</span>
                                         </i-switch>
                                     </Form-item>
-                                    <Form-item label="钉钉推送开关:">
+                                    <Form-item label="webhook推送开关:">
                                         <i-switch v-model="message.ding" size="large">
                                             <span slot="open">开</span>
                                             <span slot="close">关</span>
