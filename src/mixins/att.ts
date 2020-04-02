@@ -16,13 +16,13 @@ export default class att_mixins extends Vue {
         tp: 0,
         row: 1,
         name: '',
-        id: '',
         isquery: 2,
         ip: '',
         add: '',
         username: '',
         password: '',
-        port: ''
+        port: '',
+        id: 0
     };
     wordList: Array<any> = [];
 
