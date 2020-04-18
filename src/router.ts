@@ -112,13 +112,15 @@ export const appRouter = [
         title: '查询',
         component: Index,
         access: 3,
-        children: [{
-            path: 'query',
-            name: 'query',
-            title: 'SQL查询',
-            icon: 'ios-podium',
-            component: () => import('./views/query/workFlow.vue')
-        }]
+        children: [
+            {
+                path: 'query',
+                name: 'query',
+                title: 'SQL查询',
+                icon: 'ios-podium',
+                component: () => import('./views/query/workFlow.vue')
+            }
+        ]
     },
     {
         path: '/audit',
