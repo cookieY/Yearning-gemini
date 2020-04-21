@@ -132,8 +132,8 @@
                 if (group !== null) {
                     g = group
                 }
-                axios.post(`${this.$config.url}/group/fetch/marge`, {
-                    "user": this.username,
+              axios.post(`${this.$config.url}/fetch/marge`, {
+                "user": this.username,
                     "group": g,
                 })
                     .then(res => {

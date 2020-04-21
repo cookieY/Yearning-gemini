@@ -243,7 +243,7 @@
                 name: 'order_detail',
                 query: {
                     workid: row.WorkId,
-                    status: row.Status
+                    status: row.Status.toString()
                 }
             })
         }
