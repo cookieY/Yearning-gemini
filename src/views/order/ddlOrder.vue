@@ -1,120 +1,125 @@
 <template>
-  <div>
-    <Row>
-      <Col span="6">
-        <Card>
-          <p slot="title">
-            <Icon type="ios-redo"></Icon>
-            选择数据库
-          </p>
-          <div class="edittable-test-con">
-            <Form :model="formItem" :label-width="100" ref="formItem" :rules="ruleValidate">
-              <Form-item label="环境:" prop="idc">
-                <Select v-model="formItem.idc" placeholder="请选择" @on-change="fetchSource">
-                  <Option v-for="i in fetchData.idc" :value="i" :key="i">{{i}}</Option>
-                </Select>
-              </Form-item>
-              <Form-item label="连接名称:" prop="source">
-                <Select
-                        v-model="formItem.source"
-                        placeholder="请选择"
-                        @on-change="fetchBase"
-                >
-                  <Option
-                          v-for="i in fetchData.source"
-                          :value="i"
-                          :key="i"
-                  >{{ i }}
-                  </Option>
-                </Select>
-              </Form-item>
-              <Form-item label="数据库库名:" prop="database">
-                <Select
-                        v-model="formItem.database"
-                        placeholder="请选择"
-                        @on-change="fetchTable"
-                >
-                  <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}</Option>
-                </Select>
-              </Form-item>
-              <Form-item label="数据库表名:">
-                <Select v-model="formItem.table" placeholder="请选择">
-                  <Option v-for="item in fetchData.table" :value="item" :key="item">{{item}}</Option>
-                </Select>
-              </Form-item>
-              <Form-item>
-                <Button type="primary" @click="fetchStruct()">获取表结构信息</Button>
-                <Button type="error" @click="clearForm()" class="margin-left-10">重置</Button>
-              </Form-item>
-              <FormItem label="工单提交说明:" prop="text">
-                <Input v-model="formItem.text" placeholder="请输入工单说明" type="textarea" :rows=4></Input>
-              </FormItem>
-              <FormItem label="审核人:" prop="assigned">
-                <Select v-model="formItem.assigned" transfer>
-                  <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
-                </Select>
-              </FormItem>
-              <FormItem label="定时执行">
-                <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点" :options="invalidDate"
-                            :editable="false"
-                            v-model="formItem.delay" @on-change="formItem.delay=$event"></DatePicker>
-              </FormItem>
-              <FormItem label="是否备份" prop="backup">
-                <RadioGroup v-model="formItem.backup">
-                  <Radio :label=1>是</Radio>
-                  <Radio :label=0>否</Radio>
-                </RadioGroup>
-              </FormItem>
-            </Form>
-          </div>
-        </Card>
-      </Col>
-      <Col span="18" class="padding-left-10">
-        <Card>
-          <p slot="title">
-            <Icon type="md-remove"></Icon>
-            填写SQL语句
-          </p>
-          <div class="edittable-table-height-con">
-            <Tabs :value="tabs">
-              <TabPane label="填写SQL语句" name="order1" icon="md-code">
-                <Form>
-                  <FormItem>
-                    <editor
-                            v-model="formDynamic"
-                            @init="editorInit"
-                            @setCompletions="setCompletions"
-                    ></editor>
-                  </FormItem>
-                  <FormItem>
-                    <Table :columns="testColumns" :data="testResults" highlight-row></Table>
-                  </FormItem>
-                  <FormItem>
-                    <Button type="primary" @click="testSql" :loading="loading">检测语句</Button>
-                    <Button type="info" @click="merge" :loading="loading" class="margin-left-10">ALTER语句合并</Button>
-                    <Button type="warning" @click="beauty" :loading="loading" class="margin-left-10">美化</Button>
-                    <Button
-                            type="success"
-                            class="margin-left-10"
-                            @click="commitOrder"
-                            :disabled="validate_gen"
-                    >提交工单
-                    </Button>
-                  </FormItem>
-                </Form>
-              </TabPane>
-              <TabPane label="表结构详情" name="order2" icon="md-folder">
-                <Table :columns="fieldColumns" :data="fieldData"></Table>
-              </TabPane>
-              <TabPane label="索引详情" name="order3" icon="md-folder">
-                <Table :columns="idxColums" :data="idxData"></Table>
-              </TabPane>
-            </Tabs>
-          </div>
-        </Card>
-      </Col>
-    </Row>
-  </div>
+    <div>
+        <Row>
+            <Col span="6">
+                <Card>
+                    <p slot="title">
+                        <Icon type="ios-redo"></Icon>
+                        选择数据库
+                    </p>
+                    <div class="edittable-test-con">
+                        <Form :model="formItem" :label-width="100" ref="formItem" :rules="ruleValidate">
+                            <Form-item label="环境:" prop="idc">
+                                <Select v-model="formItem.idc" placeholder="请选择" @on-change="fetchSource">
+                                    <Option v-for="i in fetchData.idc" :value="i" :key="i">{{i}}</Option>
+                                </Select>
+                            </Form-item>
+                            <Form-item label="连接名称:" prop="source">
+                                <Select
+                                        v-model="formItem.source"
+                                        placeholder="请选择"
+                                        @on-change="fetchBase"
+                                >
+                                    <Option
+                                            v-for="i in fetchData.source"
+                                            :value="i"
+                                            :key="i"
+                                    >{{ i }}
+                                    </Option>
+                                </Select>
+                            </Form-item>
+                            <Form-item label="数据库库名:" prop="database">
+                                <Select
+                                        v-model="formItem.database"
+                                        placeholder="请选择"
+                                        @on-change="fetchTable"
+                                >
+                                    <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}</Option>
+                                </Select>
+                            </Form-item>
+                            <Form-item label="数据库表名:">
+                                <Select v-model="formItem.table" placeholder="请选择">
+                                    <Option v-for="item in fetchData.table" :value="item" :key="item">{{item}}</Option>
+                                </Select>
+                            </Form-item>
+                            <Form-item>
+                                <Button type="primary" @click="fetchStruct()">获取表结构信息</Button>
+                                <Button type="error" @click="clearForm()" class="margin-left-10">重置</Button>
+                            </Form-item>
+                            <FormItem label="工单提交说明:" prop="text">
+                                <Input v-model="formItem.text" placeholder="请输入工单说明" type="textarea" :rows=4></Input>
+                            </FormItem>
+                            <FormItem label="审核人:" prop="assigned">
+                                <Select v-model="formItem.assigned" transfer>
+                                    <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
+                                </Select>
+                            </FormItem>
+                            <FormItem label="定时执行">
+                                <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
+                                            :options="invalidDate"
+                                            :editable="false"
+                                            v-model="formItem.delay" @on-change="formItem.delay=$event"></DatePicker>
+                            </FormItem>
+                            <FormItem label="是否备份" prop="backup">
+                                <RadioGroup v-model="formItem.backup">
+                                    <Radio :label=1>是</Radio>
+                                    <Radio :label=0>否</Radio>
+                                </RadioGroup>
+                            </FormItem>
+                        </Form>
+                    </div>
+                </Card>
+            </Col>
+            <Col span="18" class="padding-left-10">
+                <Card>
+                    <p slot="title">
+                        <Icon type="md-remove"></Icon>
+                        填写SQL语句
+                    </p>
+                    <div class="edittable-table-height-con">
+                        <Tabs :value="tabs">
+                            <TabPane label="填写SQL语句" name="order1" icon="md-code">
+                                <Form>
+                                    <FormItem>
+                                        <editor
+                                                v-model="formDynamic"
+                                                @init="editorInit"
+                                                @setCompletions="setCompletions"
+                                        ></editor>
+                                    </FormItem>
+                                    <FormItem>
+                                        <Table :columns="testColumns" :data="testResults" highlight-row></Table>
+                                    </FormItem>
+                                    <FormItem>
+                                        <Button type="primary" @click="testSql" :loading="loading">检测语句</Button>
+                                        <Button type="info" @click="merge" :loading="loading" class="margin-left-10">
+                                            ALTER语句合并
+                                        </Button>
+                                        <Button type="warning" @click="beauty" :loading="loading"
+                                                class="margin-left-10">美化
+                                        </Button>
+                                        <Button
+                                                type="success"
+                                                class="margin-left-10"
+                                                @click="commitOrder"
+                                                :disabled="validate_gen"
+                                        >提交工单
+                                        </Button>
+                                    </FormItem>
+                                </Form>
+                            </TabPane>
+                            <TabPane label="表结构详情" name="order2" icon="md-folder">
+                                <Table :columns="fieldColumns" :data="fieldData"></Table>
+                            </TabPane>
+                            <TabPane label="索引详情" name="order3" icon="md-folder">
+                                <Table :columns="idxColums" :data="idxData"></Table>
+                            </TabPane>
+                        </Tabs>
+                    </div>
+                </Card>
+            </Col>
+        </Row>
+    </div>
 </template>
 
 <script lang="ts">
@@ -214,11 +219,11 @@
 
         fetchStruct() {
             let is_validate: any = this.$refs['formItem'];
-            let spin:any = this.$Spin;
+            let spin: any = this.$Spin;
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     spin.show({
-                        render: (h:any) => {
+                        render: (h: any) => {
                             return h('div', [
                                 h('Icon', {
                                     props: {
@@ -288,6 +293,7 @@
 
         commitOrder() {
             let is_validate: any = this.$refs['formItem'];
+            this.validate_gen = true;
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     axios.post(`${this.$config.url}/sql/refer`, {
@@ -296,14 +302,12 @@
                         'ty': 0
                     })
                         .then(res => {
-                            this.validate_gen = true;
                             this.$Notice.success({
                                 title: '成功',
                                 desc: res.data
                             })
                         })
                         .catch(error => {
-                            this.validate_gen = true;
                             this.$config.err_notice(this, error)
                         })
                 }
@@ -321,12 +325,12 @@
 </script>
 
 <style lang="less" scoped>
-  @import "../../styles/common.less";
-  @import "../../styles/table.less";
+    @import "../../styles/common.less";
+    @import "../../styles/table.less";
 
-  p {
-    word-wrap: break-word;
-    word-break: break-all;
-    overflow: hidden;
-  }
+    p {
+        word-wrap: break-word;
+        word-break: break-all;
+        overflow: hidden;
+    }
 </style>
