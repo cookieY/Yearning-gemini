@@ -219,6 +219,10 @@
         isReadOnly = false;
 
         saveAddGroup() {
+          if (this.addAuthGroupForm.group_name === '') {
+            this.$Message.error("权限组名称不可为空！")
+            return
+          }
             axios.post(`${this.$config.url}/group/update`, {
                 'username': this.addAuthGroupForm.group_name,
                 'permission': this.permission,

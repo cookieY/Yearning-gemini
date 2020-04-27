@@ -171,7 +171,6 @@
       <img height="300" width="300" src="./assets/alipay.jpg">
       <img height="300" width="300" src="./assets/wechat.jpg">
     </Modal>
-
   </div>
 </template>
 <script lang="ts">
@@ -301,7 +300,7 @@
         }
 
         signIn() {
-            if (this.check_code !== this.formInline.code) {
+            if (this.check_code !== this.formInline.code.toLowerCase()) {
                 this.$Message.warning({
                     content: '验证码错误，请重新输入！'
                 });
