@@ -1,6 +1,5 @@
 import {Component, Mixins} from "vue-property-decorator";
 import expandRow from "@/components/expandTable.vue";
-import att_mixins from "@/mixins/att";
 import axios from 'axios'
 import att from "@/mixins/att";
 
@@ -38,10 +37,10 @@ export default class detail_mixins extends Mixins(att) {
         {
             type: 'expand',
             width: 50,
-            render: (h: any, params: { row: object }) => {
+            render: (h: any, params: { row: {SQL:string} }) => {
                 return h(expandRow, {
                     props: {
-                        row: params.row
+                        row: params.row.SQL
                     }
                 })
             }
@@ -50,7 +49,10 @@ export default class detail_mixins extends Mixins(att) {
             title: '当前检查的sql',
             key: 'SQL',
             render: (h: any, params: { row: { SQL: string } }) => {
-                let text = params.row.SQL.substring(0, 80) + '...';
+                let text = params.row.SQL.substring(0, 80)
+                if (text.length > 80) {
+                    text += '...';
+                }
                 return h('span', text)
             }
 

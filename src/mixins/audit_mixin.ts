@@ -100,10 +100,10 @@ export  default class audit_mixins extends Mixins(att_mixins) {
         {
             type: 'expand',
             width: 50,
-            render: (h: any, params: { row: object }) => {
+            render: (h: any, params: { row: {SQL:string} }) => {
                 return h(expandRow, {
                     props: {
-                        row: params.row
+                        row: params.row.SQL
                     }
                 })
             }

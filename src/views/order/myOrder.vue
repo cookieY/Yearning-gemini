@@ -1,108 +1,112 @@
 <style lang="less">
-  @import '../../styles/common.less';
-  @import '../../styles/table.less';
+    @import '../../styles/common.less';
+    @import '../../styles/table.less';
 </style>
 <template>
-  <div>
-    <Row>
-      <Card>
-        <p slot="title">
-          <Icon type="md-person"></Icon>
-          我的工单
-        </p>
-        <Form inline ref="queryForm">
-          <FormItem>
-            <Input placeholder="工单说明" v-model="find.text" @on-keyup.enter="queryData"></Input>
-          </FormItem>
-          <FormItem>
-            <DatePicker format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="请选择查询的时间范围"
-                        v-model="find.picker" @on-change="find.picker=$event" style="width: 250px"
-                        :editable="false"></DatePicker>
-          </FormItem>
-          <FormItem>
-            <Button type="success" @click="queryData">查询</Button>
-          </FormItem>
-          <FormItem>
-            <Button type="primary" @click="queryCancel">重置</Button>
-          </FormItem>
-        </Form>
+    <div>
         <Row>
-          <Col span="24">
-            <Table border :columns="columnsName" :data="table_data" stripe size="small">
-              <template slot-scope="{ row }" slot="action">
-                <Button type="success" @click="open_modal(row)" size="small" ghost
-                        class="margin-left-10">
-                  工单信息
-                </Button>
-                <Button type="warning" @click="openOrder(row)" size="small" v-if="row.Status !== 2 && row.Status !==0"
-                        ghost
-                        class="margin-left-10">
-                  执行信息
-                </Button>
-                <Poptip
-                        confirm
-                        title="确定要撤销工单吗？"
-                        @on-ok="delOrder(row)"
-                        transfer>
-                  <Button type="primary" v-if="row.Status === 2" ghost size="small" class="margin-left-10">工单撤销</Button>
-                </Poptip>
-                <Button type="error" v-if="row.Status === 0" size="small" ghost
-                        class="margin-left-10" @click="orderReject(row)">驳回理由
-                </Button>
-              </template>
-            </Table>
-          </Col>
+            <Card>
+                <p slot="title">
+                    <Icon type="md-person"></Icon>
+                    我的工单
+                </p>
+                <Form inline ref="queryForm">
+                    <FormItem>
+                        <Input placeholder="工单说明" v-model="find.text" @on-keyup.enter="queryData"></Input>
+                    </FormItem>
+                    <FormItem>
+                        <DatePicker format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="请选择查询的时间范围"
+                                    v-model="find.picker" @on-change="find.picker=$event" style="width: 250px"
+                                    :editable="false"></DatePicker>
+                    </FormItem>
+                    <FormItem>
+                        <Button type="success" @click="queryData">查询</Button>
+                    </FormItem>
+                    <FormItem>
+                        <Button type="primary" @click="queryCancel">重置</Button>
+                    </FormItem>
+                </Form>
+                <Row>
+                    <Col span="24">
+                        <Table border :columns="columnsName" :data="table_data" stripe size="small">
+                            <template slot-scope="{ row }" slot="action">
+                                <Button type="success" @click="open_modal(row)" size="small" ghost
+                                        class="margin-left-10">
+                                    工单信息
+                                </Button>
+                                <Button type="warning" @click="openOrder(row)" size="small"
+                                        v-if="row.Status !== 2 && row.Status !==0"
+                                        ghost
+                                        class="margin-left-10">
+                                    执行信息
+                                </Button>
+                                <Poptip
+                                        confirm
+                                        title="确定要撤销工单吗？"
+                                        @on-ok="delOrder(row)"
+                                        transfer>
+                                    <Button type="primary" v-if="row.Status === 2" ghost size="small"
+                                            class="margin-left-10">工单撤销
+                                    </Button>
+                                </Poptip>
+                                <Button type="error" v-if="row.Status === 0" size="small" ghost
+                                        class="margin-left-10" @click="orderReject(row)">驳回理由
+                                </Button>
+                            </template>
+                        </Table>
+                    </Col>
+                </Row>
+                <br>
+                <Page :total="page_number" show-elevator @on-change="currentpage" :page-size="20"
+                      :current.sync="current"></Page>
+            </Card>
         </Row>
-        <br>
-        <Page :total="page_number" show-elevator @on-change="currentpage" :page-size="20"
-              :current.sync="current"></Page>
-      </Card>
-    </Row>
 
-    <Modal v-model="openModal" width="1000">
-      <p slot="header" style="color:#f60;font-size: 16px">
-        <Icon type="information-circled"></Icon>
-        <span>SQL工单详细信息</span>
-      </p>
-      <Form label-position="right">
-        <FormItem label="环境:">
-          <span>{{ formItem.IDC }}</span>
-        </FormItem>
-        <FormItem label="连接名称:">
-          <span>{{ formItem.Source }}</span>
-        </FormItem>
-        <FormItem label="数据库库名:">
-          <span>{{ formItem.DataBase }}</span>
-        </FormItem>
-        <FormItem label="数据库表名:">
-          <span>{{ formItem.Table }}</span>
-        </FormItem>
-        <FormItem label="定时执行:">
-          <span>{{ formItem.Delay }}</span>
-        </FormItem>
-        <FormItem label="工单说明:">
-          <span>{{ formItem.Text }}</span>
-        </FormItem>
-        <FormItem>
-          <Table :columns="sql_columns" :data="sql" :max-height="300"></Table>
-        </FormItem>
-      </Form>
-    </Modal>
+        <Modal v-model="openModal" width="1000">
+            <p slot="header" style="color:#f60;font-size: 16px">
+                <Icon type="information-circled"></Icon>
+                <span>SQL工单详细信息</span>
+            </p>
+            <Form label-position="right">
+                <FormItem label="环境:">
+                    <span>{{ formItem.IDC }}</span>
+                </FormItem>
+                <FormItem label="连接名称:">
+                    <span>{{ formItem.Source }}</span>
+                </FormItem>
+                <FormItem label="数据库库名:">
+                    <span>{{ formItem.DataBase }}</span>
+                </FormItem>
+                <FormItem label="数据库表名:">
+                    <span>{{ formItem.Table }}</span>
+                </FormItem>
+                <FormItem label="定时执行:">
+                    <span>{{ formItem.Delay }}</span>
+                </FormItem>
+                <FormItem label="工单说明:">
+                    <span>{{ formItem.Text }}</span>
+                </FormItem>
+                <FormItem>
+                    <Table :columns="sql_columns" :data="sql" :max-height="300"></Table>
+                </FormItem>
+            </Form>
+        </Modal>
 
-    <Modal v-model="reject">
-      <p slot="header" style="color:#ff0049;font-size: 16px">
-        <Icon type="information-circled"></Icon>
-        <span>驳回理由</span>
-      </p>
-      <p style="font-size: 16px">{{reject_text}}</p>
-    </Modal>
+        <Modal v-model="reject">
+            <p slot="header" style="color:#ff0049;font-size: 16px">
+                <Icon type="information-circled"></Icon>
+                <span>驳回理由</span>
+            </p>
+            <p style="font-size: 16px">{{reject_text}}</p>
+        </Modal>
 
-  </div>
+    </div>
 </template>
 <script lang="ts">
     import axios from 'axios'
     import {Component, Mixins} from "vue-property-decorator";
     import att_mixins from "@/mixins/att";
+    import expandRow from "@/components/expandTable.vue";
 
     @Component({components: {}})
     export default class my_order extends Mixins(att_mixins) {
@@ -187,6 +191,17 @@
         multi = false;
         sql = [];
         sql_columns = [
+            {
+                type: 'expand',
+                width: 50,
+                render: (h: any, params: { row: { SQL: string } }) => {
+                    return h(expandRow, {
+                        props: {
+                            row: params.row.SQL
+                        }
+                    })
+                }
+            },
             {
                 title: 'sql',
                 key: 'SQL'

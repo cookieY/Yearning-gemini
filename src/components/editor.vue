@@ -14,6 +14,10 @@
       value: {
         type: String,
         required: true
+      },
+      is_read: {
+        type: Boolean,
+        default: false
       }
     },
     data () {
@@ -57,6 +61,7 @@
       editor.getSession().setMode('ace/mode/mysql')
       editor.setTheme('ace/theme/xcode')
       editor.setValue(this.value, 1)
+      editor.setReadOnly(this.is_read)
       editor.on('change', function () {
         let content = editor.getValue()
         vm.$emit('input', content)

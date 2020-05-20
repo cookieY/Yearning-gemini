@@ -1,5 +1,6 @@
 // const CompressionPlugin = require("compression-webpack-plugin")
 module.exports = {
+    // assetsDir: './assets',
     css: {
         loaderOptions: { // 向 CSS 相关的 loader 传递选项
             less: {

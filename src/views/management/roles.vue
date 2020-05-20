@@ -243,6 +243,12 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
+                          <FormItem label="基于主键回滚">
+                            <i-switch size="large" v-model="juno.PRIRollBack">
+                              <span slot="open">开</span>
+                              <span slot="close">关</span>
+                            </i-switch>
+                          </FormItem>
                           <FormItem label="Insert语句字段上限">
                             <InputNumber :min="0" v-model="juno.DMLMaxInsertRows"></InputNumber>
                           </FormItem>
