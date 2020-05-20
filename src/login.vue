@@ -34,7 +34,7 @@
       <div class="container">
         <div>
           <a class="navbar-brand">
-            版本号: v2.2.1 general
+            版本号: v2.2.2 general
           </a>
           <Button v-if="switchCode" type="default" ghost @click="register= true"> 注册</Button>
         </div>
