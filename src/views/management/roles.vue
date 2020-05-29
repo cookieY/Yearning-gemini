@@ -79,12 +79,6 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
-                          <FormItem label="开启最小化回滚语句生成">
-                            <i-switch size="large" v-model="juno.DMLMinimalRollback">
-                              <span slot="open">开</span>
-                              <span slot="close">关</span>
-                            </i-switch>
-                          </FormItem>
                         </Form>
                       </Col>
                       <Col span="6">
