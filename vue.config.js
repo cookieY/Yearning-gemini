@@ -22,5 +22,20 @@ module.exports = {
     //             deleteOriginalAssets: false // 不删除源文件
     //         }))
     // },
+    devServer: {
+        // 设置主机地址
+        host: "127.0.0.1",
+        // 设置默认端口
+        port: 8080,
+        // 设置代理
+        proxy: {
+            "/": {
+                // 目标 API 地址
+                target: "http://127.0.0.1:8000",
+                // 将主机标头的原点更改为目标URL
+                changeOrigin: false
+            }
+        }
+    }
 
 };
