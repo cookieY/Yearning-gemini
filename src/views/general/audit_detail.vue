@@ -12,7 +12,7 @@
         <span>{{ formItem.Source }}</span>
       </FormItem>
       <FormItem label="数据库库名:">
-        <span>{{ formItem.Base }}</span>
+        <span>{{ formItem.DataBase }}</span>
       </FormItem>
       <FormItem label="数据库表名:">
         <span>{{ formItem.Table }}</span>
@@ -135,7 +135,7 @@
             }
             axios.put(`${this.$config.url}/fetch/test`, {
                 'source': this.formItem.Source,
-                'database': this.formItem.Base,
+                'database': this.formItem.DataBase,
                 'table': this.formItem.Table,
                 'sql': s,
                 'isDMl': isDML

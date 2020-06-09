@@ -30,7 +30,7 @@ const store = new Vuex.Store({
             IDC: '',
             Source: '',
             Delay: '',
-            Base: '',
+            DataBase: '',
             Text: '',
             Table: '',
             Type: 0

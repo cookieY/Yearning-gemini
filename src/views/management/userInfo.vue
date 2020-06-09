@@ -353,7 +353,6 @@
                 .then(res => {
                     this.connectionList.multi = res.data.multi;
                     this.table_data = res.data.data;
-                    console.log(this.table_data)
                     this.page_number = parseInt(res.data.page)
                 })
                 .catch(error => {

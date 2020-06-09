@@ -167,24 +167,14 @@ export  default class audit_mixins extends Mixins(att_mixins) {
 
     openOrder(row: { WorkId: string }) {
         axios.get(`${this.$config.url}/audit/sql?k=${row.WorkId}`)
-            .then(res => {
-                let formItem = {
-                    WorkId: row.WorkId,
-                    IDC: res.data.idc,
-                    Source: res.data.source,
-                    Delay: res.data.delay,
-                    Base: res.data.base,
-                    Text: res.data.text,
-                    Table: res.data.table,
-                    Type: res.data.type
-                };
-                this.$store.commit("fetch_order_item", formItem);
-                this.$store.commit('fetch_order_sql', res.data.sql);
+            .then((res: { data: { sqls: Array<Object>; }; }) => {
+                this.$store.commit("fetch_order_item", res.data);
+                this.$store.commit('fetch_order_sql', res.data.sqls);
                 this.is_order = true;
             })
-            .catch(err => {
-                        this.$config.err_notice(this,err)
-                    })
+            .catch((err: any) => {
+                this.$config.err_notice(this,err)
+            })
     }
 
     agreedTo(multi_name: string, work_id: string) {
