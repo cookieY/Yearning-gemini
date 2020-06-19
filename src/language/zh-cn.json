@@ -1,6 +1,6 @@
 {
-  "sign" : "注册",
-  "version" : "版本",
+  "sign": "注册",
+  "version": "版本",
   "about": "关于Yearning",
   "community": "使用交流群",
   "community_addr": "Q群:747364310",
@@ -9,6 +9,7 @@
   "sponsor": "赞助/技术协助",
   "account": "账号",
   "password": "密码",
+  "pin": "验证码",
   "login": "登录",
   "ldap": "ldap登录",
   "sponsor_title": "让Yearning持续提供更好的功能与服务",
@@ -20,7 +21,7 @@
   "sponsor_6": "电邮：supermancookie@outlook.com",
   "sponsor_7": "QQ: 834958386",
   "sign_up_validate": {
-    "username":"请输入用户名",
+    "username": "请输入用户名",
     "password": "请输入密码",
     "min": "请输入至少6个字符",
     "max": "最多输入32个字符",
@@ -31,7 +32,8 @@
     "department": "请输入部门名",
     "mail": "请输入E-mail",
     "mail_format": "E-mail格式错误",
-    "sign_fail": "请正确填写相关注册信息"
+    "sign_fail": "请正确填写相关注册信息",
+    "pin": "验证码错误，请重新输入！"
   },
   "sign_userInfo": {
     "username": "用户名",
@@ -40,5 +42,54 @@
     "real": "真实姓名",
     "department": "部门",
     "mail": "邮箱"
+  },
+  "general": {
+    "name": "用户名",
+    "real": "姓名",
+    "role": "角色",
+    "mail": "邮箱",
+    "department": "部门",
+    "change_password": "修改密码",
+    "show_permissions": "查看权限",
+    "db": "数据库",
+    "agreed": "同意"
+  },
+  "dash": {
+    "lock": "锁屏",
+    "unlock": "解锁",
+    "user": "用户数",
+    "source": "数据源",
+    "order": "工单数",
+    "query": "查询总数",
+    "edit_permissions": "修改邮箱/真实姓名",
+    "profile": "个人信息",
+    "order_count": "工单提交统计",
+    "db_top": "高频库/top 5",
+    "axis": {
+      "ddl": "DML工单提交数",
+      "dml": "DDL工单提交数",
+      "query": "查询工单提交数",
+      "trend": "工单趋势"
+    }
+  },
+  "banner": {
+    "guide": "使用说明",
+    "login_out": "退出登录",
+    "statement": {
+      "banner": "欢迎使用Yearning SQL审核平台",
+      "title": "关于Yearning:",
+      "title_text": "Yearning MYSQL SQL语句审核平台。提供查询，SQL审核等多种功能。非常欢迎大家体验并使用Yearning!",
+      "notes": "关于二次开发的声明:",
+      "text": " 作为一款开源平台。Yearning很希望有更多的开发者一起参与到开发中。同时也鼓励各公司根据自身业务对平台进行二次开发及定制。",
+      "text_1": " Yearning 采用AGPL 3.0许可证,以下为许可中相关的义务与责任。",
+      "text_2": "1.未经原作者授权不得将Yearning 用于任何商业目的。包括通过网络提供任何基于Yearning的商业服务。",
+      "text_3": "2.如果你修改了代码，需要在被修改的文件中说明。",
+      "text_4": "3.如二次开发并公布的情况下(内部使用不在该条款之内)，该软件必须为开源项目，不可为任何商业性质的商业软件。如需商业化必须获得原作者授权。",
+      "text_5": "4.本平台所有条款符合相应开源许可，请严格按照相关许可使用及开发。",
+      "text_6":"免责声明:",
+      "text_7":"由Yearning平台所产生的一切后果,Yearning作者本人不负一切责任! 请在进行安全评估及测试体验后使用。",
+      "text_8":"当然用的喜欢,就打赏下我吧 ^_^ 登录界面赞助按钮",
+      "text_9":"此声明不会对非超级管理员用户推送。当接受上述条款并点击同意后,此通知将不会再次出现在超级管理员页面中。"
+    }
   }
 }

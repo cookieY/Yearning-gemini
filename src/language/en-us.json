@@ -9,6 +9,7 @@
   "sponsor": "sponsor",
   "account": "username",
   "password": "password",
+  "pin": "PIN",
   "login": "Sign in",
   "ldap": "LDAP mode",
   "sponsor_title": "Let Yearning continue to provide better features and services",
@@ -17,8 +18,8 @@
   "sponsor_3": "Customized",
   "sponsor_4": "Enterprises can seek customized functional services from Yearning authors",
   "sponsor_5": "Contact",
-  "sponsor_6": "E-mail: supermancookie@outlook.com",
-  "sponsor_7": "",
+  "sponsor_6": "E-mail: henry@yearning.io",
+  "sponsor_7": "PayPal: henry@yearning.io",
   "sign_up_validate": {
     "username":"please enter your username",
     "password": "please enter your password",
@@ -31,7 +32,8 @@
     "department": "please enter your department",
     "mail": "please enter your E-mail",
     "mail_format": "Incorrect mail addr format",
-    "sign_fail": "Please fill in the relevant registration information correctly"
+    "sign_fail": "Please fill in the relevant registration information correctly",
+    "pin": "Can not verify PIN"
   },
   "sign_userInfo": {
     "username": "Username",
@@ -40,5 +42,54 @@
     "real": "Real_name",
     "department": "Department",
     "mail": "E-mail"
+  },
+  "general": {
+    "name": "Username",
+    "real": "Real name",
+    "role": "Role",
+    "mail": "Mail",
+    "department": "Department",
+    "change_password": "Change password",
+    "show_permissions": "Permissions",
+    "db": "Database",
+    "agreed": "agreed"
+  },
+  "dash": {
+    "lock": "Lock",
+    "unlock": "Unlock",
+    "user": "User count",
+    "source": "Source count",
+    "order": "Order count",
+    "query": "Query count",
+    "edit_permissions": "Edit permissions/info",
+    "profile": "Profile",
+    "order_count": "Order total",
+    "db_top": "DB/top 5",
+    "axis": {
+      "ddl": "DDL",
+      "dml": "DML",
+      "query": "Query",
+      "trend": "Order trend"
+    }
+  },
+  "banner": {
+    "guide": "Guide",
+    "login_out": "Login out",
+    "statement": {
+      "banner": "Welcome to use Yearning",
+      "title": "Abount Yearning",
+      "title_text": "An awesome SQL Audit platform for Mysql welcome to you use it!",
+      "notes": "Develop notes:",
+      "text": "As an open source platform. Yearning hopes that more developers will participate in the development together. At the same time, companies are encouraged to conduct secondary development and customization of the platform according to their own business.",
+      "text_1": "Yearning adopts AGPL 3.0 license, the following are the related obligations and responsibilities in the license.",
+      "text_2": "1. You may not use Yearning for any commercial purpose without authorization from the original author. This includes providing any business services based on Yearning through the Internet.",
+      "text_3": "2. If you modify the code, you need to explain it in the modified file.",
+      "text_4": "3. In the case of secondary development and publication (internal use is not within the terms), the software must be an open source project, not any commercial software of a commercial nature. If you want to commercialize, you must obtain the author's authorization.",
+      "text_5": "4. All the terms of this platform comply with the corresponding open source license, please use and develop in strict accordance with the relevant license.",
+      "text_6":"Disclaimer",
+      "text_7":"All the consequences arising from the Yearning platform, the Yearning authors are not responsible for it! Please use it after conducting a security assessment and testing experience.",
+      "text_8":"Of course, if you like it, just reward me ^_^ Login interface sponsorship button",
+      "text_9":"This statement will not be pushed to non-super administrator users. After accepting the above terms and clicking agree, this notification will not appear again on the super administrator page."
+    }
   }
 }

@@ -17,14 +17,14 @@
           <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
         </div>
         <div class="header-avator-con">
-          <a href="https://guide.yearning.io/" target="_Blank">使用说明</a>
-          <div @click="handleFullScreen" v-if="showFullScreenBtn" class="full-screen-btn-con">
-            <Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">
-              <Icon :type="isFullScreen ? 'md-contract' : 'md-expand'" :size="23"></Icon>
-            </Tooltip>
-          </div>
+          <a href="https://guide.yearning.io/" target="_Blank">{{$t('banner.guide')}}</a>
+<!--          <div @click="handleFullScreen" v-if="showFullScreenBtn" class="full-screen-btn-con">-->
+<!--            <Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">-->
+<!--              <Icon :type="isFullScreen ? 'md-contract' : 'md-expand'" :size="23"></Icon>-->
+<!--            </Tooltip>-->
+<!--          </div>-->
           <div @click="lockScreen" class="lock-screen-btn-con">
-            <Tooltip content="锁屏" placement="bottom">
+            <Tooltip :content="$t('dash.lock')" placement="bottom">
               <Icon type="md-lock" :size="20"></Icon>
             </Tooltip>
           </div>
@@ -36,7 +36,7 @@
                   <Icon type="md-arrow-dropdown"/>
                 </a>
                 <DropdownMenu slot="list">
-                  <DropdownItem name="loginout">退出登录</DropdownItem>
+                  <DropdownItem name="loginout">{{$t('banner.login_out')}}</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
             </Row>
@@ -56,37 +56,38 @@
     </div>
     <Modal
             v-model="stmt"
-            title="欢迎使用Yearning SQL审核平台"
+            :title="$t('banner.statement.banner')"
             width="600"
             :mask-closable="false"
             :closable="false"
             :styles="{top: '20%'}"
-            ok-text="同意"
+            :ok-text="$t('general.agreed')"
             @on-ok="agreement"
     >
-      <h3>关于Yearning:</h3>
+      <h3>{{$t('banner.statement.title')}}</h3>
       <br>
-      <p>Yearning MYSQL SQL语句审核平台。提供查询，SQL审核等多种功能。非常欢迎大家体验并使用Yearning!</p>
+      <p>{{$t('banner.statement.title_text')}}</p>
       <br>
-      <H3>关于二次开发的声明:</H3>
+      <H3>{{$t('banner.statement.notes')}}</H3>
       <br>
-      <p>
-        作为一款开源平台。Yearning很希望有更多的开发者一起参与到开发中。同时也鼓励各公司根据自身业务对平台进行二次开发及定制。
-        Yearning 采用AGPL 3.0许可证,以下为许可中相关的义务与责任。
-      </p>
+      <p> {{$t('banner.statement.text')}}</p>
       <br>
-      <p>1.未经原作者授权不得将Yearning 用于任何商业目的。包括通过网络提供任何基于Yearning的商业服务。</p>
-      <p>2.如果你修改了代码，需要在被修改的文件中说明。</p>
-      <p>3.如二次开发并公布的情况下(内部使用不在该条款之内)，该软件必须为开源项目，不可为任何商业性质的商业软件。如需商业化必须获得原作者授权。</p>
-      <p>4.本平台所有条款符合相应开源许可，请严格按照相关许可使用及开发。</p>
+      <p>{{$t('banner.statement.text_1')}}</p>
       <br>
-      <h3>免责声明:</h3>
+      <p>{{$t('banner.statement.text_2')}}</p>
       <br>
-      <p>由Yearning平台所产生的一切后果,Yearning作者本人不负一切责任! 请在进行安全评估及测试体验后使用。</p>
+      <p>{{$t('banner.statement.text_3')}}</p>
       <br>
-      <h3>当然用的喜欢,就打赏下我吧 ^_^ 登录界面赞助按钮</h3>
+      <p>{{$t('banner.statement.text_4')}}</p>
       <br>
-      <p>此声明不会对非超级管理员用户推送。当接受上述条款并点击同意后,此通知将不会再次出现在超级管理员页面中。</p>
+      <p>{{$t('banner.statement.text_5')}}</p>
+      <h3>{{$t('banner.statement.text_6')}}</h3>
+      <br>
+      <p>{{$t('banner.statement.text_7')}}</p>
+      <br>
+      <h3>{{$t('banner.statement.text_8')}}</h3>
+      <br>
+      <p>{{$t('banner.statement.text_9')}}</p>
     </Modal>
   </div>
 </template>

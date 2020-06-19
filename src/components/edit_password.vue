@@ -1,16 +1,16 @@
 <template>
   <Modal v-model="open" :width="500" @on-ok="change_password" transfer :z-index="9999">
-    <h3 slot="header" style="color:#2D8CF0">修改密码</h3>
+    <h3 slot="header" style="color:#2D8CF0">{{$t('general.change_password')}}</h3>
     <Form ref="editPasswordForm" :model="form" :label-width="100" label-position="right"
           :rules="validate_form">
-      <FormItem label="用户">
+      <FormItem :label="$t('general.name')">
         <Input v-model="username" readonly></Input>
       </FormItem>
-      <FormItem label="新密码" prop="password">
-        <Input v-model="form.password" placeholder="请输入新密码，至少6位字符" type="password"></Input>
+      <FormItem :label="$t('sign_userInfo.password')" prop="password">
+        <Input v-model="form.password" :placeholder="$t('sign_up_validate.min')" type="password"></Input>
       </FormItem>
-      <FormItem label="确认新密码" prop="confirm">
-        <Input v-model="form.confirm" placeholder="请再次输入新密码" type="password"></Input>
+      <FormItem :label="$t('sign_userInfo.confirm')" prop="confirm">
+        <Input v-model="form.confirm"  type="password"></Input>
       </FormItem>
     </Form>
   </Modal>
@@ -18,11 +18,12 @@
 
 <script>
     import axios from "axios";
+    import i18n from "@/language";
 
     const regExp_password = (rule, value, callback) => {
         let pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
         if (!pPattern.test(value)) {
-            callback(new Error('至少1个大写字母,1个小写字母,1个数字'))
+            callback(new Error(i18n.t('sign_up_validate.regexp')))
         } else {
             callback()
         }
@@ -48,7 +49,7 @@
         data() {
             const validate_password = (rule, value, callback) => {
                 if (value !== this.form.password) {
-                    callback(new Error('两次输入密码不一致'))
+                  callback(new Error(i18n.t('sign_up_validate.twice')))
                 } else {
                     callback()
                 }
@@ -63,24 +64,24 @@
                     old_password: [
                         {
                             required: true,
-                            message: '请输入原密码',
+                            message: i18n.t('sign_up_validate.password'),
                             trigger: 'blur'
                         }
                     ],
                     password: [
                         {
                             required: true,
-                            message: '请输入新密码',
+                            message: i18n.t('sign_up_validate.confirm'),
                             trigger: 'blur'
                         },
                         {
                             min: 6,
-                            message: '请至少输入6个字符',
+                            message: i18n.t('sign_up_validate.min'),
                             trigger: 'blur'
                         },
                         {
                             max: 32,
-                            message: '最多输入32个字符',
+                            message: i18n.t('sign_up_validate.max'),
                             trigger: 'blur'
                         },
                         {
@@ -90,7 +91,7 @@
                     ],
                     confirm: [{
                         required: true,
-                        message: '请再次输入新密码',
+                        message: i18n.t('sign_up_validate.confirm'),
                         trigger: 'blur'
                     },
                         {

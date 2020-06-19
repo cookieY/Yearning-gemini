@@ -4,7 +4,7 @@
 
 <script>
   import axios from 'axios'
-
+  import i18n from "@/language";
   const echarts = require('echarts');
   export default {
     name: 'dataSourcePie',
@@ -15,7 +15,7 @@
           .then(res => {
             let piedata = [{
               value: res.data.ddl,
-              name: 'DDL工单提交数',
+              name: i18n.t('dash.axis.ddl'),
               itemStyle: {
                 normal: {
                   color: '#ed7996'
@@ -24,7 +24,7 @@
             },
               {
                 value: res.data.dml,
-                name: 'DML工单提交数',
+                name: i18n.t('dash.axis.dml'),
                 itemStyle: {
                   normal: {
                     color: '#78beea'
@@ -33,7 +33,7 @@
               },
               {
                 value: res.data.query,
-                name: 'Query工单数',
+                name: i18n.t('dash.axis.query'),
                 itemStyle: {
                   normal: {
                     color: '#76cabf'
@@ -50,7 +50,7 @@
                 orient: 'horizontal',
                 left: 'center',
                 bottom: 10,
-                data: ['DML工单提交数', 'DDL工单提交数', 'Query工单数']
+                data: [i18n.t('dash.axis.dml'), i18n.t('dash.axis.ddl'), i18n.t('dash.axis.query')]
               },
               series: [
                 {

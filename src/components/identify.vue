@@ -1,12 +1,16 @@
 <template>
-  <div class="s-canvas">
-    <canvas id="s-canvas" :width="contentWidth" :height="contentHeight"></canvas>
-  </div>
+    <div class="s-canvas">
+        <canvas id="s-canvas" :width="contentWidth" :height="contentHeight"></canvas>
+    </div>
 </template>
 <script>
     export default {
         name: 'SIdentify',
         props: {
+            replace: {
+                type: Boolean,
+                default: false
+            },
             fontSizeMin: {
                 type: Number,
                 default: 16
@@ -72,7 +76,7 @@
                     code += random[index]; //根据索引取得随机数加到code上
                 }
                 this.identifyCode = code; //把code值赋给验证码
-                this.$emit("identifyCode",code)
+                this.$emit("identifyCode", code)
             },
             // 生成一个随机数
             randomNum(min, max) {
@@ -136,7 +140,13 @@
         watch: {
             identifyCode() {
                 this.drawPic()
+            },
+
+            replace() {
+                let canvas = document.getElementById('s-canvas');
+                this.drawPic(canvas);
             }
+
         },
         mounted() {
             let canvas = document.getElementById('s-canvas');

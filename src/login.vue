@@ -34,14 +34,14 @@
             <div class="container">
                 <div>
                     <a class="navbar-brand">
-                        版本号: v2.2.2 general
+                        {{$t('version')}}: v2.2.2 general
                     </a>
-                    <Button v-if="switchCode" type="default" ghost @click="register= true"> 注册</Button>
+                    <Button v-if="switchCode" type="default" ghost @click="register= true"> {{$t('sign')}}</Button>
                 </div>
                 <div>
                     <ul>
                         <li>
-                            <Button type="default" @click="sponsorship = true" ghost>赞助</Button>
+                            <Button type="default" @click="sponsorship = true" ghost>{{$t('sponsor')}}</Button>
                         </li>
                         <li>
                             <div style="margin-left: 50%">
@@ -66,29 +66,30 @@
                                 <span class="input-group-addon">
                                    <Icon type="md-person"/>
                                 </span>
-                                <input type="text" class="form-control" placeholder="用户名" v-model="formInline.user">
+                                <input type="text" class="form-control" :placeholder="$t('account')"
+                                       v-model="formInline.user">
                             </div>
                             <div class="input-group form-group-no-border input-lg">
                                 <span class="input-group-addon">
                                   <Icon type="md-key"/>
                                 </span>
-                                <input type="password" placeholder="密码" class="form-control"
+                                <input type="password" :placeholder="$t('password')" class="form-control"
                                        v-model="formInline.password"/>
                             </div>
                             <div class="input-group form-group-no-border input-lg">
                 <span class="input-group-addon">
                                   <Icon type="md-key"/>
                                 </span>
-                                <input placeholder="验证码" class="form-control"
+                                <input :placeholder="$t('pin')" class="form-control"
                                        v-model="formInline.code"
                                        @keyup.enter="signIn"/>
                                 <SIdentify
-                                        @identifyCode="checkCode" class="input-group-addon"></SIdentify>
+                                        @identifyCode="checkCode" class="input-group-addon" :replace="replace"></SIdentify>
                             </div>
                             <div class="footer text-center">
-                                <Checkbox v-model="single"> ldap登录</Checkbox>
-                                <a href="#pablo" class="btn btn-primary btn-round btn-lg btn-block" @click="signIn()">
-                                    登录</a>
+                                <Checkbox v-model="single"> {{$t('ldap')}}</Checkbox>
+                                <a class="btn btn-primary btn-round btn-lg btn-block" @click="signIn()">
+                                    {{$t('login')}}</a>
                             </div>
                         </form>
                     </div>
@@ -101,72 +102,72 @@
                             <li>
                                 <Tooltip content="yearning.io" placement="top-start">
                                     <a class="nav-link" href="https://yearning.io">
-                                        关于Yearning
+                                        {{$t('about')}}
                                     </a>
                                 </Tooltip>
                             </li>
                             <li>
-                                <Tooltip content="Q群:747364310" placement="top-start">
+                                <Tooltip :content="$t('community_addr')" placement="top-start">
                   <span class="nav-link">
-                    使用交流群
+                   {{$t('community')}}
                   </span>
                                 </Tooltip>
                             </li>
                             <li>
                                 <a href="https://www.gnu.org/licenses/agpl-3.0.en.html" class="nav-link">
-                                    AGPL3.0
+                                    {{$t('license')}}
                                 </a>
                             </li>
                         </ul>
                     </nav>
-                    <div class="copyright"> © 2019 HenryYee 请使用Chrome浏览器获得最佳体验</div>
+                    <div class="copyright"> {{$t('tips')}}</div>
                 </div>
             </footer>
         </div>
 
-        <Modal v-model="register" @on-ok="LoginRegister" title="注册" ok-text="注册" :mask-closable="false">
+        <Modal v-model="register" @on-ok="LoginRegister" :title="$t('sign')" :ok-text="$t('sign')"
+               :mask-closable="false">
             <Form ref="userinfova" :model="userinfo" :rules="userinfoValidate">
-                <FormItem label="请输入用户名" prop="username">
+                <FormItem :label="$t('sign_userInfo.username')" prop="username">
                     <Input v-model="userinfo.username"></Input>
                 </FormItem>
 
-                <FormItem label="请输入密码" prop="password">
+                <FormItem :label="$t('sign_userInfo.password')" prop="password">
                     <Input type="password" v-model="userinfo.password"></Input>
                 </FormItem>
 
-                <FormItem label="请确认新密码" prop="confirmpassword">
+                <FormItem :label="$t('sign_userInfo.confirm')" prop="confirmpassword">
                     <Input v-model="userinfo.confirmpassword" type="password"></Input>
                 </FormItem>
 
-                <FormItem prop="realname" label="真实姓名">
+                <FormItem prop="realname" :label="$t('sign_userInfo.real')">
                     <Input v-model="userinfo.realname"></Input>
                 </FormItem>
 
-                <FormItem prop="department" label="部门">
+                <FormItem prop="department" :label="$t('sign_userInfo.department')">
                     <Input v-model="userinfo.department"></Input>
                 </FormItem>
 
-                <FormItem prop="email" label="电子邮箱">
+                <FormItem prop="email" :label="$t('sign_userInfo.mail')">
                     <Input v-model="userinfo.email"></Input>
                 </FormItem>
             </Form>
         </Modal>
 
-        <Modal v-model="sponsorship" title="让Yearning持续提供更好的功能与服务" width="640">
-            <h3> 赞助后你可以得到的</h3>
-            联系作者将自己的名字添加到赞助者名单中
-
-            对于顶级赞助商，可将公司或个人logo添加到项目首页README当中，并优先考虑对该企业或个人的需求进行开发。
+        <Modal v-model="sponsorship" :title="$t('sponsor_title')" width="640">
+            <h3> {{$t('sponsor_1')}}</h3>
+            {{$t('sponsor_2')}}
             <br>
             <br>
-            <h3>定制化需求</h3>
-            企业可根据实际需要向Yearning作者寻求定制功能服务。
+            <h3>{{$t('sponsor_3')}}</h3>
+            {{$t('sponsor_4')}}
             <br>
             <br>
-            <h3>联系方式</h3>
-            电邮：supermancookie@outlook.com
+            <h3>{{$t('sponsor_5')}}</h3>
+            {{$t('sponsor_6')}}
             <br>
-            QQ: 834958386
+            {{$t('sponsor_7')}}
+            <br>
             <br>
             <img height="300" width="300" src="./assets/alipay.jpg">
             <img height="300" width="300" src="./assets/wechat.jpg">
@@ -177,12 +178,14 @@
     import axios from 'axios'
     import SIdentify from '@/components/identify.vue'
     import {Vue, Component} from "vue-property-decorator";
+    import i18n from '@/language/index';
 
     @Component({components: {SIdentify}})
     export default class login extends Vue {
+
         valideuserinfoPassword = (rule: any, value: string, callback: any) => {
             if (value !== this.userinfo.password) {
-                callback(new Error("输入的密码不一致"))
+                callback(new Error(i18n.t('sign_up_validate.twice') as any))
             } else {
                 callback()
             }
@@ -190,13 +193,14 @@
         regExp_password = (rule: any, value: string, callback: any) => {
             let pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
             if (!pPattern.test(value)) {
-                callback(new Error("至少1个大写字母，1个小写字母，1个数字"))
+                callback(new Error(i18n.t('sign_up_validate.regexp') as any))
             } else {
                 callback()
             }
         };
-        $config: any;
 
+        $config: any;
+        replace = false
         single = false;
         switchCode = false;
         sponsorship = false;
@@ -213,24 +217,24 @@
             username: [
                 {
                     required: true,
-                    message: "请输入用户名",
+                    message: i18n.t('sign_up_validate.username'),
                     trigger: 'blur'
                 }
             ],
             password: [
                 {
                     required: true,
-                    message: "请输入密码",
+                    message: i18n.t('sign_up_validate.password'),
                     trigger: 'blur'
                 },
                 {
                     min: 6,
-                    message: "请输入至少6个字符",
+                    message: i18n.t('sign_up_validate.min'),
                     trigger: 'blur'
                 },
                 {
                     max: 32,
-                    message: "最多输入32个字符",
+                    message: i18n.t('sign_up_validate.max'),
                     trigger: 'blur'
                 },
                 {
@@ -241,7 +245,7 @@
             confirmpassword: [
                 {
                     required: true,
-                    message: "请确认新密码",
+                    message: i18n.t('sign_up_validate.confirm'),
                     trigger: 'blur'
                 },
                 {
@@ -252,20 +256,20 @@
             realname: [
                 {
                     required: true,
-                    message: "请输入真实姓名",
+                    message: i18n.t('sign_up_validate.real'),
                     trigger: 'blur'
                 }
             ],
             department: [
                 {
                     required: true,
-                    message: "请输入部门名",
+                    message: i18n.t('sign_up_validate.department'),
                     trigger: 'blur'
                 }
             ],
             email: [
-                {required: true, message: "请输入E-mail", trigger: 'blur'},
-                {type: 'email', message: "E-mail格式错误", trigger: 'blur'}
+                {required: true, message: i18n.t('sign_up_validate.mail'), trigger: 'blur'},
+                {type: 'email', message: i18n.t('sign_up_validate.mail_format'), trigger: 'blur'}
             ]
         };
         formInline = {
@@ -294,7 +298,7 @@
                             this.$config.err_notice(this, error)
                         })
                 } else {
-                    this.$config.err_notice("请正确填写相关注册信息")
+                    this.$config.notice(i18n.t('sign_up_validate.sign_fail') as string)
                 }
             })
         }
@@ -302,8 +306,9 @@
         signIn() {
             if (this.check_code !== this.formInline.code.toLowerCase()) {
                 this.$Message.warning({
-                    content: '验证码错误，请重新输入！'
+                    content: i18n.t('sign_up_validate.pin') as string
                 });
+                this.replace = !this.replace
                 return
             }
             let url = this.$config.auth;
@@ -327,6 +332,7 @@
                     })
                 })
                 .catch(err => {
+                    this.replace = !this.replace
                     this.$config.auth_notice(err)
                 })
         }

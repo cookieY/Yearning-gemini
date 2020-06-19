@@ -15,7 +15,7 @@
                     <img src="../../assets/circle.svg" class="card-img-absolute " alt="circle-image"/>
                     <Col span="11">
                       <Icon type="md-person-add" size="40"/>
-                      <h1>用户数</h1>
+                      <h1>{{$t('dash.user')}}</h1>
                     </Col>
                     <Col span="8" offset="5">
                       <info_card id-name="transfer_count0" :end-val="count.createUser"></info_card>
@@ -33,7 +33,7 @@
                     <img src="../../assets/circle.svg" class="card-img-absolute " alt="circle-image"/>
                     <Col span="11">
                       <Icon type="md-podium" size="40"/>
-                      <h1>数据源</h1>
+                      <h1>{{$t('dash.source')}}</h1>
                     </Col>
                     <Col span="8" offset="5">
                       <info_card id-name="transfer_count1" :end-val="count.source"></info_card>
@@ -51,7 +51,7 @@
                     <img src="../../assets/circle.svg" class="card-img-absolute " alt="circle-image"/>
                     <Col span="11">
                       <Icon type="md-shuffle" size="40"/>
-                      <h1>工单总数</h1>
+                      <h1>{{$t('dash.order')}}</h1>
                     </Col>
                     <Col span="8" offset="5">
                       <info_card id-name="transfer_count2" :end-val="count.order"></info_card>
@@ -69,7 +69,7 @@
                     <img src="../../assets/circle.svg" class="card-img-absolute " alt="circle-image"/>
                     <Col span="11">
                       <Icon type="md-search" size="40"/>
-                      <h1>查询总数</h1>
+                      <h1>{{$t('dash.query')}}</h1>
                     </Col>
                     <Col span="8" offset="5">
                       <info_card id-name="transfer_count3" :end-val="count.query"></info_card>
@@ -88,7 +88,7 @@
         <Card>
           <p slot="title" class="card-title">
             <Icon type="md-person" size="24"/>
-            个人信息
+            {{$t('dash.profile')}}
           </p>
           <myself></myself>
         </Card>
@@ -97,7 +97,7 @@
         <Card>
           <p slot="title" class="card-title">
             <Icon type="md-pie"/>
-            工单提交统计
+            {{$t('dash.order_count')}}
           </p>
           <div class="data-source-row">
             <data-source-pie :dml="this.count.dml" :ddl="this.count.ddl" :query="this.count.query"></data-source-pie>
@@ -108,7 +108,7 @@
         <Card>
           <p slot="title" class="card-title">
             <Icon type="md-pie"/>
-            高频库/Top5
+            {{$t('dash.db_top')}}
           </p>
           <div class="data-source-row">
             <Table border :columns="columnsTop5" :data="count.dataTop5" stripe></Table>
@@ -123,7 +123,7 @@
         <Card>
           <p slot="title" class="card-title">
             <Icon type="md-map"></Icon>
-            工单趋势
+            {{$t('dash.axis.trend')}}
           </p>
           <div class="data-source-row">
             <dataSourceAxis></dataSourceAxis>
@@ -141,17 +141,17 @@
     import info_card from '@/components/inforCard.vue'
     import myself from '@/views/personalCenter/myself.vue'
     import {Vue, Component} from 'vue-property-decorator'
-
+    import i18n from "@/language";
     @Component({components: {dataSourcePie, info_card, dataSourceAxis, myself}})
     export default class home extends Vue {
         $config: any;
         columnsTop5 = [
             {
-                title: '数据库',
+                title: i18n.t('general.db'),
                 key: 'DataBase'
             },
             {
-                title: '审核工单数',
+                title: i18n.t('dash.order'),
                 key: 'C'
             }
         ];

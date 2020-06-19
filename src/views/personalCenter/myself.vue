@@ -2,38 +2,38 @@
   <div>
     <div>
       <Form ref="userForm" label-position="right">
-        <FormItem label="用户名：" prop="name">
+        <FormItem :label="$t('general.name')" prop="name">
           <div>
             <span>{{ userForm.Username }}</span>
           </div>
         </FormItem>
-        <FormItem label="姓名：" prop="name">
+        <FormItem :label="$t('general.real')" prop="name">
           <div>
             <span>{{ userForm.RealName }}</span>
           </div>
         </FormItem>
-        <FormItem label="部门：">
+        <FormItem :label="$t('general.department')">
           <span>{{ userForm.Department }}</span>
         </FormItem>
-        <FormItem label="角色：">
+        <FormItem :label="$t('general.role')">
           <span>{{ userForm.Rule }}</span>
         </FormItem>
-        <FormItem label="邮箱：">
+        <FormItem :label="$t('general.mail')">
           <span>{{ userForm.Email }}</span>
         </FormItem>
-        <Button type="warning" size="small" @click="edit_password=true">修改密码</Button>
-        <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">修改邮箱/真实姓名</Button>
-        <Button type="success" size="small" @click="openPerChange" class="margin-left-10">查看权限</Button>
+        <Button type="warning" size="small" @click="edit_password=true">{{$t('general.change_password')}}</Button>
+        <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">{{$t('dash.edit_permissions')}}</Button>
+        <Button type="success" size="small" @click="openPerChange" class="margin-left-10">{{$t('general.show_permissions')}}</Button>
       </Form>
     </div>
 
     <Modal v-model="editEmailModal" :width="500" @on-ok="saveEmail">
-      <h3 slot="header" style="color:#2D8CF0">邮箱/真实姓名修改</h3>
+      <h3 slot="header" style="color:#2D8CF0">{{$t('dash.edit_permissions')}}</h3>
       <Form :label-width="100" label-position="right">
-        <FormItem label="邮箱地址">
+        <FormItem :label="$t('general.mail')">
           <Input v-model="editEmailForm.Email"></Input>
         </FormItem>
-        <FormItem label="真实姓名">
+        <FormItem :label="$t('general.real')">
           <Input v-model="editEmailForm.RealName"></Input>
         </FormItem>
       </Form>

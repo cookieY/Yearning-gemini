@@ -14,12 +14,12 @@ import particles from 'particles.js/particles'
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import {LoadingBar} from 'view-design'
+import i18n from "@/language";
 
 Vue.config.productionTip = false;
 Vue.prototype.$config = config;
 Vue.use(particles);
 Vue.use(Vuex);
-Vue.use(iView);
 Vue.use(VueRouter);
 Vue.use(mavonEditor);
 Vue.prototype.$http = axios;
@@ -56,5 +56,6 @@ new Vue({
     template: '<Subnet/>',
     components: {Subnet},
     store: store,
-    router: router
+    router: router,
+    i18n
 });
