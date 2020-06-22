@@ -1,75 +1,76 @@
 <style scoped>
-  @import "../styles/common.less";
+    @import "../styles/common.less";
 </style>
 
 <template>
-  <div>
-    <editor v-model="formItem.textarea" @init="editorInit" @setCompletions="setCompletions"></editor>
-    <br>
-    <span>当前选择的库: {{dataBase}}</span> <span class="margin-left-10">查询耗时: {{queryTime}} ms</span>
-    <br>
-    <br>
-    <Button type="error" icon="md-trash" @click.native="clearObj(this.formItem)">清除</Button>
-    <Button type="info" icon="ios-analytics" @click.native="fetchTableField()" class="margin-left-10">获取表结构</Button>
-    <Button type="success" icon="ios-redo" @click.native="querySQL()" class="margin-left-10">查询</Button>
-    <Button
-            type="primary"
-            icon="ios-cloud-download"
-            @click.native="exportdata()"
-            v-if="export_data"
-            class="margin-left-10"
-    >导出查询数据
-    </Button>
-    <Button type="warning" @click="beauty" class="margin-left-10">美化</Button>
-    <Button type="primary" icon="md-copy" @click="openSnippet" class="margin-left-10">snippet</Button>
-    <br>
-    <br>
-    <p>查询结果:</p>
-    <Table :columns="columnsName" :data="queryRes" highlight-row ref="table"></Table>
-    <br>
-    <Page :total="total" show-total @on-change="splice_arr" ref="total" show-sizer @on-page-size-change="ex_arr"></Page>
+    <div>
+        <editor v-model="formItem.textarea" @init="editorInit" @setCompletions="setCompletions"></editor>
+        <br>
+        <span>当前选择的库: {{dataBase}}</span> <span class="margin-left-10">查询耗时: {{queryTime}} ms</span>
+        <br>
+        <br>
+        <Button type="error" icon="md-trash" @click.native="clearObj(this.formItem)">清除</Button>
+        <Button type="info" icon="ios-analytics" @click.native="fetchTableField()" class="margin-left-10">获取表结构</Button>
+        <Button type="success" icon="ios-redo" @click.native="querySQL()" class="margin-left-10">查询</Button>
+        <Button
+                type="primary"
+                icon="ios-cloud-download"
+                @click.native="exportdata()"
+                v-if="export_data"
+                class="margin-left-10"
+        >导出查询数据
+        </Button>
+        <Button type="warning" @click="beauty" class="margin-left-10">美化</Button>
+        <Button type="primary" icon="md-copy" @click="openSnippet" class="margin-left-10">snippet</Button>
+        <br>
+        <br>
+        <p>查询结果:</p>
+        <Table :columns="columnsName" :data="queryRes" highlight-row ref="table"></Table>
+        <br>
+        <Page :total="total" show-total @on-change="splice_arr" ref="total" show-sizer
+              @on-page-size-change="ex_arr"></Page>
 
-    <Modal
-            v-model="expireInfo"
-            title="查询时限过期提醒"
-            @on-ok="togo">
-      <span>查询时限已过期,请重新申请查询时限。</span>
-      <br>
-      <span>点击确定,返回查询申请页面。</span>
-    </Modal>
+        <Modal
+                v-model="expireInfo"
+                title="查询时限过期提醒"
+                @on-ok="togo">
+            <span>查询时限已过期,请重新申请查询时限。</span>
+            <br>
+            <span>点击确定,返回查询申请页面。</span>
+        </Modal>
 
-    <Drawer title="snippet" v-model="openDrawer" transfer>
-      <Card style="height:150px" v-for="i in snippetList" :key="i.title" dis-hover>
-        <p slot="title">
-          <Icon type="md-copy"></Icon>
-          {{i.title}}
-        </p>
-        <a href="#" slot="extra" @click.prevent="copySnippet(i)">
-          <Icon type="ios-loop-strong"></Icon>
-          复制
-        </a>
-        <template slot="extra">
-          <Poptip
-                  confirm
-                  title="确定要删除这条Snippet?"
-                  @on-ok="delSnippet(i)">
-            <a href="#">
-              <Icon type="ios-loop-strong"></Icon>
-              删除
-            </a>
-          </Poptip>
-        </template>
+        <Drawer title="snippet" v-model="openDrawer" transfer>
+            <Card style="height:150px" v-for="i in snippetList" :key="i.title" dis-hover>
+                <p slot="title">
+                    <Icon type="md-copy"></Icon>
+                    {{i.title}}
+                </p>
+                <a href="#" slot="extra" @click.prevent="copySnippet(i)">
+                    <Icon type="ios-loop-strong"></Icon>
+                    复制
+                </a>
+                <template slot="extra">
+                    <Poptip
+                            confirm
+                            title="确定要删除这条Snippet?"
+                            @on-ok="delSnippet(i)">
+                        <a href="#">
+                            <Icon type="ios-loop-strong"></Icon>
+                            删除
+                        </a>
+                    </Poptip>
+                </template>
 
-        <template v-if="i.text.length > 59">
-          <Tooltip max-width="200" :content="i.text">
-            {{i.text.substring(0,60)}}.....
-          </Tooltip>
-        </template>
-        <template v-else>{{i.text}}</template>
-      </Card>
-    </Drawer>
+                <template v-if="i.text.length > 59">
+                    <Tooltip max-width="200" :content="i.text">
+                        {{i.text.substring(0,60)}}.....
+                    </Tooltip>
+                </template>
+                <template v-else>{{i.text}}</template>
+            </Card>
+        </Drawer>
 
-  </div>
+    </div>
 </template>
 
 <script>
@@ -77,6 +78,7 @@
     import Csv from 'view-design/src/utils/csv'
     import ExportCsv from 'view-design/src/components/table/export-csv'
     import editor from './editor'
+    import sqlFormatter from "sql-formatter";
 
     const exportcsv = function exportCsv(params) {
         if (params.filename) {
@@ -182,13 +184,7 @@
                 this.openDrawer = true
             },
             beauty() {
-                axios.put(`${this.$config.url}/query/beauty`, {
-                    'sql': this.formItem.textarea
-                })
-                    .then(res => {
-                        this.formItem.textarea = res.data
-                    })
-                    .catch(err => this.$config.err_notice(this, err))
+                this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
             },
             fetchTableField() {
                 if (this.dataBase === '' || this.table === '') {

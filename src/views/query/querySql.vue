@@ -1,137 +1,140 @@
 <template>
-  <div>
-    <Row>
-      <Col :span="5" v-if="showTableinfo">
-        <Card dis-hover>
-          <p slot="title">
-            <Icon type="ios-redo"></Icon>
-            选择数据库
-          </p>
-          <div class="edittable-test-con">
-            <div id="showImage" class="margin-bottom-10">
-              <div>
-                <Tree
-                        :data="tree_data"
-                        @on-toggle-expand="choseName"
-                        @on-select-change="getTable"
-                        @empty-text="数据加载中"
-                        class="tree"
-                ></Tree>
-                <Button type="info" icon="md-brush" @click="openDrawer" ghost>快速提交</Button>
-                <Button type="error" icon="md-backspace" @click="deferReply" ghost class="margin-left-percent-5">结束会话
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </Col>
-      <Col :span="slider2" class="padding-left-10">
-        <Card dis-hover>
-          <Button type="primary" icon="ios-skip-forward" @click="countAdd">隐藏数据列</Button>
-          <br>
-          <br>
-          <Tabs type="card" :value="currentTab" @on-click="cur" name="base">
-            <TabPane v-for="tab in tabs" :key="tab" :label="'查询' + tab" :name="'查询' + tab"
-                     icon="logo-buffer" tab="base">
-              <tabQuery :word-list="wordList" :export_data="export_data" :dataBase="put_info.base" :source="source"
-                        :table="tableInfoName"></tabQuery>
-            </TabPane>
-            <Button @click="handleTabsAdd" size="small" slot="extra">增加窗口</Button>
-            <Button @click="handleTabRemove" size="small" slot="extra" class="margin-left-10">减少窗口</Button>
-          </Tabs>
-        </Card>
-      </Col>
-    </Row>
+    <div>
+        <Row>
+            <Col :span="5" v-if="showTableinfo">
+                <Card dis-hover>
+                    <p slot="title">
+                        <Icon type="ios-redo"></Icon>
+                        选择数据库
+                    </p>
+                    <div class="edittable-test-con">
+                        <div id="showImage" class="margin-bottom-10">
+                            <div>
+                                <Tree
+                                        :data="tree_data"
+                                        @on-toggle-expand="choseName"
+                                        @on-select-change="getTable"
+                                        @empty-text="数据加载中"
+                                        class="tree"
+                                ></Tree>
+                                <Button type="info" icon="md-brush" @click="openDrawer" ghost>快速提交</Button>
+                                <Button type="error" icon="md-backspace" @click="deferReply" ghost
+                                        class="margin-left-percent-5">结束会话
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            </Col>
+            <Col :span="slider2" class="padding-left-10">
+                <Card dis-hover>
+                    <Button type="primary" icon="ios-skip-forward" @click="countAdd">隐藏数据列</Button>
+                    <br>
+                    <br>
+                    <Tabs type="card" :value="currentTab" @on-click="cur" name="base">
+                        <TabPane v-for="tab in tabs" :key="tab" :label="'查询' + tab" :name="'查询' + tab"
+                                 icon="logo-buffer" tab="base">
+                            <tabQuery :word-list="wordList" :export_data="export_data" :dataBase="put_info.base"
+                                      :source="source"
+                                      :table="tableInfoName"></tabQuery>
+                        </TabPane>
+                        <Button @click="handleTabsAdd" size="small" slot="extra">增加窗口</Button>
+                        <Button @click="handleTabRemove" size="small" slot="extra" class="margin-left-10">减少窗口</Button>
+                    </Tabs>
+                </Card>
+            </Col>
+        </Row>
 
 
-    <Drawer title="DML语句快速提交" :closable="false" v-model="drawer.open" width="700" transfer>
-      <Form :rules="ruleValidate" ref="formItem" :model="formItem">
-        <FormItem label="环境:" prop="idc">
-          <Select v-model="formItem.idc" @on-change="fetchSource">
-            <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
-          </Select>
-        </FormItem>
+        <Drawer title="DML语句快速提交" :closable="false" v-model="drawer.open" width="700" transfer>
+            <Form :rules="ruleValidate" ref="formItem" :model="formItem">
+                <FormItem label="环境:" prop="idc">
+                    <Select v-model="formItem.idc" @on-change="fetchSource">
+                        <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
+                    </Select>
+                </FormItem>
 
-        <FormItem label="连接名:" prop="source">
-          <Select v-model="formItem.source" @on-change="fetchBase">
-            <Option
-                    v-for="i in fetchData.source"
-                    :value="i"
-                    :key="i"
-            >{{ i }}
-            </Option>
-          </Select>
-        </FormItem>
+                <FormItem label="连接名:" prop="source">
+                    <Select v-model="formItem.source" @on-change="fetchBase">
+                        <Option
+                                v-for="i in fetchData.source"
+                                :value="i"
+                                :key="i"
+                        >{{ i }}
+                        </Option>
+                    </Select>
+                </FormItem>
 
-        <FormItem label="库名:" prop="database">
-          <Select v-model="formItem.database" placeholder="请选择" @on-change="fetchTable">
-            <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}</Option>
-          </Select>
-        </FormItem>
+                <FormItem label="库名:" prop="database">
+                    <Select v-model="formItem.database" placeholder="请选择" @on-change="fetchTable">
+                        <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}</Option>
+                    </Select>
+                </FormItem>
 
-        <FormItem label="工单说明:" prop="text">
-          <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4></Input>
-        </FormItem>
+                <FormItem label="工单说明:" prop="text">
+                    <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4></Input>
+                </FormItem>
 
-        <FormItem label="审核人:" prop="assigned">
-          <Select v-model="formItem.assigned" filterable>
-            <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
-          </Select>
-        </FormItem>
+                <FormItem label="审核人:" prop="assigned">
+                    <Select v-model="formItem.assigned" filterable>
+                        <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
+                    </Select>
+                </FormItem>
 
-        <FormItem label="是否备份" required>
-          <RadioGroup v-model="formItem.backup">
-            <Radio :label=1>是</Radio>
-            <Radio :label=0>否</Radio>
-          </RadioGroup>
-        </FormItem>
+                <FormItem label="是否备份" required>
+                    <RadioGroup v-model="formItem.backup">
+                        <Radio :label=1>是</Radio>
+                        <Radio :label=0>否</Radio>
+                    </RadioGroup>
+                </FormItem>
 
-        <FormItem label="定时执行">
-          <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点" :options="invalidDate"
-                      v-model="formItem.delay" @on-change="formItem.delay=$event"
-                      :editable="false"></DatePicker>
-        </FormItem>
-        <FormItem>
-          <editor v-model="formItem.textarea" @init="editorInit" @setCompletions="setCompletions"></editor>
-        </FormItem>
-      </Form>
+                <FormItem label="定时执行">
+                    <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点" :options="invalidDate"
+                                v-model="formItem.delay" @on-change="formItem.delay=$event"
+                                :editable="false"></DatePicker>
+                </FormItem>
+                <FormItem>
+                    <editor v-model="formItem.textarea" @init="editorInit" @setCompletions="setCompletions"></editor>
+                </FormItem>
+            </Form>
 
-      <Form :label-width="30">
-        <FormItem>
-          <Button
-                  type="error"
-                  icon="md-trash"
-                  @click.native="clearForm()"
-          >清除
-          </Button>
-          <Button type="primary" icon="md-search" @click.native="testSql()" :loading="loading"
-                  class="margin-left-10">检测
-          </Button>
-          <Button type="warning" @click="beauty" :loading="loading" class="margin-left-10">美化</Button>
-          <Button
-                  type="success"
-                  icon="ios-redo"
-                  @click.native="commitOrder()"
-                  :disabled="this.validate_gen"
-                  class="margin-left-10"
-          >提交
-          </Button>
-        </FormItem>
+            <Form :label-width="30">
+                <FormItem>
+                    <Button
+                            type="error"
+                            icon="md-trash"
+                            @click.native="clearForm()"
+                    >清除
+                    </Button>
+                    <Button type="primary" icon="md-search" @click.native="testSql()" :loading="loading"
+                            class="margin-left-10">检测
+                    </Button>
+                    <Button type="warning" @click="beauty" :loading="loading" class="margin-left-10">美化</Button>
+                    <Button
+                            type="success"
+                            icon="ios-redo"
+                            @click.native="commitOrder()"
+                            :disabled="this.validate_gen"
+                            class="margin-left-10"
+                    >提交
+                    </Button>
+                </FormItem>
 
-        <Table :columns="testColumns" :data="testRes" highlight-row></Table>
-      </Form>
+                <Table :columns="testColumns" :data="testRes" highlight-row></Table>
+            </Form>
 
-    </Drawer>
+        </Drawer>
 
-  </div>
+    </div>
 </template>
 <script lang="ts">
     import axios from 'axios'
     import tabQuery from '@/components/tabQuery.vue'
     import editor from "@/components/editor.vue";
-    import {Component, Mixins,Prop} from "vue-property-decorator";
+    import {Component, Mixins, Prop} from "vue-property-decorator";
     import fetch_mixin from "@/mixins/fetch_mixin";
     import order_mixin from "@/mixins/order_mixin";
+    import sqlFormatter from "sql-formatter";
 
     @Component({components: {editor, tabQuery}})
     export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
@@ -174,13 +177,7 @@
         }
 
         beauty() {
-            axios.put(`${this.$config.url}/query/beauty`, {
-                'sql': this.formItem.textarea
-            })
-                .then(res => {
-                    this.formItem.textarea = res.data
-                })
-                .catch(err => this.$config.err_notice(this, err))
+            this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
         }
 
         cur(vl: string) {
@@ -188,10 +185,14 @@
         }
 
         getTable(vl: any) {
-            if (vl[0].children === undefined) {
-                this.tableInfoName = vl[0].title
-            } else {
-                this.put_info.base = vl[0].title;
+            if (vl.length > 0) {
+                if (vl[0].nodeKey > 0) {
+                    if (vl[0].children === undefined) {
+                        this.tableInfoName = vl[0].title
+                    } else {
+                        this.put_info.base = vl[0].title;
+                    }
+                }
             }
         }
 
@@ -359,16 +360,16 @@
 </script>
 
 <style lang="less">
-  @import "../../styles/common.less";
-  @import "../../styles/table.less";
+    @import "../../styles/common.less";
+    @import "../../styles/table.less";
 
-  .tree {
-    word-wrap: break-word;
-    word-break: break-all;
-    /*overflow-y: scroll;*/
-    /*overflow-x: scroll;*/
-    overflow: scroll;
-    max-width: 600px;
-    height: 600px;
-  }
+    .tree {
+        word-wrap: break-word;
+        word-break: break-all;
+        /*overflow-y: scroll;*/
+        /*overflow-x: scroll;*/
+        overflow: scroll;
+        max-width: 600px;
+        height: 600px;
+    }
 </style>

@@ -128,6 +128,7 @@
     import {Component, Mixins} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
     import order_mixins from "../../mixins/order_mixin";
+    import sqlFormatter from "sql-formatter";
 
     @Component({components: {editor}})
     export default class ddl_order extends Mixins(fetch_mixins, order_mixins) {
@@ -201,20 +202,14 @@
                     if (!res.data.e) {
                         this.formDynamic = res.data.sols
                     } else {
-                        this.$config.notice(res.err_code)
+                        this.$config.notice(res.data.err_code)
                     }
                 })
                 .catch((error: any) => this.$config.err_notice(this, error))
         }
 
         beauty() {
-            axios.put(`${this.$config.url}/query/beauty`, {
-                'sql': this.formDynamic
-            })
-                .then(res => {
-                    this.formDynamic = res.data
-                })
-                .catch(err => this.$config.err_notice(this, err))
+            this.formDynamic = sqlFormatter.format(this.formDynamic)
         }
 
         fetchStruct() {

@@ -130,18 +130,13 @@
     import {Component, Mixins} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
     import order_mixins from "@/mixins/order_mixin";
+    import sqlFormatter from "sql-formatter";
 
     @Component({components: {editor}})
     export default class dml_order extends Mixins(fetch_mixins, order_mixins) {
 
         beauty() {
-            axios.put(`${this.$config.url}/query/beauty`, {
-                'sql': this.formItem.textarea
-            })
-                .then(res => {
-                    this.formItem.textarea = res.data
-                })
-                .catch(err => this.$config.err_notice(this, err))
+            this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
         }
 
         testSql() {
