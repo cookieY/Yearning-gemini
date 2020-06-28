@@ -309,11 +309,11 @@
         saveAuthInfo() {
             this.savePassLoading = true;
             axios.post(`${this.$config.url}/management_user/modify`, {
-                'Username': this.editAuthForm.Username,
-                'Rule': this.editAuthForm.Rule,
-                'Department': this.editAuthForm.Department,
-                'RealName': this.editAuthForm.RealName,
-                'Email': this.editAuthForm.Email
+                'username': this.editAuthForm.Username,
+                'rule': this.editAuthForm.Rule,
+                'department': this.editAuthForm.Department,
+                'real': this.editAuthForm.RealName,
+                'mail': this.editAuthForm.Email
             })
                 .then(res => {
                     this.$config.notice(res.data);

@@ -113,18 +113,6 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
-                          <FormItem label="允许设置排列顺序">
-                            <i-switch size="large" v-model="juno.EnableSetCollation">
-                              <span slot="open">开</span>
-                              <span slot="close">关</span>
-                            </i-switch>
-                          </FormItem>
-                          <FormItem label="允许设置字符集">
-                            <i-switch size="large" v-model="juno.EnableSetCharset">
-                              <span slot="open">开</span>
-                              <span slot="close">关</span>
-                            </i-switch>
-                          </FormItem>
                           <FormItem label="允许工单多条DDL">
                             <i-switch size="large" v-model="juno.DDLMultiToSubmit">
                               <span slot="open">开</span>
@@ -139,6 +127,12 @@
                           </FormItem>
                           <FormItem label="允许字段类型转换">
                             <i-switch size="large" v-model="juno.DDLAllowColumnType">
+                              <span slot="open">开</span>
+                              <span slot="close">关</span>
+                            </i-switch>
+                          </FormItem>
+                          <FormItem label="允许使用after/first">
+                            <i-switch size="large" v-model="juno.DDLAllowChangeColumnPosition">
                               <span slot="open">开</span>
                               <span slot="close">关</span>
                             </i-switch>
