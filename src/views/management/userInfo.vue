@@ -308,12 +308,13 @@
 
         saveAuthInfo() {
             this.savePassLoading = true;
-            axios.post(`${this.$config.url}/management_user/modify`, {
+            axios.put(`${this.$config.url}/manage_user`, {
                 'username': this.editAuthForm.Username,
                 'rule': this.editAuthForm.Rule,
                 'department': this.editAuthForm.Department,
                 'real': this.editAuthForm.RealName,
-                'mail': this.editAuthForm.Email
+                'mail': this.editAuthForm.Email,
+                'tp': 'info'
             })
                 .then(res => {
                     this.$config.notice(res.data);
@@ -331,7 +332,7 @@
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.loading = true;
-                    axios.post(`${this.$config.url}/management_user/register`, {
+                    axios.post(`${this.$config.url}/manage_user`, {
                         'userinfo': this.userinfo
                     })
                         .then(res => {
@@ -349,8 +350,8 @@
         }
 
         refreshUser(vl = 1) {
-            axios.get(`${this.$config.url}/management_user/fetch?page=${vl}&con=${JSON.stringify(this.query)}`)
-                .then(res => {
+            axios.get(`${this.$config.url}/manage_user?page=${vl}&con=${JSON.stringify(this.query)}`)
+                    .then(res => {
                     this.connectionList.multi = res.data.multi;
                     this.table_data = res.data.data;
                     this.page_number = parseInt(res.data.page)
@@ -365,8 +366,8 @@
             if (this.table_data.length === 1) {
                 step = step - 1
             }
-            axios.delete(`${this.$config.url}/management_user/del/${row.Username}`)
-                .then(res => {
+            axios.delete(`${this.$config.url}/manage_user?user=${row.Username}`)
+                    .then(res => {
                     this.$config.notice(res.data)
                     this.refreshUser(step)
                 })
@@ -381,7 +382,7 @@
         }
 
         queryCancel() {
-            this.$config.clearObj(this.query);
+            this.query.valve = false;
             this.refreshUser()
         }
 

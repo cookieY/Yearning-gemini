@@ -38,8 +38,8 @@ export default class att_mixins extends Vue {
         department: '',
         valve: false,
         username: '',
-        computer_room: '',
-        connection_name: ''
+        idc: '',
+        source: ''
     };
 
     table_data = [];

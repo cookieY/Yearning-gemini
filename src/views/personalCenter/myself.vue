@@ -1,48 +1,53 @@
 <template>
-  <div>
     <div>
-      <Form ref="userForm" label-position="right">
-        <FormItem :label="$t('general.name')" prop="name">
-          <div>
-            <span>{{ userForm.Username }}</span>
-          </div>
-        </FormItem>
-        <FormItem :label="$t('general.real')" prop="name">
-          <div>
-            <span>{{ userForm.RealName }}</span>
-          </div>
-        </FormItem>
-        <FormItem :label="$t('general.department')">
-          <span>{{ userForm.Department }}</span>
-        </FormItem>
-        <FormItem :label="$t('general.role')">
-          <span>{{ userForm.Rule }}</span>
-        </FormItem>
-        <FormItem :label="$t('general.mail')">
-          <span>{{ userForm.Email }}</span>
-        </FormItem>
-        <Button type="warning" size="small" @click="edit_password=true">{{$t('general.change_password')}}</Button>
-        <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">{{$t('dash.edit_permissions')}}</Button>
-        <Button type="success" size="small" @click="openPerChange" class="margin-left-10">{{$t('general.show_permissions')}}</Button>
-      </Form>
+        <div>
+            <Form ref="userForm" label-position="right">
+                <FormItem :label="$t('general.name')" prop="name">
+                    <div>
+                        <span>{{ userForm.Username }}</span>
+                    </div>
+                </FormItem>
+                <FormItem :label="$t('general.real')" prop="name">
+                    <div>
+                        <span>{{ userForm.RealName }}</span>
+                    </div>
+                </FormItem>
+                <FormItem :label="$t('general.department')">
+                    <span>{{ userForm.Department }}</span>
+                </FormItem>
+                <FormItem :label="$t('general.role')">
+                    <span>{{ userForm.Rule }}</span>
+                </FormItem>
+                <FormItem :label="$t('general.mail')">
+                    <span>{{ userForm.Email }}</span>
+                </FormItem>
+                <Button type="warning" size="small" @click="edit_password=true">{{$t('general.change_password')}}
+                </Button>
+                <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">
+                    {{$t('dash.edit_permissions')}}
+                </Button>
+                <Button type="success" size="small" @click="openPerChange" class="margin-left-10">
+                    {{$t('general.show_permissions')}}
+                </Button>
+            </Form>
+        </div>
+
+        <Modal v-model="editEmailModal" :width="500" @on-ok="saveEmail">
+            <h3 slot="header" style="color:#2D8CF0">{{$t('dash.edit_permissions')}}</h3>
+            <Form :label-width="100" label-position="right">
+                <FormItem :label="$t('general.mail')">
+                    <Input v-model="editEmailForm.Email"></Input>
+                </FormItem>
+                <FormItem :label="$t('general.real')">
+                    <Input v-model="editEmailForm.RealName"></Input>
+                </FormItem>
+            </Form>
+        </Modal>
+
+        <edit_rule :is_open="is_open" :username="userForm.Username" :group_list="group_list"
+                   :group_props="group_props" @cancel="cancel"></edit_rule>
+        <edit_password :is_open="edit_password" :username="userForm.Username" @cancel="cancel_password"></edit_password>
     </div>
-
-    <Modal v-model="editEmailModal" :width="500" @on-ok="saveEmail">
-      <h3 slot="header" style="color:#2D8CF0">{{$t('dash.edit_permissions')}}</h3>
-      <Form :label-width="100" label-position="right">
-        <FormItem :label="$t('general.mail')">
-          <Input v-model="editEmailForm.Email"></Input>
-        </FormItem>
-        <FormItem :label="$t('general.real')">
-          <Input v-model="editEmailForm.RealName"></Input>
-        </FormItem>
-      </Form>
-    </Modal>
-
-    <edit_rule :is_open="is_open" :username="userForm.Username" :group_list="group_list"
-               :group_props="group_props" @cancel="cancel"></edit_rule>
-    <edit_password :is_open="edit_password" :username="userForm.Username" @cancel="cancel_password"></edit_password>
-  </div>
 </template>
 
 <script lang="ts">
@@ -81,7 +86,7 @@
         }
 
         saveEmail() {
-            axios.post(`${this.$config.url}/user/mail_reset`, {
+            axios.put(`${this.$config.url}/user/edit/mail`, {
                 'mail': this.editEmailForm.Email,
                 'username': this.userForm.Username,
                 'real': this.editEmailForm.RealName
@@ -116,6 +121,6 @@
 </script>
 
 <style lang="less">
-  @import '../../styles/own-space.less';
-  @import '../../styles/common.less';
+    @import '../../styles/own-space.less';
+    @import '../../styles/common.less';
 </style>

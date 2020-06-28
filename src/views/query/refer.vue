@@ -31,7 +31,7 @@
         stepData = {
             title: 'Yearning SQL查询系统',
             describe: `欢迎你！ ${sessionStorage.getItem('user')}`,
-            content: '你的工单已提交审核，请等待管理员批准！'
+            content: '你的工单已提交审核，请等待审核人批准！'
         };
         stepList1 = [
             {

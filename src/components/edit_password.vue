@@ -104,22 +104,25 @@
         },
         methods: {
             change_password() {
-                let url = `user/password_reset`;
+                let url = `user/edit/password`;
                 this.$refs['editPasswordForm'].validate((valid) => {
                     if (valid) {
                         if (this.is_admin) {
-                            url = `management_user/password_reset`
+                            url = `manage_user`
                         }
-                        axios.post(`${this.$config.url}/${url}`, {
+                        axios.put(`${this.$config.url}/${url}`, {
                             'username': this.username,
-                            'new': this.form.password
+                            'new': this.form.password,
+                            'tp': 'password',
                         })
                             .then(res => {
                                 this.$config.notice(res.data);
                             })
                             .catch(error => {
-                        this.$config.err_notice(this,error)
-                    });
+                                this.$config.err_notice(this, error)
+                            });
+                    } else {
+                       this.$config.notice("密码提交格式错误！")
                     }
                 });
                 this.$config.clearObj(this.formItem)
