@@ -1,13 +1,14 @@
 import Index from './main.vue'
 import dash from './views/mobile/dash.vue'
 
-const main_child = [{
-    path: 'home',
-    title: '首页',
-    name: 'home_index',
-    component: () => import('./views/home/home.vue'),
+const main_child = [
+    {
+        path: 'home',
+        title: '首页',
+        name: 'home_index',
+        component: () => import('./views/home/home.vue'),
 
-},
+    },
     {
         path: 'query_apply',
         title: '查询申请进度',

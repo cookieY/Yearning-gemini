@@ -70,7 +70,9 @@
       "dml": "DML",
       "query": "Query",
       "trend": "Order trend"
-    }
+    },
+    "quick": "Quick nav",
+    "board": "Board"
   },
   "banner": {
     "guide": "Guide",
