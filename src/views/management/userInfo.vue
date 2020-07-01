@@ -302,7 +302,6 @@
 
         editAuthModal(row: any) {
             this.editAuthForm = this.$config.sameMerge(this.editAuthForm, row, this.editAuthForm);
-            console.log(this.editAuthForm)
             this.editAuthForm.modal = true;
         }
 

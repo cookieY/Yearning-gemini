@@ -46,23 +46,11 @@
         </Row>
 
 
-        <Drawer title="DML语句快速提交" :closable="false" v-model="drawer.open" width="700" transfer>
+        <Drawer title="DML语句快速提交" v-model="drawer.open" width="700">
             <Form :rules="ruleValidate" ref="formItem" :model="formItem">
-                <FormItem label="环境:" prop="idc">
-                    <Select v-model="formItem.idc" @on-change="fetchSource">
-                        <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
-                    </Select>
-                </FormItem>
 
                 <FormItem label="连接名:" prop="source">
-                    <Select v-model="formItem.source" @on-change="fetchBase">
-                        <Option
-                                v-for="i in fetchData.source"
-                                :value="i"
-                                :key="i"
-                        >{{ i }}
-                        </Option>
-                    </Select>
+                   <span>{{tree_data[0].title}}</span>
                 </FormItem>
 
                 <FormItem label="库名:" prop="database">
@@ -277,7 +265,7 @@
         }
 
         openDrawer() {
-            this.fetchIDC();
+            this.fetchBase(this.tree_data[0].title)
             this.drawer.open = true
         }
 

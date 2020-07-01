@@ -1,5 +1,4 @@
 import Index from './main.vue'
-import dash from './views/mobile/dash.vue'
 
 const main_child = [
     {

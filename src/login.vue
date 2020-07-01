@@ -34,7 +34,7 @@
             <div class="container">
                 <div>
                     <a class="navbar-brand">
-                        {{$t('version')}}: v2.2.2 general
+                        {{$t('version')}}: v2.2.2 general 4k stars
                     </a>
                     <Button v-if="switchCode" type="default" ghost @click="register= true"> {{$t('sign')}}</Button>
                 </div>

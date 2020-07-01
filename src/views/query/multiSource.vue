@@ -18,7 +18,7 @@
         </Col>
       </Row>
     </Card>
-    <Modal v-model="openSource" title="数据源列表">
+    <Modal v-model="openSource" title="数据源列表" :z-index="9999">
       <CellGroup @on-click="choiceSource">
         <Cell v-for="i in fetchData.source" :title="i" :name="i" :key="i"/>
       </CellGroup>

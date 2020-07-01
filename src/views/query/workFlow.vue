@@ -55,7 +55,7 @@
             </Form>
           </i-col>
         </Row>
-        <Steps style="margin-left: 10%">
+        <Steps>
           <Step v-for="item in stepList1" :title="item.title" :content="item.describe" :key="item.title"></Step>
         </Steps>
       </Card>

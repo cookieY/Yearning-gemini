@@ -6,7 +6,7 @@
 
     <div
             class="sidebar-menu-con"
-            style="width:200px; background:#ffffff"
+            style="width:200px; background:#ffffff;z-index: 1"
             v-if="!hideMenuText"
     >
       <sidebar-menu :menuList="menuList" :iconSize="18"/>

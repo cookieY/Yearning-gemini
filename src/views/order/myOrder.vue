@@ -35,7 +35,7 @@
                                     工单信息
                                 </Button>
                                 <Button type="warning" @click="openOrder(row)" size="small"
-                                        v-if="row.Status !== 2 && row.Status !==0"
+                                        v-if="row.Status !== 2"
                                         ghost
                                         class="margin-left-10">
                                     执行信息
@@ -183,7 +183,7 @@
                 key: 'action',
                 align: 'center',
                 slot: 'action',
-                width: 250
+                width: 300
             }
         ];
         reject_text = '';
