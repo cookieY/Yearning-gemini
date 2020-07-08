@@ -46,7 +46,7 @@
                     <Icon type="md-people"></Icon>
                     系统用户表
                 </p>
-                <Input v-model="query.user" placeholder="请填写用户名" style="width: 20%" clearable></Input>
+                <Input v-model="query.username" placeholder="请填写用户名" style="width: 20%" clearable></Input>
                 <Input v-model="query.department" placeholder="请填写部门" style="width: 20%" clearable
                        class="margin-left-10"></Input>
                 <Button @click="queryData" type="primary" class="margin-left-10">查询</Button>
