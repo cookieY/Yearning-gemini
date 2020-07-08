@@ -49,7 +49,7 @@
         <Drawer title="DML语句快速提交" v-model="drawer.open" width="700">
             <Form :rules="ruleValidate" ref="formItem" :model="formItem">
 
-                <FormItem label="连接名:" prop="source">
+                <FormItem label="连接名:">
                    <span>{{tree_data[0].title}}</span>
                 </FormItem>
 

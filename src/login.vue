@@ -342,7 +342,7 @@
             windows.particlesJS.load('band', `${process.env.BASE_URL}particlesjs-config.json`);
             axios.get(`${this.$config.gen}/fetch`)
                 .then(res => {
-                    if (res.data === 1) {
+                    if (res.data.reg === 1) {
                         this.switchCode = true;
                     }
                 })
