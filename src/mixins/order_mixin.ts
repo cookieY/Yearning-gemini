@@ -1,32 +1,32 @@
 import {Component, Mixins} from "vue-property-decorator";
-import att_mixins from "@/mixins/att";
-import att from "@/mixins/att";
+import att_mixins from "@/mixins/basic";
+import att from "@/mixins/basic";
 @Component({components: {}})
 export default class order_mixins extends Mixins(att) {
     testColumns = [
         {
             title: '阶段',
-            key: 'Status',
+            key: 'status',
             width: '150'
         },
         {
             title: '错误等级',
-            key: 'Level',
+            key: 'level',
             width: '100'
         },
         {
             title: '错误信息',
-            key: 'Error',
+            key: 'error',
             tooltip: true,
         },
         {
             title: '当前检查的sql',
-            key: 'SQL',
+            key: 'sql',
             tooltip: true
         },
         {
             title: '影响行数',
-            key: 'AffectRows',
+            key: 'affect_rows',
             width: '120'
         }
     ];
@@ -94,10 +94,6 @@ export default class order_mixins extends Mixins(att) {
             return date && date.valueOf() < Date.now() - 86400000
         }
     };
-
-    clearForm() {
-        this.formItem = this.$config.clearObj(this.formItem)
-    }
 
     setCompletions(editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { caption: any; value: any; meta: any; }[]) => void) {
         callback(null, this.wordList.map(function (word:any) {

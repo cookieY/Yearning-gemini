@@ -181,7 +181,7 @@
     import dataSourcePie from '@/components/dataSourcePie.vue'
     import dataSourceAxis from '@/components/dataSourceAxis.vue'
     import info_card from '@/components/inforCard.vue'
-    import myself from '@/views/personalCenter/myself.vue'
+    import myself from '@/views/personal/personal.vue'
     import {Vue, Component} from 'vue-property-decorator'
     import i18n from "@/language";
 

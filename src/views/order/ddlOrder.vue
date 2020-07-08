@@ -10,7 +10,7 @@
                     <div class="edittable-test-con">
                         <Form :model="formItem" :label-width="100" ref="formItem" :rules="ruleValidate">
                             <Form-item label="环境:" prop="idc">
-                                <Select v-model="formItem.idc" placeholder="请选择" @on-change="fetchSource">
+                                <Select v-model="formItem.idc" placeholder="请选择" @on-change="fetchDiffSource">
                                     <Option v-for="i in fetchData.idc" :value="i" :key="i">{{i}}</Option>
                                 </Select>
                             </Form-item>
@@ -42,10 +42,6 @@
                                     <Option v-for="item in fetchData.table" :value="item" :key="item">{{item}}</Option>
                                 </Select>
                             </Form-item>
-                            <Form-item>
-                                <Button type="primary" @click="fetchStruct()">获取表结构信息</Button>
-                                <Button type="error" @click="clearForm()" class="margin-left-10">重置</Button>
-                            </Form-item>
                             <FormItem label="工单提交说明:" prop="text">
                                 <Input v-model="formItem.text" placeholder="请输入工单说明" type="textarea" :rows=4></Input>
                             </FormItem>
@@ -66,6 +62,10 @@
                                     <Radio :label=0>否</Radio>
                                 </RadioGroup>
                             </FormItem>
+                            <Form-item>
+                                <Button type="primary" @click="fetchStruct()">获取表结构信息</Button>
+                                <Button type="error" @click="clearForm()" class="margin-left-10">重置</Button>
+                            </Form-item>
                         </Form>
                     </div>
                 </Card>
@@ -82,7 +82,7 @@
                                 <Form>
                                     <FormItem>
                                         <editor
-                                                v-model="formDynamic"
+                                                v-model="formItem.textarea"
                                                 @init="editorInit"
                                                 @setCompletions="setCompletions"
                                         ></editor>
@@ -91,7 +91,7 @@
                                         <Table :columns="testColumns" :data="testResults" highlight-row></Table>
                                     </FormItem>
                                     <FormItem>
-                                        <Button type="primary" @click="testSql" :loading="loading">检测语句</Button>
+                                        <Button type="primary" @click="check_sql(false)" :loading="loading">检测语句</Button>
                                         <Button type="info" @click="merge" :loading="loading" class="margin-left-10">
                                             ALTER语句合并
                                         </Button>
@@ -123,17 +123,14 @@
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
     import editor from '@/components/editor.vue'
     import {Component, Mixins} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
     import order_mixins from "../../mixins/order_mixin";
-    import sqlFormatter from "sql-formatter";
 
     @Component({components: {editor}})
     export default class ddl_order extends Mixins(fetch_mixins, order_mixins) {
         tabs = 'order1';
-        formDynamic = '';
         fieldColumns = [
             {
                 title: '字段名',
@@ -177,39 +174,21 @@
         ];
         idxData = [];
 
-        fetchSource(idc: string) {
-            if (idc) {
-                axios.get(`${this.$config.url}/fetch/source/${idc}/ddl`)
-                    .then(res => {
-                        if (res.data.x === 'ddl') {
-                            this.fetchData.source = res.data.source;
-                            this.fetchData.assigned = res.data.assigned
-                        } else {
-                            this.$config.notice('非法劫持参数！')
-                        }
-                    })
-                    .catch(error => {
-                        this.$config.err_notice(this, error)
-                    })
-            }
+        fetchDiffSource(idc: string) {
+            this.fetchSource(idc, "ddl")
         }
-
         merge() {
-            axios.put(`${this.$config.url}/query/merge`, {
-                'sql': this.formDynamic
+            this.$http.put(`${this.$config.url}/query/merge`, {
+                'sql':  this.formItem.textarea
             })
                 .then((res: any) => {
                     if (!res.data.e) {
-                        this.formDynamic = res.data.sols
+                        this.formItem.textarea = res.data.sols
                     } else {
                         this.$config.notice(res.data.err_code)
                     }
                 })
                 .catch((error: any) => this.$config.err_notice(this, error))
-        }
-
-        beauty() {
-            this.formDynamic = sqlFormatter.format(this.formDynamic)
         }
 
         fetchStruct() {
@@ -233,55 +212,21 @@
                             ])
                         }
                     });
-                    axios.put(`${this.$config.url}/fetch/tableinfo`, {
+                    this.$http.put(`${this.$config.url}/fetch/tableinfo`, {
                         'source': this.formItem.source,
                         'base': this.formItem.database,
                         'table': this.formItem.table
                     })
-                        .then(res => {
+                        .then((res: { data: { f: never[]; i: never[]; }; }) => {
                             this.fieldData = res.data.f;
                             this.idxData = res.data.i;
-                            spin.hide()
                         })
-                        .catch(() => {
-                            this.$config.err_notice(this)
-                            spin.hide()
+                        .catch((err: any) => {
+                            this.$config.err_notice(this,err)
                         })
+                    spin.hide()
                 } else {
                     this.$Message.error('表单验证失败!')
-                }
-            })
-        }
-
-        testSql() {
-            let is_validate: any = this.$refs['formItem'];
-            is_validate.validate((valid: boolean) => {
-                if (valid) {
-                    this.loading = true;
-                    axios.put(`${this.$config.url}/fetch/test`, {
-                        'source': this.formItem.source,
-                        'database': this.formItem.database,
-                        'table': this.formItem.table,
-                        'sql': this.formDynamic,
-                        'isDMl': false
-                    })
-                        .then(res => {
-                            this.testResults = res.data;
-                            let gen = 0;
-                            this.testResults.forEach((vl: { Level: number; }) => {
-                                if (vl.Level !== 0) {
-                                    gen += 1
-                                }
-                            });
-                            this.validate_gen = gen !== 0;
-                            this.loading = false
-                        })
-                        .catch(err => {
-                            this.loading = false;
-                            this.$config.err_notice(this, err)
-                        })
-                } else {
-                    this.$Message.error('请填写具体地址或sql语句后再测试!')
                 }
             })
         }
@@ -291,18 +236,18 @@
             this.validate_gen = true;
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    axios.post(`${this.$config.url}/sql/refer`, {
+                    this.$http.post(`${this.$config.url}/sql/refer`, {
                         'ddl': this.formItem,
-                        'sql': this.formDynamic,
+                        'sql': this.formItem.textarea,
                         'ty': 0
                     })
-                        .then(res => {
+                        .then((res: { data: any; }) => {
                             this.$Notice.success({
                                 title: '成功',
                                 desc: res.data
                             })
                         })
-                        .catch(error => {
+                        .catch((error: any) => {
                             this.$config.err_notice(this, error)
                         })
                 }

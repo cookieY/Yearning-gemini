@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Col span="5">
+        <Col span="4">
             <Card>
                 <p slot="title">
                     <Icon type="md-settings"></Icon>
@@ -40,13 +40,13 @@
                 </div>
             </Card>
         </Col>
-        <Col span="19" class="padding-left-10">
+        <Col span="20" class="padding-left-10">
             <Card>
                 <p slot="title">
                     <Icon type="md-people"></Icon>
                     系统用户表
                 </p>
-                <Input v-model="query.user" placeholder="请填写用户名" style="width: 20%" clearable></Input>
+                <Input v-model="query.username" placeholder="请填写用户名" style="width: 20%" clearable></Input>
                 <Input v-model="query.department" placeholder="请填写部门" style="width: 20%" clearable
                        class="margin-left-10"></Input>
                 <Button @click="queryData" type="primary" class="margin-left-10">查询</Button>
@@ -54,18 +54,21 @@
                 <div class="edittable-con-1">
                     <Table border :columns="columns" :data="table_data" stripe height="520">
                         <template slot-scope="{ row }" slot="rule">
-                            <span v-if="row.Rule === 'admin' && row.Username !== 'admin'">审核人</span>
-                            <span v-else-if="row.Rule === 'guest'">提交人</span>
-                            <span v-else-if="row.Rule === 'perform'">执行人</span>
-                            <span v-else-if="row.Rule === 'admin' && row.Username === 'admin'">超级管理员</span>
+                            <span v-if="row.rule === 'admin' && row.username !== 'admin'">审核人</span>
+                            <span v-else-if="row.rule === 'guest'">提交人</span>
+                            <span v-else-if="row.rule === 'perform'">执行人</span>
+                            <span v-else-if="row.rule === 'super'">超级管理员</span>
                         </template>
                         <template slot-scope="{ row }" slot="action">
-                            <Button type="primary" size="small" @click="editPassModal(row)"
-                                    v-if="row.Username !== 'admin'">更改密码
+                            <Button type="primary" size="small" @click="edit_code(row)"
+                                    v-if="row.username !== 'admin'">更改密码
                             </Button>
-                            <Button type="info" size="small" @click="editAuthModal(row)" class="margin-left-10">详细信息
+                            <Button type="success" size="small" @click="edit_rule(row)" class="margin-left-10">
+                                权限
                             </Button>
-                            <template v-if="row.Username !== 'admin'">
+                            <Button type="info" size="small" @click="edit_user(row)" class="margin-left-10">详细信息
+                            </Button>
+                            <template v-if="row.username !== 'admin'">
                                 <Poptip
                                         confirm
                                         title="确定删除改用户吗？"
@@ -79,47 +82,27 @@
                     </Table>
                 </div>
                 <br>
-                <Page :total="page_number" show-elevator @on-change="refreshUser" :page-size="10"
+                <Page :total="page_number" show-elevator @on-change="current_page" :page-size="10"
                       :current.sync="current"></Page>
             </Card>
         </Col>
 
-        <edit_password :is_open="edit_password" :username="username" is_admin @cancel="cancel_password"></edit_password>
+        <edit_password v-model="edit_password" is_admin></edit_password>
 
-        <Modal v-model="editAuthForm.modal" @on-ok="saveAuthInfo">
-            <h3 slot="header" style="color:#2D8CF0">用户信息</h3>
-            <Form :model="editAuthForm" label-position="right">
-                <FormItem label="用户名">
-                    <Input v-model="editAuthForm.Username" readonly="readonly"></Input>
-                </FormItem>
-                <FormItem label="真实姓名">
-                    <Input v-model="editAuthForm.RealName"></Input>
-                </FormItem>
-                <FormItem label="角色" v-if="editAuthForm.Username !== 'admin'">
-                    <Select v-model="editAuthForm.Rule" placeholder="请选择">
-                        <Option value="admin">管理员</Option>
-                        <Option value="perform" v-if="connectionList.multi && editAuthForm.id !== 1">执行人</Option>
-                        <Option value="guest" v-if="editAuthForm.id !== 1">使用者</Option>
-                    </Select>
-                </FormItem>
-                <FormItem label="部门">
-                    <Input v-model="editAuthForm.Department" placeholder="请输入新部门"></Input>
-                </FormItem>
-                <FormItem label="E-mail">
-                    <Input v-model="editAuthForm.Email" placeholder="请输入邮箱"></Input>
-                </FormItem>
-            </Form>
-        </Modal>
+        <edit_rule is_admin v-model="is_open" @success="current_page"></edit_rule>
+
+        <edit_info v-model="is_edit" @call="current_page(current)" :user_info="payload"></edit_info>
     </div>
 </template>
 <script lang="ts">
-    import axios from 'axios'
     import '../../styles/tablesmargintop.css'
-    import edit_password from "@/components/edit_password.vue";
+    import edit_password from "@/components/modal/edit_password.vue";
     import {Mixins, Component} from "vue-property-decorator";
-    import att_mixins from "../../mixins/att";
+    import att_mixins from "@/mixins/basic";
+    import edit_rule from "@/components/modal/edit_rule.vue";
+    import edit_info from "@/components/modal/edit_info.vue";
 
-    @Component({components: {edit_password}})
+    @Component({components: {edit_password, edit_rule, edit_info}})
     export default class user_info extends Mixins(att_mixins) {
 
         regExp_password = (rule: any, value: string, callback: any) => {
@@ -139,37 +122,39 @@
             }
         };
 
+        is_edit = false
+
         columns = [
             {
                 title: '用户名',
-                key: 'Username',
+                key: 'username',
                 sortable: true
             },
             {
                 title: '角色',
-                key: 'Rule',
+                key: 'rule',
                 sortable: true,
                 slot: 'rule'
             },
             {
                 title: '姓名',
-                key: 'RealName',
+                key: 'real_name',
                 sortable: true
             },
             {
                 title: '部门',
-                key: 'Department',
+                key: 'department',
                 sortable: true
             },
             {
                 title: 'email',
-                key: 'Email',
+                key: 'email',
                 sortable: true
             },
             {
                 title: '操作',
                 key: 'action',
-                width: 250,
+                width: 300,
                 align: 'center',
                 slot: 'action'
             }
@@ -238,7 +223,7 @@
                 },
                 {
                     min: 2,
-                    message: '请至少输入6个字符',
+                    message: '请至少输入2个字符',
                     trigger: 'blur'
                 },
                 {
@@ -280,50 +265,34 @@
                     trigger: 'blur'
                 }]
         };
-        editAuthForm = {
-            Username: '',
-            Department: '',
-            RealName: '',
-            Rule: '',
-            Email: '',
-            modal: false
-        };
-        // 更改部门及权限遮罩层状态
+
         // 用户名
         username = '';
-        connectionList = {
-            multi: Boolean
-        };
 
-        editPassModal(row: { Username: string; }) {
-            this.username = row.Username;
+        payload = {} as any
+
+        edit_code(row: { username: string; }) {
             this.edit_password = true;
+            this.$store.commit("user_args/fetch_user_info", row)
         }
 
-        editAuthModal(row: any) {
-            this.editAuthForm = this.$config.sameMerge(this.editAuthForm, row, this.editAuthForm);
-            this.editAuthForm.modal = true;
+        edit_user(row: any) {
+            this.payload = JSON.parse(JSON.stringify(row))
+            this.payload.multi = this.connectionList.multi
+            this.is_edit = true;
         }
 
-        saveAuthInfo() {
-            this.savePassLoading = true;
-            axios.put(`${this.$config.url}/manage_user`, {
-                'username': this.editAuthForm.Username,
-                'rule': this.editAuthForm.Rule,
-                'department': this.editAuthForm.Department,
-                'real': this.editAuthForm.RealName,
-                'mail': this.editAuthForm.Email,
-                'tp': 'info'
+        edit_rule(row: { username: string; }) {
+            this.$http.post(`${this.$config.url}/manage_user/fetch/group`, {
+                username: row.username
             })
-                .then(res => {
-                    this.$config.notice(res.data);
-                    this.$config.clearObj(this.editAuthForm);
-                    this.refreshUser(this.current)
+                .then((res: { data: { group_list: never[]; group: never[]; }; }) => {
+                    let group = JSON.parse(JSON.stringify(res.data))
+                    group.username = row.username
+                    this.$store.commit("verify_args/fetch_user_permissions", group)
+                    this.is_open = true;
                 })
-                .catch(error => {
-                    this.$config.err_notice(this, error)
-                });
-            this.savePassLoading = false
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         registered() {
@@ -331,16 +300,16 @@
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.loading = true;
-                    axios.post(`${this.$config.url}/manage_user`, {
+                    this.$http.post(`${this.$config.url}/manage_user`, {
                         'userinfo': this.userinfo
                     })
-                        .then(res => {
+                        .then((res: { data: string; }) => {
                             this.loading = false;
                             this.$config.notice(res.data);
-                            this.refreshUser(this.current);
-                            this.userinfo = this.$config.clearObj(this.userinfo)
+                            this.current_page(this.current);
+                            is_validate.resetFields()
                         })
-                        .catch(error => {
+                        .catch((error: any) => {
                             this.loading = false;
                             this.$config.err_notice(this, error)
                         })
@@ -348,45 +317,45 @@
             })
         }
 
-        refreshUser(vl = 1) {
-            axios.get(`${this.$config.url}/manage_user?page=${vl}&con=${JSON.stringify(this.query)}`)
-                    .then(res => {
+        current_page(vl = 1) {
+            this.$http.get(`${this.$config.url}/manage_user?page=${vl}&con=${JSON.stringify(this.query)}`)
+                .then((res: { data: { multi: any; data: never[]; page: number; }; }) => {
                     this.connectionList.multi = res.data.multi;
                     this.table_data = res.data.data;
-                    this.page_number = parseInt(res.data.page)
+                    this.page_number = res.data.page;
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
-        delUser(row: { Username: string; }) {
+        delUser(row: { username: string; }) {
             let step = this.current;
             if (this.table_data.length === 1) {
                 step = step - 1
             }
-            axios.delete(`${this.$config.url}/manage_user?user=${row.Username}`)
-                    .then(res => {
+            this.$http.delete(`${this.$config.url}/manage_user?user=${row.username}`)
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
-                    this.refreshUser(step)
+                    this.current_page(step)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         queryData() {
             this.query.valve = true;
-            this.refreshUser()
+            this.current_page()
         }
 
         queryCancel() {
             this.query.valve = false;
-            this.refreshUser()
+            this.current_page()
         }
 
         mounted() {
-            this.refreshUser();
+            this.current_page();
         }
     }
 </script>

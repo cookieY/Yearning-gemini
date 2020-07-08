@@ -13,7 +13,8 @@
                                 <p slot="title">消息推送</p>
                                 <Form :label-width="120">
                                     <FormItem label="webhook地址:">
-                                        <Input placeholder="支持钉钉/企业微信(赞助版本) webhook机器人" v-model="message.web_hook"></Input>
+                                        <Input placeholder="支持钉钉/企业微信(赞助版本) webhook机器人"
+                                               v-model="message.web_hook"></Input>
                                     </FormItem>
                                     <FormItem label="邮件SMTP服务地址:">
                                         <Input placeholder="STMP服务 地址" v-model="message.host"></Input>
@@ -258,38 +259,14 @@
 
     import axios from 'axios'
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "../../mixins/att";
-
-
-    interface other_modal {
-        overdue: string,
-        query_expire: string,
-        limit: number,
-        per_order: number,
-        idc: any,
-        foce: string,
-        insulate_word_list: any,
-        exclude_db_list: any,
-        exclued_db: string,
-        sensitive: string,
-        multi: boolean,
-        register: boolean,
-        export: boolean,
-        query: boolean,
-    }
-
-    interface message_modal {
-        ding: boolean,
-        mail: boolean,
-        port: number,
-        push_type: boolean,
-    }
-
+    // eslint-disable-next-line no-unused-vars
+    import {other_modal, message_modal} from "@/interface";
+    import att_mixins from "../../mixins/basic";
     @Component
     export default class setting extends Mixins(att_mixins) {
         ldap = {};
         message = {
-          push_type: false
+            push_type: false,
         } as message_modal;
         other = {
             limit: 0,

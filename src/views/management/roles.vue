@@ -362,7 +362,7 @@
 <script lang="ts">
     import axios from 'axios'
     import {Mixins, Component} from "vue-property-decorator";
-    import att_mixins from "../../mixins/att";
+    import att_mixins from "../../mixins/basic";
 
     @Component
     export default class roles extends Mixins(att_mixins) {

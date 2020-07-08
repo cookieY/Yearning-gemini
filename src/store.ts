@@ -1,11 +1,107 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import {appRouter} from './router'
+import {order} from "@/interface";
+import createVuexAlong from "vuex-along";
 
 Vue.use(Vuex);
 
+const module_init_args = {
+    namespaced: true,
+    state: {
+        order_item: {
+            work_id: '',
+            idc: '',
+            source: '',
+            data_base: '',
+            table: '',
+            text: '',
+            delay: '',
+            type: 0,
+            status: 0,
+            username: '',
+            date: '',
+            rejected: '',
+            execute_time: '',
+            backup: 0,
+            assigned: ''
+        }
+    },
+    mutations: {
+        fetch_order_item(state: { order_item: order; }, vm: order) {
+            state.order_item = vm
+        },
+    }
+};
+
+interface Finder {
+    picker: string[]
+    valve: boolean
+    text: string
+}
+
+const module_search = {
+    namespaced: true,
+    state: {
+        find: {
+            picker: [],
+            valve: false,
+            text: ''
+        }
+    },
+    mutations: {
+        post_search_args(state: { find: Finder }, vm: Finder) {
+            state.find = vm
+        }
+    }
+}
+
+interface group {
+    username: string
+    list: []
+    group: string[]
+}
+
+const module_verify = {
+    namespaced: true,
+    state: {
+        group: {
+            username: '',
+            list: [],
+            group: []
+        }
+    },
+    mutations: {
+        fetch_user_permissions(state: { group: group }, vm: group) {
+            state.group = vm
+        }
+    }
+}
+
+const module_user = {
+    namespaced: true,
+    state: {
+        edit: {
+            id: 0,
+            username: '',
+            department: '',
+            real_name: '',
+            rule: '',
+            email: '',
+            multi: false,
+            password: ''
+        }
+    },
+    mutations: {
+        fetch_user_info(state: { edit: object }, vm: object) {
+            state.edit = vm
+        }
+    }
+}
+
 const store = new Vuex.Store({
     state: {
+        order: {},
         hideMenuText: false,
         is_open: false,
         stmt: false,
@@ -13,35 +109,32 @@ const store = new Vuex.Store({
         openReLogin: false,
         menuList: [],
         currentPageName: 'home_index',
-        currentPath: [{
-            title: '首页',
-            path: '/',
-            name: 'home_index'
-        }],
-        pageOpenedList: [{
-            title: '首页',
-            path: '',
-            name: 'home_index'
-        }],
+        currentPath: [
+            {
+                title: '首页',
+                path: '/',
+                name: 'home_index'
+            }
+        ],
+        pageOpenedList: [
+            {
+                title: '首页',
+                path: '',
+                name: 'home_index'
+            }
+        ],
         snippet: [] as any[],
         group_props: [],
-        order_item: {
-            WorkId: '',
-            IDC: '',
-            Source: '',
-            Delay: '',
-            DataBase: '',
-            Text: '',
-            Table: '',
-            Type: 0
-        },
         order_sql: [],
-        osc_id: ''
+        osc_id: '',
+    },
+    modules: {
+        init_args: module_init_args,
+        search_args: module_search,
+        verify_args: module_verify,
+        user_args: module_user
     },
     mutations: {
-        fetch_order_item(state, vm) {
-            return state.order_item = vm
-        },
         fetch_order_sql(state, vm) {
             return state.order_sql = vm
         },
@@ -68,7 +161,8 @@ const store = new Vuex.Store({
             let accessCode = parseInt(<string>sessionStorage.getItem('access')); // 0
             let menuList: any = [];
             appRouter.forEach((item) => {
-                if (item.access === accessCode || item.access === 3) {
+                // @ts-ignore
+                if (item.access < accessCode) {
                     let i = menuList.push(item);
                     menuList[i - 1].children = item.children
                 }
@@ -107,7 +201,15 @@ const store = new Vuex.Store({
                 }
             })
         }
-    }
+    },
+    plugins: [
+        createVuexAlong({
+            name: "yearning",
+            session: {
+                list: ["init_args.order_item"],
+            }
+        })
+    ]
 });
 
 export default store

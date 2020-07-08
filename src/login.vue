@@ -175,13 +175,13 @@
     </div>
 </template>
 <script lang="ts">
-    import axios from 'axios'
     import SIdentify from '@/components/identify.vue'
-    import {Vue, Component} from "vue-property-decorator";
+    import {Mixins, Component} from "vue-property-decorator";
     import i18n from '@/language/index';
+    import att_mixins from "@/mixins/basic";
 
     @Component({components: {SIdentify}})
-    export default class login extends Vue {
+    export default class login extends Mixins(att_mixins) {
 
         valideuserinfoPassword = (rule: any, value: string, callback: any) => {
             if (value !== this.userinfo.password) {
@@ -198,8 +198,6 @@
                 callback()
             }
         };
-
-        $config: any;
         replace = false
         single = false;
         switchCode = false;
@@ -287,14 +285,14 @@
             let is_validate: any = this.$refs['userinfova'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    axios.post(this.$config.register, {
+                    this.$http.post(this.$config.register, {
                         'userinfo': this.userinfo
                     })
-                        .then(res => {
+                        .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
                             this.$config.clearObj(this.userinfo)
                         })
-                        .catch(error => {
+                        .catch((error: any) => {
                             this.$config.err_notice(this, error)
                         })
                 } else {
@@ -315,23 +313,29 @@
             if (this.single) {
                 url = `${this.$config.gen}/ldap`
             }
-            axios.post(url, {
+            this.$http.post(url, {
                 'username': this.formInline.user,
                 'password': this.formInline.password
             })
-                .then(res => {
-                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
+                .then((res: { data: { [x: string]: any; token: string; }; }) => {
+                    this.$http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
                     sessionStorage.setItem('user', this.formInline.user);
                     sessionStorage.setItem('jwt', `Bearer ${res.data.token}`);
                     sessionStorage.setItem('auth', res.data['permissions']);
                     sessionStorage.setItem('real_name', res.data['real_name']);
                     let auth = res.data['permissions'];
-                    (auth === 'admin' || auth === 'perform') ? sessionStorage.setItem('access', '0') : sessionStorage.setItem('access', '1');
+                    if (auth === 'guest') {
+                        sessionStorage.setItem('access', '1')
+                    } else if (auth === 'admin' || auth === 'perform') {
+                        sessionStorage.setItem('access', '2')
+                    } else if (auth === 'super') {
+                        sessionStorage.setItem('access', '3')
+                    }
                     this.$router.push({
                         name: 'home_index'
                     })
                 })
-                .catch(err => {
+                .catch((err: any) => {
                     this.replace = !this.replace
                     this.$config.auth_notice(err)
                 })
@@ -340,13 +344,13 @@
         mounted() {
             let windows: any = window;
             windows.particlesJS.load('band', `${process.env.BASE_URL}particlesjs-config.json`);
-            axios.get(`${this.$config.gen}/fetch`)
-                .then(res => {
-                    if (res.data === 1) {
+            this.$http.get(`${this.$config.gen}/fetch`)
+                .then((res: { data: { reg: number; }; }) => {
+                    if (res.data.reg === 1) {
                         this.switchCode = true;
                     }
                 })
-                .catch(err => this.$config.auth_notice(err));
+                .catch((err: any) => this.$config.auth_notice(err));
         }
     }
 </script>

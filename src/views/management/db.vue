@@ -33,12 +33,17 @@
                             <Input v-model="formItem.password" placeholder="请输入" type="password"></Input>
                         </Form-item>
                         <Form-item label="数据源类型:">
-                            <RadioGroup v-model="formItem.isquery">
+                            <RadioGroup v-model="formItem.is_query">
                                 <Radio :label="2">读写</Radio>
                                 <Radio :label="1">读</Radio>
                                 <Radio :label="0">写</Radio>
                             </RadioGroup>
                         </Form-item>
+                        <FormItem label="所属管理者:" prop="admin">
+                            <Select v-model="formItem.admin" multiple>
+                                <Option v-for="i in admin_list" :key="i.username" :value="i.username"></Option>
+                            </Select>
+                        </FormItem>
                         <Button type="info" @click="testConnection()">测试连接</Button>
                         <Button type="success" @click="addConnection()" style="margin-left: 5%">确定</Button>
                         <Button type="warning" @click="resetForm()" style="margin-left: 5%">重置</Button>
@@ -54,16 +59,16 @@
                 </p>
                 <Input v-model="query.source" placeholder="请填写连接名" style="width: 15%" clearable></Input>
                 <Select v-model="query.idc" placeholder="请填写环境" style="width: 15%" class="margin-left-10">
-                <Option v-for="list in comList" :value="list" :key="list">{{ list }}</Option>
+                    <Option v-for="list in comList" :value="list" :key="list">{{ list }}</Option>
                 </Select>
                 <Button @click="queryData" type="primary" class="margin-left-10">查询</Button>
                 <Button @click="queryCancel" type="warning" class="margin-left-10">重置</Button>
                 <div class="edittable-con-1">
                     <Table :columns="columns" :data="table_data">
                         <template slot-scope="{ row }" slot="is_query">
-                            <Tag checkable color="primary" v-if="row.IsQuery === 0">写</Tag>
-                            <Tag checkable color="success" v-if="row.IsQuery === 1">读</Tag>
-                            <Tag checkable color="warning" v-if="row.IsQuery === 2">读写</Tag>
+                            <Tag checkable color="primary" v-if="row.is_query === 0">写</Tag>
+                            <Tag checkable color="success" v-if="row.is_query === 1">读</Tag>
+                            <Tag checkable color="warning" v-if="row.is_query === 2">读写</Tag>
                         </template>
                         <template slot-scope="{ row }" slot="action">
                             <Button type="info" size="small" @click="viewConnectionModal(row)"
@@ -90,22 +95,27 @@
             <h3 slot="header" style="color:#2D8CF0">数据库连接信息</h3>
             <Form :label-width="100" label-position="right">
                 <FormItem label="环境">
-                    <Input v-model="edit_base_info.IDC" readonly></Input>
+                    <Input v-model="edit_base_info.idc" readonly></Input>
                 </FormItem>
                 <FormItem label="连接名称:">
-                    <Input v-model="edit_base_info.Source" readonly></Input>
+                    <Input v-model="edit_base_info.source" readonly></Input>
                 </FormItem>
                 <FormItem label="数据库地址:">
-                    <Input v-model="edit_base_info.IP"></Input>
+                    <Input v-model="edit_base_info.ip"></Input>
                 </FormItem>
                 <FormItem label="端口:">
-                    <Input v-model="edit_base_info.Port"></Input>
+                    <Input v-model="edit_base_info.port"></Input>
                 </FormItem>
                 <FormItem label="用户名:">
-                    <Input v-model="edit_base_info.Username"></Input>
+                    <Input v-model="edit_base_info.username"></Input>
                 </FormItem>
                 <FormItem label="密码:">
-                    <Input v-model="edit_base_info.Password" type="password"></Input>
+                    <Input v-model="edit_base_info.password" type="password"></Input>
+                </FormItem>
+                <FormItem label="所属管理员:">
+                    <Select v-model="edit_base_info.admin" multiple>
+                        <Option v-for="i in admin_list" :key="i.username" :value="i.username">{{i.username}}</Option>
+                    </Select>
                 </FormItem>
             </Form>
         </Modal>
@@ -113,17 +123,17 @@
     </div>
 </template>
 <script lang="ts">
-    import axios from 'axios'
     import {Mixins, Component} from "vue-property-decorator";
-    import att_mixins from "../../mixins/att";
+    import att_mixins from "../../mixins/basic";
 
     interface edit_modal {
-        IDC: string,
-        Source: string,
-        IP: string,
-        Port: string,
-        Username: string,
-        Password: string
+        idc: string,
+        source: string,
+        ip: string,
+        port: string,
+        username: string,
+        password: string,
+        admin: string
     }
 
     const regExp_Name = (rule: any, value: any, callback: any) => {
@@ -149,20 +159,20 @@
         columns = [
             {
                 title: '连接名称',
-                key: 'Source'
+                key: 'source'
             },
             {
                 title: '查询数据源',
-                key: 'IsQuery',
+                key: 'is_query',
                 slot: 'is_query'
             },
             {
                 title: '数据库地址',
-                key: 'IP'
+                key: 'ip'
             },
             {
                 title: '环境',
-                key: 'IDC'
+                key: 'idc'
             },
             {
                 title: '操作',
@@ -174,7 +184,11 @@
         // 添加表单验证规则
         ruleInline = {
             add: [
-                {required: true, message: '请选择对应环境', trigger: 'change'}
+                {
+                    required: true,
+                    message: '请选择对应环境',
+                    trigger: 'change'
+                }
             ],
             name: [
                 {
@@ -188,21 +202,27 @@
                     trigger: 'blur'
                 }
             ],
-            ip: [{
-                required: true,
-                message: '请填写连接地址',
-                trigger: 'blur'
-            }],
-            username: [{
-                required: true,
-                message: '请填写用户名',
-                trigger: 'blur'
-            }],
-            port: [{
-                required: true,
-                message: '请填写端口',
-                trigger: 'blur'
-            }],
+            ip: [
+                {
+                    required: true,
+                    message: '请填写连接地址',
+                    trigger: 'blur'
+                }
+            ],
+            username: [
+                {
+                    required: true,
+                    message: '请填写用户名',
+                    trigger: 'blur'
+                }
+            ],
+            port: [
+                {
+                    required: true,
+                    message: '请填写端口',
+                    trigger: 'blur'
+                }
+            ],
             password: [
                 {
                     required: true,
@@ -213,26 +233,33 @@
                     validator: regExp_password,
                     trigger: 'blur'
                 }
-            ]
+            ],
+            admin: {
+                required: true,
+                message: '请选择所属管理员',
+                type: 'array',
+                min: 1,
+            }
         };
         comList = [];
         edit_base_info = {} as edit_modal;
+        admin_list = []
 
         resetForm() {
             this.formItem = this.$config.clearObj(this.formItem)
         }
 
         testConnection() {
-            axios.put(`${this.$config.url}/management_db/test`, {
+            this.$http.put(`${this.$config.url}/management_db/test`, {
                 'ip': this.formItem.ip,
                 'username': this.formItem.username,
                 'password': this.formItem.password,
                 'port': parseInt(this.formItem.port)
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
@@ -241,21 +268,22 @@
             let is_validate: any = this.$refs['formValidate'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    axios.post(`${this.$config.url}/management_db`, {
+                    this.$http.post(`${this.$config.url}/management_db`, {
                         'source': this.formItem.name,
                         'idc': this.formItem.add,
                         'ip': this.formItem.ip,
                         'username': this.formItem.username,
                         'password': this.formItem.password,
                         'port': parseInt(this.formItem.port),
-                        'is_query': this.formItem.isquery
+                        'is_query': this.formItem.is_query,
+                        'admin': this.formItem.admin
                     })
-                        .then(res => {
+                        .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
                             this.getPageInfo(this.current);
                             is_validate.resetFields()
                         })
-                        .catch(error => {
+                        .catch((error: any) => {
                             this.$config.err_notice(this, error)
                         });
                 }
@@ -264,44 +292,48 @@
 
         viewConnectionModal(row: edit_modal) {
             this.is_open = true;
-            this.edit_base_info = row
+            this.edit_base_info = Object.assign({}, row)
         }
 
-        delConnection(vl: { Source: string; }) {
+        delConnection(vl: { source: string; }) {
             let step = this.current;
             if (this.table_data.length === 1) {
                 step = step - 1
             }
-            axios.delete(`${this.$config.url}/management_db?source=${vl.Source}`)
-                .then(res => {
+            this.$http.delete(`${this.$config.url}/management_db?source=${vl.source}`)
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
                     this.getPageInfo(step)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         getPageInfo(vl = 1) {
-            axios.get(`${this.$config.url}/management_db?page=${vl}&con=${JSON.stringify(this.query)}`)
-                .then(res => {
+            this.$http.get(`${this.$config.url}/management_db?page=${vl}&con=${JSON.stringify(this.query)}`)
+                .then((res: { data: { data: never[]; page: string; custom: never[]; admin: never[]; }; }) => {
                     this.table_data = res.data.data;
                     this.page_number = parseInt(res.data.page);
                     this.comList = res.data.custom;
+                    this.admin_list = res.data.admin;
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         modifyBase() {
-            let x = JSON.parse(JSON.stringify(this.edit_base_info));
-            x.Port = parseInt(x.Port);
-            axios.put(`${this.$config.url}/management_db`, {
+            let x = Object.assign({} as any, this.edit_base_info)
+            x.port = parseInt(x.port);
+            this.$http.put(`${this.$config.url}/management_db`, {
                 'data': x
             })
-                .then(res => this.$config.notice(res.data))
-                .catch(err => this.$config.err_notice(this, err))
+                .then((res: { data: string; }) => {
+                    this.$config.notice(res.data)
+                    this.getPageInfo(this.current)
+                })
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         queryData() {

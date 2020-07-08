@@ -1,91 +1,59 @@
-import axios from 'axios'
-import expandRow from "../components/expandTable.vue";
-import audit_reject from "../views/general/audit_reject.vue"
-import audit_detail from "../views/general/audit_detail.vue"
-import audit_osc from '../views/general/audit_osc.vue'
-import {Component,  Mixins} from "vue-property-decorator";
-import att_mixins from "@/mixins/att";
+import {Component, Mixins} from "vue-property-decorator";
+import att_mixins from "@/mixins/basic";
+import render from "@/interface/render";
 
-@Component({components: {audit_reject, audit_detail, audit_osc}})
-export  default class audit_mixins extends Mixins(att_mixins) {
+@Component({components: {}})
+export default class audit_mixins extends Mixins(att_mixins) {
 
     columns = [
         {
             title: '工单编号:',
-            key: 'WorkId',
+            key: 'work_id',
             sortable: true,
             sortType: 'desc',
             width: 155
         },
         {
             title: '工单说明:',
-            key: 'Text',
+            key: 'text',
             tooltip: true
         },
         {
             title: '是否备份',
-            key: 'Backup',
-            width: 100
+            key: 'backup',
+            width: 100,
+            render: render.backup
         },
         {
             title: '提交时间:',
-            key: 'Date',
+            key: 'date',
             sortable: true
         },
         {
             title: '提交账号',
-            key: 'Username',
+            key: 'username',
             sortable: true
         },
         {
             title: '真实姓名',
-            key: 'RealName',
+            key: 'real_name',
             sortable: true
         },
         {
             title: '定时执行',
-            key: 'Delay',
+            key: 'delay',
             slot: 'delay'
         },
         {
             title: '执行人',
-            key: 'Executor',
+            key: 'executor',
             sortable: true
         },
         {
             title: '状态',
-            key: 'Status',
+            key: 'status',
             width: 150,
-            render: (h: any, params: { row: { Status: number } }) => {
-                const row = params.row;
-                let color = '';
-                let text = '';
-                if (row.Status === 2) {
-                    color = 'primary';
-                    text = '待审核'
-                } else if (row.Status === 0) {
-                    color = 'error';
-                    text = '驳回'
-                } else if (row.Status === 1) {
-                    color = 'success';
-                    text = '执行成功'
-                } else if (row.Status === 4) {
-                    color = 'error';
-                    text = '执行失败'
-                } else if (row.Status === 5) {
-                    color = 'default';
-                    text = '待执行'
-                } else {
-                    color = 'warning';
-                    text = '执行中'
-                }
-                return h('Tag', {
-                    props: {
-                        type: 'dot',
-                        color: color
-                    }
-                }, text)
-            },
+            render: render.tag,
             sortable: true
         },
         {
@@ -96,84 +64,36 @@ export  default class audit_mixins extends Mixins(att_mixins) {
             slot: 'action'
         }
     ];
-    sql_columns = [
-        {
-            type: 'expand',
-            width: 50,
-            render: (h: any, params: { row: {SQL:string} }) => {
-                return h(expandRow, {
-                    props: {
-                        row: params.row.SQL
-                    }
-                })
-            }
-        },
-        {
-            title: '当前检查的sql',
-            key: 'SQL',
-            render: (h: any, params: { row: { SQL: string } }) => {
-                let text = params.row.SQL.substring(0, 40) + '...';
-                return h('span', text)
-            }
-
-        },
-        {
-            title: '阶段',
-            key: 'Status',
-            width: '150'
-        },
-        {
-            title: '错误等级',
-            key: 'Level',
-            width: '100'
-        },
-        {
-            title: '错误信息',
-            key: 'Error',
-            tooltip: true
-        },
-        {
-            title: '影响行数',
-            key: 'AffectRows',
-            width: '120'
-        }
-    ];
-    tableData = [];
-    multi = false;
-    multi_list = [];
     auth = sessionStorage.getItem('auth');
     reboot = 0;
     valve = true;
     is_order = false;
     is_osc = false;
+    url = `${this.$config.url}/audit`
 
-    delayKill(vl: { WorkId: string }) {
-        axios.get(`${this.$config.url}/audit/kill/${vl.WorkId}`)
-            .then(res => {
+    delayKill(vl: { work_id: string }) {
+        this.$http.get(`${this.$config.url}/audit/kill/${vl.work_id}`)
+            .then((res: { data: string; }) => {
                 this.$config.notice(res.data);
-                this.refreshData()
+                this.current_page()
             })
-            .catch(err => this.$config.err_notice(this,err))
+            .catch((err: any) => this.$config.err_notice(this, err))
     }
 
-    timerOsc(vl: { WorkId: string }) {
+    timerOsc(vl: { work_id: string }) {
         this.is_osc = true;
-        this.$store.commit('fetch_order_osc_id', vl.WorkId);
+        this.$store.commit('fetch_order_osc_id', vl.work_id);
     }
 
-    oscClose() {
-        this.is_osc = false
-    }
-
-    openOrder(row: { WorkId: string }) {
-        axios.get(`${this.$config.url}/audit/sql?k=${row.WorkId}`)
+    openOrder(row: { work_id: string }) {
+        this.$http.get(`${this.$config.url}/audit/sql?k=${row.work_id}`)
             .then((res: { data: { sqls: Array<Object>; }; }) => {
-                this.$store.commit("fetch_order_item", res.data);
+                this.$store.commit("init_args/fetch_order_item", res.data);
                 this.$store.commit('fetch_order_sql', res.data.sqls);
                 this.is_order = true;
             })
             .catch((err: any) => {
-                this.$config.err_notice(this,err)
+                this.$config.err_notice(this, err)
             })
     }
 
@@ -181,33 +101,33 @@ export  default class audit_mixins extends Mixins(att_mixins) {
         if (multi_name === '') {
             this.$Message.error('请选择执行人!')
         } else {
-            axios.post(`${this.$config.url}/audit/refer/perform`, {
+            this.$http.post(`${this.$config.url}/audit/refer/perform`, {
                 'perform': multi_name,
                 'WorkId': work_id
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
                     this.is_order = false;
-                    this.refreshData(this.current)
+                    this.current_page(this.current)
                 })
-                .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
+                .catch((error: any) => {
+                    this.$config.err_notice(this, error)
+                })
         }
     }
 
     performTo(work_id: string) {
         this.is_order = false;
-        axios.post(`${this.$config.url}/audit/execute`, {
+        this.$http.post(`${this.$config.url}/audit/execute`, {
             'workid': work_id
         })
-            .then(res => {
+            .then((res: { data: string; }) => {
                 this.$config.notice(res.data);
-                this.refreshData(this.current)
+                this.current_page(this.current)
             })
-            .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
+            .catch((error: any) => {
+                this.$config.err_notice(this, error)
+            })
     }
 
     rejectTo() {
@@ -215,76 +135,30 @@ export  default class audit_mixins extends Mixins(att_mixins) {
         this.is_order = !this.is_order;
     }
 
-    rejectText() {
-        this.is_open = !this.is_open;
-        this.refreshData(this.current)
-    }
-
-    cancel_reject() {
-        this.is_open = false;
-    }
-
-    cancel_detail() {
-        this.is_order = false;
-    }
-
-    orderDetail(row: { WorkId: string, Status: number }) {
+    orderDetail(row: any) {
+        this.$store.commit("init_args/fetch_order_item", row)
         this.$router.push({
-            name: 'order_detail',
-            query: {workid: row.WorkId, status: row.Status.toString()}
+            name: 'profile',
         })
     }
 
-    refreshData(vl = 1) {
-        axios.put(`${this.$config.url}/audit`, {
-            page: vl,
-            find: this.find
-        })
-            .then(res => {
-                this.multi = res.data.multi;
-                if (!this.multi) {
-                    for (let i = 0; i < this.columns.length; i++) {
-                        if (this.columns[i].key === 'Executor') {
-                            this.columns.splice(i, 1)
-                        }
-                    }
-                }
-                this.tableData = res.data.data;
-                this.tableData.forEach((item: { Backup: number | string }) => {
-                    (item.Backup === 1) ? item.Backup = '是' : item.Backup = '否'
-                });
-                this.page_number = res.data.page;
-                this.multi_list = res.data.multi_list;
-            })
-            .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
+    current_page(vl = 1) {
+        this.fetch_page(vl,this.url)
     }
 
     refreshForm(vl: boolean) {
         if (vl) {
             let vm = this;
             this.reboot = setInterval(function () {
-                vm.refreshData(vm.current);
+                vm.current_page(vm.current);
             }, 5000)
         } else {
             clearInterval(this.reboot)
         }
     }
 
-    queryData() {
-        this.find.valve = true;
-        this.refreshData()
-    }
-
-    queryCancel() {
-        this.find = this.$config.clearPicker(this.find);
-        this.current = 1;
-        this.refreshData()
-    }
-
     mounted() {
-        this.refreshData();
+        this.current_page();
         this.refreshForm(this.valve)
     }
 
@@ -292,7 +166,6 @@ export  default class audit_mixins extends Mixins(att_mixins) {
         clearInterval(this.reboot)
     }
 }
-
 
 
 //

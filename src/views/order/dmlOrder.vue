@@ -16,7 +16,7 @@
                         <div id="showImage" class="margin-bottom-10">
                             <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80">
                                 <FormItem label="环境:" prop="idc">
-                                    <Select v-model="formItem.idc" @on-change="fetchSource">
+                                    <Select v-model="formItem.idc" @on-change="fetchDiffSource">
                                         <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
                                     </Select>
                                 </FormItem>
@@ -74,7 +74,7 @@
                                         </Button>
                                     </Col>
                                     <Col span="5" class="margin-left-10">
-                                        <Button type="primary" icon="md-search" @click.native="testSql()"
+                                        <Button type="primary" icon="md-search" @click.native="check_sql(true)"
                                                 :loading="loading">检测
                                         </Button>
                                     </Col>
@@ -130,45 +130,12 @@
     import {Component, Mixins} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
     import order_mixins from "@/mixins/order_mixin";
-    import sqlFormatter from "sql-formatter";
 
     @Component({components: {editor}})
     export default class dml_order extends Mixins(fetch_mixins, order_mixins) {
 
-        beauty() {
-            this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
-        }
-
-        testSql() {
-            let is_validate: any = this.$refs['formItem'];
-            is_validate.validate((valid: boolean) => {
-                if (valid) {
-                    this.loading = true;
-                    axios.put(`${this.$config.url}/fetch/test`, {
-                        'source': this.formItem.source,
-                        'database': this.formItem.database,
-                        'sql': this.formItem.textarea,
-                        'isDMl': true
-                    })
-                        .then(res => {
-                            this.testResults = res.data;
-                            let gen = 0;
-                            this.testResults.forEach((vl: { Level: number; }) => {
-                                if (vl.Level !== 0) {
-                                    gen += 1
-                                }
-                            });
-                            this.validate_gen = gen !== 0;
-                            this.loading = false
-                        })
-                        .catch(err => {
-                            this.loading = false;
-                            this.$config.err_notice(this, err)
-                        })
-                } else {
-                    this.$Message.error('请填写具体地址或sql语句后再测试!')
-                }
-            })
+        fetchDiffSource(idc: string) {
+            this.fetchSource(idc, "dml")
         }
 
         commitOrder() {

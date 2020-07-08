@@ -24,13 +24,13 @@ const main_child = [
         path: 'query_review',
         title: '查询审计详情',
         name: 'query_review',
-        component: () => import('./components/orderExpend.vue'),
+        component: () => import('./components/profile/query_profile.vue'),
     },
     {
-        path: 'order_detail',
+        path: 'profile',
         title: '工单详情',
-        name: 'order_detail',
-        component: () => import('./components/myorderList.vue'),
+        name: 'profile',
+        component: () => import('./components/profile/profile.vue'),
     },
     {
         path: 'my_order',
@@ -81,7 +81,7 @@ export const appRouter = [
         name: 'order',
         title: '工单提交',
         component: Index,
-        access: 3,
+        access: 0,
         children: [
             {
                 path: 'ddl',
@@ -111,7 +111,7 @@ export const appRouter = [
         name: 'view',
         title: '查询',
         component: Index,
-        access: 3,
+        access: 0,
         children: [
             {
                 path: 'query',
@@ -128,20 +128,20 @@ export const appRouter = [
         name: 'audit',
         title: '审核',
         component: Index,
-        access: 0,
+        access: 1,
         children: [{
             path: 'audit-order',
             name: 'audit-audit',
             title: '工单',
             icon: 'md-create',
-            component: () => import('./views/audit/sqlAudit.vue')
+            component: () => import('./views/audit/order/audit.vue')
         },
             {
                 path: 'query-audit',
                 name: 'query-audit',
                 title: '查询',
                 icon: 'logo-rss',
-                component: () => import('./views/audit/queryAudit.vue')
+                component: () => import('./views/audit/query/audit.vue')
             }
         ]
     },
@@ -151,21 +151,21 @@ export const appRouter = [
         name: 'record',
         title: '记录',
         component: Index,
-        access: 0,
+        access: 1,
         children: [
             {
                 path: 'audit-record',
                 name: 'audit-record',
                 title: '工单审计',
                 icon: 'md-list',
-                component: () => import('./views/assistantManger/record.vue')
+                component: () => import('./views/records/order.vue')
             },
             {
                 path: 'query-review',
                 name: 'query-review',
                 title: '查询审计',
                 icon: 'md-pulse',
-                component: () => import('./views/assistantManger/queryRecord.vue')
+                component: () => import('./views/records/query.vue')
             }
 
         ]
@@ -175,7 +175,7 @@ export const appRouter = [
         icon: 'logo-buffer',
         name: 'management',
         title: '管理',
-        access: 0,
+        access: 2,
         component: Index,
         children: [
             {
@@ -183,21 +183,14 @@ export const appRouter = [
                 name: 'management-user',
                 title: '用户',
                 icon: 'md-people',
-                component: () => import('./views/management/userInfo.vue')
+                component: () => import('./views/management/user.vue')
             },
             {
                 path: 'management-database',
                 name: 'management-database',
                 title: '数据库',
                 icon: 'md-medal',
-                component: () => import('./views/management/databaseManager.vue')
-            },
-            {
-                path: 'authGroup',
-                name: 'authGroup',
-                title: '用户权限',
-                icon: 'ios-switch',
-                component: () => import('./views/management/authGroup.vue')
+                component: () => import('./views/management/db.vue')
             },
             {
                 path: 'roleGroup',

@@ -70,7 +70,6 @@
 
     @Component({components: {}})
     export default class work_flow extends Mixins(fetch_mixins) {
-        $config: any;
         export_list = false;
         stepData = {
             title: 'Yearning SQL查询系统',

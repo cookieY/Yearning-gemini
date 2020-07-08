@@ -18,11 +18,6 @@
         </div>
         <div class="header-avator-con">
           <a href="https://guide.yearning.io/" target="_Blank">{{$t('banner.guide')}}</a>
-<!--          <div @click="handleFullScreen" v-if="showFullScreenBtn" class="full-screen-btn-con">-->
-<!--            <Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">-->
-<!--              <Icon :type="isFullScreen ? 'md-contract' : 'md-expand'" :size="23"></Icon>-->
-<!--            </Tooltip>-->
-<!--          </div>-->
           <div @click="lockScreen" class="lock-screen-btn-con">
             <Tooltip :content="$t('dash.lock')" placement="bottom">
               <Icon type="md-lock" :size="20"></Icon>
@@ -101,9 +96,7 @@
     @Component({components: {sidebarMenu, breadcrumbNav}})
     export default class main_farm extends Vue {
         $config: any;
-        currentPageName = '';
         userName = sessionStorage.getItem('user');
-        showFullScreenBtn = window.navigator.userAgent.indexOf('MSIE') < 0;
         isFullScreen = false;
         lockScreenSize = 0;
         colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];

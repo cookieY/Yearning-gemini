@@ -4,29 +4,29 @@
             <Form ref="userForm" label-position="right">
                 <FormItem :label="$t('general.name')" prop="name">
                     <div>
-                        <span>{{ userForm.Username }}</span>
+                        <span>{{ userForm.username }}</span>
                     </div>
                 </FormItem>
                 <FormItem :label="$t('general.real')" prop="name">
                     <div>
-                        <span>{{ userForm.RealName }}</span>
+                        <span>{{ userForm.real_name }}</span>
                     </div>
                 </FormItem>
                 <FormItem :label="$t('general.department')">
-                    <span>{{ userForm.Department }}</span>
+                    <span>{{ userForm.department }}</span>
                 </FormItem>
                 <FormItem :label="$t('general.role')">
-                    <span>{{ userForm.Rule }}</span>
+                    <span>{{ userForm.rule }}</span>
                 </FormItem>
                 <FormItem :label="$t('general.mail')">
-                    <span>{{ userForm.Email }}</span>
+                    <span>{{ userForm.email }}</span>
                 </FormItem>
                 <Button type="warning" size="small" @click="edit_password=true">{{$t('general.change_password')}}
                 </Button>
                 <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">
                     {{$t('dash.edit_permissions')}}
                 </Button>
-                <Button type="success" size="small" @click="openPerChange" class="margin-left-10">
+                <Button type="success" size="small" @click="is_open = true" class="margin-left-10">
                     {{$t('general.show_permissions')}}
                 </Button>
             </Form>
@@ -36,82 +36,73 @@
             <h3 slot="header" style="color:#2D8CF0">{{$t('dash.edit_permissions')}}</h3>
             <Form :label-width="100" label-position="right">
                 <FormItem :label="$t('general.mail')">
-                    <Input v-model="editEmailForm.Email"></Input>
+                    <Input v-model="editEmailForm.email"></Input>
                 </FormItem>
                 <FormItem :label="$t('general.real')">
-                    <Input v-model="editEmailForm.RealName"></Input>
+                    <Input v-model="editEmailForm.real_name"></Input>
                 </FormItem>
             </Form>
         </Modal>
 
-        <edit_rule :is_open="is_open" :username="userForm.Username" :group_list="group_list"
-                   :group_props="group_props" @cancel="cancel"></edit_rule>
-        <edit_password :is_open="edit_password" :username="userForm.Username" @cancel="cancel_password"></edit_password>
+        <edit_rule v-model="is_open"></edit_rule>
+        <edit_password v-model="edit_password" :username="userForm.username"></edit_password>
     </div>
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
-    import edit_password from "@/components/edit_password.vue";
-    import edit_rule from "@/components/edit_rule.vue";
-    import att_mixins from "@/mixins/att";
+    import edit_password from "@/components/modal/edit_password.vue";
+    import edit_rule from "@/components/modal/edit_rule.vue";
+    import att_mixins from "@/mixins/basic";
     import {Component, Mixins} from "vue-property-decorator";
 
     @Component({components: {edit_password, edit_rule}})
-    export default class myself extends Mixins(att_mixins) {
+    export default class personal extends Mixins(att_mixins) {
         editEmailModal = false;
         editEmailForm = {
-            Email: '',
-            RealName: ''
+            email: '',
+            real_name: ''
         };
         userForm = {
-            Username: '',
-            ID: '',
-            Password: '',
-            Rule: '',
-            Department: '',
-            RealName: '',
-            Email: ''
+            username: '',
+            id: '',
+            password: '',
+            rule: '',
+            department: '',
+            real_name: '',
+            email: ''
         };
-
-        $config: any;
 
         openMailChange() {
             this.editEmailModal = true;
-            this.editEmailForm = this.userForm
-        }
-
-        openPerChange() {
-            this.is_open = true
+            this.editEmailForm = JSON.parse(JSON.stringify(this.userForm))
         }
 
         saveEmail() {
-            axios.put(`${this.$config.url}/user/edit/mail`, {
-                'mail': this.editEmailForm.Email,
-                'username': this.userForm.Username,
-                'real': this.editEmailForm.RealName
+            this.$http.put(`${this.$config.url}/user/edit/mail`, {
+                'mail': this.editEmailForm.email,
+                'username': this.userForm.username,
+                'real': this.editEmailForm.real_name
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    sessionStorage.setItem('real_name', this.editEmailForm.RealName)
+                    sessionStorage.setItem('real_name', this.editEmailForm.real_name)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 });
         }
 
         init() {
-            axios.put(`${this.$config.url}/dash/userinfo`)
-                .then(res => {
+            this.$http.put(`${this.$config.url}/dash/userinfo`)
+                .then((res: { data: { u: { username: string; id: string; password: string; rule: string; department: string; real_name: string; email: string; }; g: any; p: any; s: { Stmt: number; }; }; }) => {
                     this.userForm = res.data.u;
-                    this.group_props = res.data.p;
-                    this.group_list = res.data.g;
+                    this.$store.commit("verify_args/fetch_user_permissions", {
+                        username: res.data.u.username,
+                        list: res.data.g,
+                        group: res.data.p
+                    })
                     this.$store.state.stmt = res.data.s.Stmt === 0;
                 })
-        }
-
-        cancel() {
-            this.is_open = false;
         }
 
         mounted() {
