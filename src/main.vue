@@ -41,12 +41,10 @@
     </div>
     <div class="single-page-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
       <div class="single-page">
-        <keep-alive>
-          <router-view v-if="$route.meta.keepAlive">
+        <transition name="fade" mode="out-in" appear>
+          <router-view >
           </router-view>
-        </keep-alive>
-        <router-view v-if="!$route.meta.keepAlive">
-        </router-view>
+        </transition>
       </div>
     </div>
     <Modal

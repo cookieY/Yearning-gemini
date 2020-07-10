@@ -27,7 +27,7 @@
           <i-col span="12">
             <Form ref="formItem" :model="formItem" :rules="stepRules" :label-width="150">
               <FormItem label="环境:" prop="idc">
-                <Select v-model="formItem.idc" @on-change="fetchSource">
+                <Select v-model="formItem.idc" @on-change="fetchDiffSource">
                   <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
                 </Select>
               </FormItem>
@@ -110,29 +110,11 @@
             }]
         };
         item = {};
-        formItem:any = {
-            text: '',
-            idc: '',
-            export: 0,
-            assigned: '',
-            source:''
-        };
 
-        fetchSource(idc: string) {
-            if (idc) {
-                axios.get(`${this.$config.url}/fetch/source/${idc}/query`)
-                    .then(res => {
-                        if (res.data.x === 'query') {
-                            this.fetchData.assigned = res.data.assigned
-                        } else {
-                            this.$config.notice('非法劫持参数！')
-                        }
-                    })
-                    .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
-            }
-        }
+      fetchDiffSource(idc: string) {
+        this.fetchSource(idc,'query')
+      }
+
 
         handleSubmit() {
             let is_validate:any = this.$refs['formItem'];
@@ -178,6 +160,10 @@
         mounted() {
             this.fetchQueryStatus();
         }
+
+      destroyed() {
+        this.$store.commit('clear_order')
+      }
 
     }
 </script>

@@ -6,37 +6,101 @@ export default class att_mixins extends Vue {
     public $config: any;
     public $http: any;
 
-    formItem = {
-        source: '',
-        database: '',
-        textarea: '',
-        backup: 1,
-        text: '',
-        idc: '',
-        table: '',
-        assigned: '',
-        delay: null,
-        tp: 0,
-        row: 1,
-        name: '',
-        is_query: 2,
-        ip: '',
-        add: '',
-        username: '',
-        password: '',
-        port: '',
-        id: 0,
-        admin: []
-    };
+    get is_dml () {
+        return this.$store.state.is_dml
+    }
 
-    wordList: High_light[] = [];
+    get formItem() {
+        return this.$store.state.order
+    }
+
+    get wordList () {
+        return this.$store.state.wordList
+    }
 
     // 通用
+
+    ruleValidate = {
+        idc: [
+            {
+                required: true,
+                message: '环境地址不得为空',
+                trigger: 'change'
+            }
+        ],
+        source: [
+            {
+                required: true,
+                message: '连接名不得为空',
+                trigger: 'change'
+            }
+        ],
+        data_base: [
+            {
+                required: true,
+                message: '数据库名不得为空',
+                trigger: 'change'
+            }
+        ],
+        table: [
+            {
+                required: true,
+                message: '数据表名不得为空',
+                trigger: 'change'
+            }
+        ],
+        tp: [
+            {
+                required: true,
+                message: '类型不得为空',
+                trigger: 'change'
+            }
+        ],
+        name: [
+            {
+                required: true,
+                message: '名称不得为空',
+                trigger: 'blur'
+            }
+        ],
+        text: [
+            {
+                required: true,
+                message: '提交说明不得为空',
+                trigger: 'blur'
+            }
+        ],
+        assigned: [
+            {
+                required: true,
+                message: '审核人不得为空',
+                trigger: 'change'
+            }
+        ],
+        backup: {required: true, type: 'number', message: '备份不得为空', trigger: 'change'}
+    };
+
     find = {
         picker: [],
         valve: false,
         text: ''
     };
+
+    general = {
+        ip: '',
+        username: '',
+        password: '',
+        port: '',
+        admin: '',
+        is_query: '',
+        tp:'',
+        idc: '',
+        source: '',
+        name: '',
+        data_base: '',
+        table: '',
+        row: 0
+    }
 
     is_open = false;
 
@@ -102,6 +166,12 @@ export default class att_mixins extends Vue {
                 this.$config.err_notice(this, error)
             })
     }
+
+    invalidDate = {
+        disabledDate(date: number) {
+            return date && date.valueOf() < Date.now() - 86400000
+        }
+    };
 
     cancel() {
         this.$emit("input", false)

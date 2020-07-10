@@ -93,7 +93,7 @@
                 });
                 this.sqls = sql;
             }
-            this.$http.post(`${this.$config.url}/fetch/rollorder`, {
+            this.$http.post(`${this.$config.url}/fetch/roll_order`, {
                 'data': this.order,
                 'sqls': this.sqls
             })

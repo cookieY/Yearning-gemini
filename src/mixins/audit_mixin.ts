@@ -166,15 +166,3 @@ export default class audit_mixins extends Mixins(att_mixins) {
         clearInterval(this.reboot)
     }
 }
-
-
-//
-// }
-//     data() {
-//         return {
-
-//         }
-//     },
-//     methods: {
-
-// };

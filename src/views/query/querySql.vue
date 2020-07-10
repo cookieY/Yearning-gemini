@@ -50,11 +50,11 @@
             <Form :rules="ruleValidate" ref="formItem" :model="formItem">
 
                 <FormItem label="连接名:">
-                   <span>{{tree_data[0].title}}</span>
+                    <span>{{formItem.source}}</span>
                 </FormItem>
 
-                <FormItem label="库名:" prop="database">
-                    <Select v-model="formItem.database" placeholder="请选择" @on-change="fetchTable">
+                <FormItem label="库名:" prop="data_base">
+                    <Select v-model="formItem.data_base" placeholder="请选择" @on-change="fetchTable()">
                         <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}</Option>
                     </Select>
                 </FormItem>
@@ -82,7 +82,7 @@
                                 :editable="false"></DatePicker>
                 </FormItem>
                 <FormItem>
-                    <editor v-model="formItem.textarea" @init="editorInit" @setCompletions="setCompletions"></editor>
+                    <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
                 </FormItem>
             </Form>
 
@@ -94,10 +94,10 @@
                             @click.native="clearForm()"
                     >清除
                     </Button>
-                    <Button type="primary" icon="md-search" @click.native="testSql()" :loading="loading"
+                    <Button type="primary" icon="md-search" @click.native="testSql()"
                             class="margin-left-10">检测
                     </Button>
-                    <Button type="warning" @click="beauty" :loading="loading" class="margin-left-10">美化</Button>
+                    <Button type="warning" @click="beauty" class="margin-left-10">美化</Button>
                     <Button
                             type="success"
                             icon="ios-redo"
@@ -116,13 +116,11 @@
     </div>
 </template>
 <script lang="ts">
-    import axios from 'axios'
     import tabQuery from '@/components/tabQuery.vue'
     import editor from "@/components/editor.vue";
     import {Component, Mixins, Prop} from "vue-property-decorator";
     import fetch_mixin from "@/mixins/fetch_mixin";
     import order_mixin from "@/mixins/order_mixin";
-    import sqlFormatter from "sql-formatter";
 
     @Component({components: {editor, tabQuery}})
     export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
@@ -130,12 +128,14 @@
         currentTab = '查询1';
         tableInfoName = '';
         testRes = [] as any;
-        loading = false;
         drawer = {
             open: false
         };
-        tree_data = [] as any;
-        validate_gen = true;
+        tree_data = [
+            {
+                title: ''
+            }
+        ] as any;
         put_info = {
             base: '',
             tablename: ''
@@ -162,10 +162,6 @@
                     .slider2 = 19
             }
             this.$store.commit('closeNav')
-        }
-
-        beauty() {
-            this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
         }
 
         cur(vl: string) {
@@ -195,41 +191,37 @@
             }
         }
 
-        editorInit() {
-            require('brace/mode/mysql');
-            require('brace/theme/xcode')
-        }
-
         handleTabsAdd() {
             this.tabs++
         }
 
         testSql() {
+            let spin: any = this.$Spin
+            spin.show()
             let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.loading = true;
-                    axios.put(`${this.$config.url}/fetch/test`, {
-                        'database': this.formItem.database,
-                        'sql': this.formItem.textarea,
-                        'isDMl': true,
+                    this.$http.put(`${this.$config.url}/fetch/test`, {
+                        'data_base': this.formItem.data_base,
+                        'sql': this.sql,
+                        'is_dml': true,
                         'source': this.tree_data[0].title
                     })
-                        .then(res => {
+                        .then((res: { data: any; }) => {
                             this.testRes = res.data;
                             let gen = 0;
-                            this.testRes.forEach((vl: { Level: number; }) => {
-                                if (vl.Level !== 0) {
+                            this.testRes.forEach((vl: { level: number; }) => {
+                                if (vl.level !== 0) {
                                     gen += 1
                                 }
                             });
                             this.validate_gen = gen !== 0;
-                            this.loading = false
                         })
-                        .catch(err => {
-                            this.loading = false;
+                        .catch((err: any) => {
                             this.$config.err_notice(this, err)
                         })
+                    spin.hide()
                 } else {
                     this.$Message.error('请填写具体地址或sql语句后再测试!')
                 }
@@ -240,19 +232,19 @@
             let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    axios.post(`${this.$config.url}/sql/refer`, {
+                    this.$http.post(`${this.$config.url}/sql/refer`, {
                         'ddl': this.formItem,
-                        'sql': this.formItem.textarea,
+                        'sql': this.sql,
                         'ty': 1
                     })
-                        .then(res => {
+                        .then((res: { data: any; }) => {
                             this.validate_gen = true;
                             this.$Notice.success({
                                 title: '成功',
                                 desc: res.data
                             })
                         })
-                        .catch(error => {
+                        .catch((error: any) => {
                             this.validate_gen = true;
                             this.$config.err_notice(this, error)
                         })
@@ -261,7 +253,7 @@
         }
 
         clearForm() {
-            this.formItem = this.$config.clearObj(this.formItem)
+            this.$store.commit('clear_order')
         }
 
         openDrawer() {
@@ -273,22 +265,9 @@
             let spin: any = this.$Spin;
             this.put_info.base = vl.title;
             if (vl.expand === true) {
-                spin.show({
-                    render: (h: any) => {
-                        return h('div', [
-                            h('Icon', {
-                                'class': 'demo-spin-icon-load',
-                                props: {
-                                    type: 'ios-loading',
-                                    size: 18
-                                }
-                            }),
-                            h('div', 'Loading')
-                        ])
-                    }
-                });
-                axios.get(`${this.$config.url}/query/fetchtable/${vl.title}/${this.source}`)
-                    .then(res => {
+                spin.show();
+                this.$http.get(`${this.$config.url}/query/fetch_table/${vl.title}/${this.source}`)
+                    .then((res: { data: any }) => {
                         if (res.data === 0) {
                             this.$config.notice("已到查询时限上限,请重新申请查询！");
                             this.$router.push({
@@ -297,7 +276,7 @@
                             spin.hide();
                             return
                         }
-                        this.wordList = this.$config.concat(this.wordList, res.data.highlight);
+                        this.$store.commit('changed_wordList', this.wordList.concat(res.data.highlight))
                         for (let i = 0; i < this.tree_data[0].children.length; i++) {
                             if (this.tree_data[0].children[i].title === vl.title) {
                                 this.tree_data[0].children[i].children = res.data.table
@@ -310,39 +289,35 @@
         }
 
         deferReply() {
-            axios.delete(`${this.$config.url}/query/undo`)
-                .then(res => this.$config.notice(res.data))
-                .catch(err => this.$config.err_notice(this, err));
+            this.$http.delete(`${this.$config.url}/query/undo`)
+                .then((res: { data: string; }) => this.$config.notice(res.data))
+                .catch((err: any) => this.$config.err_notice(this, err));
             this.$router.push({
                 name: 'query'
             })
+            this.$store.commit('clear_order')
         }
 
-        setCompletions(editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: any) => void) {
-            callback(null, this.wordList.map(function (word: { vl: any; meta: any; }) {
-                return {
-                    caption: word.vl,
-                    value: word.vl,
-                    meta: word.meta
-                }
-            }))
-        }
 
         mounted() {
-            axios.put(`${this.$config.url}/query/fetchbase`, {
+
+            this.$store.commit('changed_is_dml', false)
+
+            this.$http.put(`${this.$config.url}/query/fetch_base`, {
                 'source': this.source
             })
-                .then(res => {
+                .then((res: { data: { [x: string]: number; sign: any; info: any; highlight: any; }; }) => {
                     this.fetchData.assigned = res.data.sign;
                     this.tree_data = res.data.info;
+                    this.formItem.source = this.tree_data[0].title
                     let tWord = this.$config.highlight.split('|');
                     for (let i of tWord) {
                         this.wordList.push({'vl': i, 'meta': '关键字'})
                     }
-                    this.wordList = this.wordList.concat(res.data.highlight);
+                    this.$store.commit('changed_wordList', this.wordList.concat(res.data.highlight))
                     res.data['status'] === 1 ? this.export_data = true : this.export_data = false
                 })
-                .catch(err => this.$config.err_notice(this, err))
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
     }
 </script>

@@ -93,7 +93,7 @@
         }
 
         init() {
-            this.$http.put(`${this.$config.url}/dash/userinfo`)
+            this.$http.put(`${this.$config.url}/dash/profile`)
                 .then((res: { data: { u: { username: string; id: string; password: string; rule: string; department: string; real_name: string; email: string; }; g: any; p: any; s: { Stmt: number; }; }; }) => {
                     this.userForm = res.data.u;
                     this.$store.commit("verify_args/fetch_user_permissions", {

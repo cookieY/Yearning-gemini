@@ -25,7 +25,7 @@ const module_init_args = {
             execute_time: '',
             backup: 0,
             assigned: ''
-        }
+        },
     },
     mutations: {
         fetch_order_item(state: { order_item: order; }, vm: order) {
@@ -101,7 +101,27 @@ const module_user = {
 
 const store = new Vuex.Store({
     state: {
-        order: {},
+        steps: 0,
+        is_dml: false,
+        order: {
+            idc: '',
+            source: '',
+            data_base: '',
+            table: '',
+            text: '',
+            delay: null,
+            assigned: '',
+            backup: 1,
+            export: 0
+        },
+        wordList: [],
+
+        always: {
+            one: true,
+            two: false,
+            three: false
+        },
+
         hideMenuText: false,
         is_open: false,
         stmt: false,
@@ -135,14 +155,39 @@ const store = new Vuex.Store({
         user_args: module_user
     },
     mutations: {
+        clear_order(state) {
+            state.order = {
+                idc: '',
+                source: '',
+                data_base: '',
+                table: '',
+                text: '',
+                delay: null,
+                assigned: '',
+                backup: 1,
+                export: 0
+            }
+        },
+        clear_always(state) {
+            state.always = {one: true, two: false, three: false}
+        },
+        changed_wordList(state, vm) {
+            state.wordList = vm
+        },
+        changed_always(state, vm) {
+            state.always = vm
+        },
+        changed_step(state, vm) {
+            state.steps = vm
+        },
+        changed_is_dml(state, vm: boolean) {
+            state.is_dml = vm
+        },
         fetch_order_sql(state, vm) {
             return state.order_sql = vm
         },
         fetch_order_osc_id(state, vm) {
             return state.osc_id = vm
-        },
-        closeNav(state) {
-            return state.hideMenuText = !state.hideMenuText
         },
         snippetTag(state, vm) {
             state.snippet.push({'title': vm.title, 'text': vm.text})
@@ -205,6 +250,7 @@ const store = new Vuex.Store({
     plugins: [
         createVuexAlong({
             name: "yearning",
+            justSession: true,
             session: {
                 list: ["init_args.order_item"],
             }

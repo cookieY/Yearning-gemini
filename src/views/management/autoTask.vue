@@ -54,37 +54,37 @@
         </Row>
 
         <Modal v-model="showing" :title="diffArgs.title" @on-ok="referAutoTask">
-            <Form :model="formItem" ref="formItem" :rules="ruleValidate">
+            <Form :model="general" ref="general" :rules="ruleValidate">
                 <FormItem label="Task名称" prop="name">
-                    <Input v-model="formItem.name" :disabled="disable"></Input>
+                    <Input v-model="general.name" :disabled="disable"></Input>
                 </FormItem>
                 <FormItem label="类型" required>
-                    <Select v-model="formItem.tp">
+                    <Select v-model="general.tp">
                         <Option v-for="i in fetchList.tp" :key="i.v" :value="i.v">{{i.title}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="环境:" prop="idc">
-                    <Select v-model="formItem.idc" @on-change="fetchDiffSource">
+                    <Select v-model="general.idc" @on-change="fetchDiffSource">
                         <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="连接名" prop="source">
-                    <Select v-model="formItem.source" @on-change="fetchBase" filterable>
+                    <Select v-model="general.source" @on-change="fetchBase" filterable>
                         <Option v-for="i in fetchData.source" :key="i" :value="i">{{i}}</Option>
                     </Select>
                 </FormItem>
-                <FormItem label="库" prop="database">
-                    <Select v-model="formItem.database" @on-change="fetchTable" filterable>
+                <FormItem label="库" prop="data_base">
+                    <Select v-model="general.data_base" @on-change="fetchTable" filterable>
                         <Option v-for="i in fetchData.base" :key="i" :value="i">{{i}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="表" prop="table">
-                    <Select v-model="formItem.table" filterable>
+                    <Select v-model="general.table" filterable>
                         <Option v-for="i in fetchData.table" :key="i" :value="i">{{i}}</Option>
                     </Select>
                 </FormItem>
                 <FormItem label="最大影响行数" prop="row">
-                    <InputNumber :min="1" v-model="formItem.row"></InputNumber>
+                    <InputNumber :min="1" v-model="general.row"></InputNumber>
                 </FormItem>
             </Form>
         </Modal>
@@ -92,7 +92,6 @@
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
     import {Mixins, Component} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
     import order_mixins from "@/mixins/order_mixin";
@@ -175,11 +174,11 @@
         }
 
         referAutoTask() {
-            let is_validate: any = this.$refs['formItem'];
+            let is_validate: any = this.$refs['general'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.$http.post(`${this.$config.url}/${this.diffArgs.url}`, {
-                        'Tp': this.formItem
+                        'Tp': this.general
                     })
                         .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
@@ -208,7 +207,7 @@
 
         openEditModal(vl: { id: string; affect_rows: number; name: string; tp: number; }) {
             this.showing = true;
-            this.formItem = {
+            this.general = {
                 id: vl.id,
                 row: vl.affect_rows,
                 name: vl.name,
@@ -222,16 +221,16 @@
         }
 
         delAutoTask(vl: { id: number }) {
-            let step: any = this.$refs['formItem'];
+            let step: any = this.$refs['general'];
             if (this.task_data.length === 1) {
                 step = step - 1
             }
-            axios.delete(`${this.$config.url}/auto/${vl.id}`)
-                .then(res => {
+            this.$http.delete(`${this.$config.url}/auto/${vl.id}`)
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
                     this.fetchAutoTaskList(step)
                 })
-                .catch(err => this.$config.err_notice(this, err))
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         queryData() {
@@ -257,9 +256,24 @@
                 .catch((err: any) => this.$config.err_notice(this, err))
         }
 
+        fetchTable() {
+            if (this.general.data_base) {
+                this.$http.put(`${this.$config.url}/fetch/table`, {
+                    'source': this.general.source,
+                    'base': this.general.data_base
+                })
+                    .then((res: { data: { table: string[]; highlight: {} }; }) => {
+                        this.fetchData.table = res.data.table;
+                    }).catch((error: any) => {
+                    this.$config.err_notice(this, error)
+                })
+            }
+        }
+
         mounted() {
             this.fetchAutoTaskList();
             this.fetchIDC()
+            this.$store.commit('changed_is_dml', false)
         }
     }
 </script>

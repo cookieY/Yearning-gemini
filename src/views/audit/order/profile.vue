@@ -130,10 +130,12 @@
 
         agreed() {
             this.$emit("agreed", this.multi_name, this.order.work_id)
+            this.summit = !this.summit
         }
 
         perform() {
             this.$emit("perform", this.order.work_id)
+            this.summit = !this.summit
         }
 
         cancel() {
@@ -159,10 +161,10 @@
             let isDML = this.order.type === 1;
             this.$http.put(`${this.$config.url}/fetch/test`, {
                 'source': this.order.source,
-                'database': this.order.data_base,
+                'data_base': this.order.data_base,
                 'table': this.order.table,
                 'sql': s,
-                'isDMl': isDML
+                'is_dml': isDML
             })
                 .then((res: { data: string[]; }) => {
                     this.sql_data = res.data;

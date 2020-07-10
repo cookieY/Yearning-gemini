@@ -191,7 +191,7 @@
                     this.$Message.error("请选中对应库/表");
                     return
                 }
-                axios.get(`${this.$config.url}/query/tableinfo/${this.dataBase}/${this.table}/${this.source}`)
+                axios.get(`${this.$config.url}/query/table_info/${this.dataBase}/${this.table}/${this.source}`)
                     .then(res => {
                         this.columnsName = this.fieldColumns;
                         this.queryRes = res.data

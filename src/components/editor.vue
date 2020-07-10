@@ -1,6 +1,6 @@
 <!-- thanks by wangjianhui2464-->
 <template>
-  <div style="width: 100%;height: 200px"></div>
+    <div v-bind:style="{width: '100%',height: formHeight}"></div>
 </template>
 
 <script>
@@ -14,6 +14,11 @@
       value: {
         type: String,
         required: true
+      },
+      formHeight: {
+        type: String,
+        required: false,
+        default: '250px'
       },
       is_read: {
         type: Boolean,

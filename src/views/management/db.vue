@@ -11,36 +11,36 @@
                     添加数据库
                 </p>
                 <div class="edittable-testauto-con">
-                    <Form ref="formValidate" :model="formItem" :label-width="100" :rules="ruleInline">
+                    <Form ref="formValidate" :model="general" :label-width="100" :rules="ruleInline">
                         <Form-item label="环境:" prop="add">
-                            <Select v-model="formItem.add">
+                            <Select v-model="general.idc">
                                 <Option v-for="list in comList" :value="list" :key="list">{{ list }}</Option>
                             </Select>
                         </Form-item>
                         <Form-item label="连接名称:" prop="name">
-                            <Input v-model="formItem.name" placeholder="请输入"></Input>
+                            <Input v-model="general.source" placeholder="请输入"></Input>
                         </Form-item>
                         <Form-item label="数据库地址:" prop="ip">
-                            <Input v-model="formItem.ip" placeholder="请输入"></Input>
+                            <Input v-model="general.ip" placeholder="请输入"></Input>
                         </Form-item>
                         <Form-item label="端口:" prop="port">
-                            <Input v-model="formItem.port" placeholder="请输入"></Input>
+                            <Input v-model="general.port" placeholder="请输入"></Input>
                         </Form-item>
                         <Form-item label="用户名:" prop="username">
-                            <Input v-model="formItem.username" placeholder="请输入"></Input>
+                            <Input v-model="general.username" placeholder="请输入"></Input>
                         </Form-item>
                         <Form-item label="密码:" prop="password">
-                            <Input v-model="formItem.password" placeholder="请输入" type="password"></Input>
+                            <Input v-model="general.password" placeholder="请输入" type="password"></Input>
                         </Form-item>
                         <Form-item label="数据源类型:">
-                            <RadioGroup v-model="formItem.is_query">
+                            <RadioGroup v-model="general.is_query">
                                 <Radio :label="2">读写</Radio>
                                 <Radio :label="1">读</Radio>
                                 <Radio :label="0">写</Radio>
                             </RadioGroup>
                         </Form-item>
                         <FormItem label="所属管理者:" prop="admin">
-                            <Select v-model="formItem.admin" multiple>
+                            <Select v-model="general.admin" multiple>
                                 <Option v-for="i in admin_list" :key="i.username" :value="i.username"></Option>
                             </Select>
                         </FormItem>
@@ -246,15 +246,15 @@
         admin_list = []
 
         resetForm() {
-            this.formItem = this.$config.clearObj(this.formItem)
+            this.general = this.$config.clearObj(this.general)
         }
 
         testConnection() {
             this.$http.put(`${this.$config.url}/management_db/test`, {
-                'ip': this.formItem.ip,
-                'username': this.formItem.username,
-                'password': this.formItem.password,
-                'port': parseInt(this.formItem.port)
+                'ip': this.general.ip,
+                'username': this.general.username,
+                'password': this.general.password,
+                'port': parseInt(this.general.port)
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
@@ -269,14 +269,14 @@
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.$http.post(`${this.$config.url}/management_db`, {
-                        'source': this.formItem.name,
-                        'idc': this.formItem.add,
-                        'ip': this.formItem.ip,
-                        'username': this.formItem.username,
-                        'password': this.formItem.password,
-                        'port': parseInt(this.formItem.port),
-                        'is_query': this.formItem.is_query,
-                        'admin': this.formItem.admin
+                        'source': this.general.source,
+                        'idc': this.general.idc,
+                        'ip': this.general.ip,
+                        'username': this.general.username,
+                        'password': this.general.password,
+                        'port': parseInt(this.general.port),
+                        'is_query': this.general.is_query,
+                        'admin': this.general.admin
                     })
                         .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
