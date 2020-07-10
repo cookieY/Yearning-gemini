@@ -61,7 +61,7 @@
                         </template>
                         <template slot-scope="{ row }" slot="action">
                             <Button type="primary" size="small" @click="edit_code(row)"
-                                    v-if="row.username !== 'admin'">更改密码
+                                    v-if="row.username !== 'admin' && row.AuthType !== 'ldap'">更改密码
                             </Button>
                             <Button type="success" size="small" @click="edit_rule(row)" class="margin-left-10">
                                 权限
@@ -149,6 +149,11 @@
             {
                 title: 'email',
                 key: 'email',
+                sortable: true
+            },
+            {
+                title: '认证类型',
+                key: 'AuthType',
                 sortable: true
             },
             {
