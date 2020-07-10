@@ -61,7 +61,7 @@
                         </template>
                         <template slot-scope="{ row }" slot="action">
                             <Button type="primary" size="small" @click="editPassModal(row)"
-                                    v-if="row.Username !== 'admin'">更改密码
+                                    v-if="row.Username !== 'admin' && row.AuthType !== 'ldap' ">更改密码
                             </Button>
                             <Button type="info" size="small" @click="editAuthModal(row)" class="margin-left-10">详细信息
                             </Button>
@@ -164,6 +164,11 @@
             {
                 title: 'email',
                 key: 'Email',
+                sortable: true
+            },
+            {
+                title: '认证类型',
+                key: 'AuthType',
                 sortable: true
             },
             {

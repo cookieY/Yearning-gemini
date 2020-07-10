@@ -21,7 +21,7 @@
                 <FormItem :label="$t('general.mail')">
                     <span>{{ userForm.Email }}</span>
                 </FormItem>
-                <Button type="warning" size="small" @click="edit_password=true">{{$t('general.change_password')}}
+                <Button type="warning" size="small" v-if="userForm.AuthType !== 'ldap'" @click="edit_password=true">{{$t('general.change_password')}}
                 </Button>
                 <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">
                     {{$t('dash.edit_permissions')}}

@@ -33,7 +33,7 @@
                                 </FormItem>
 
                                 <FormItem label="库名:" prop="database">
-                                    <Select v-model="formItem.database" placeholder="请选择" @on-change="fetchTable">
+                                    <Select v-model="formItem.database" filterable placeholder="请选择" @on-change="fetchTable">
                                         <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}
                                         </Option>
                                     </Select>
@@ -79,7 +79,7 @@
                                         </Button>
                                     </Col>
                                     <Col span="5" class="margin-left-10">
-                                        <Button type="warning" icon="ios-brush" @click.native="beauty()"
+                                        <Button type="warning" icon="ios-brush" @click.native="sqlfmt()"
                                                 :loading="loading">美化
                                         </Button>
                                     </Col>
@@ -134,6 +134,9 @@
 
     @Component({components: {editor}})
     export default class dml_order extends Mixins(fetch_mixins, order_mixins) {
+        sqlfmt() {
+            this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
+        }
 
         beauty() {
             this.formItem.textarea = sqlFormatter.format(this.formItem.textarea)
@@ -154,7 +157,7 @@
                             this.testResults = res.data;
                             let gen = 0;
                             this.testResults.forEach((vl: { Level: number; }) => {
-                                if (vl.Level !== 0) {
+                                if (vl.Level !== 0 && vl.Level != undefined) {
                                     gen += 1
                                 }
                             });

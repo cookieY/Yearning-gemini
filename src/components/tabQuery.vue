@@ -24,12 +24,13 @@
         <Button type="primary" icon="md-copy" @click="openSnippet" class="margin-left-10">snippet</Button>
         <br>
         <br>
-        <p>查询结果:</p>
-        <Table :columns="columnsName" :data="queryRes" highlight-row ref="table"></Table>
-        <br>
-        <Page :total="total" show-total @on-change="splice_arr" ref="total" show-sizer
-              @on-page-size-change="ex_arr"></Page>
-
+        <Tabs name='resTabs' type="card" :value="currentTabIdx" @on-click="handleTabClick">
+            <TabPane v-for="tab in resTabs" tab='resTabs' :key="tab" :label="'查询结果' + tab +':'">
+                <Table v-if="currentTabIdx == (tab-1)" :columns="columnsName" :data="queryRes" highlight-row ref="table" border></Table>
+                <br>
+                <Page :total="total" show-total @on-change="splice_arr" ref="total" show-sizer @on-page-size-change="ex_arr"></Page>
+            </TabPane>
+        </Tabs>
         <Modal
                 v-model="expireInfo"
                 title="查询时限过期提醒"
@@ -132,10 +133,17 @@
                 openDrawer: false,
                 expireInfo: false,
                 page_size: 10,
+                resTabs: 0,
+                currentTabIdx: 0,
                 columnsName: [],
+                columnsNameMap: {},
+                multiSql: [],
                 queryRes: [],
                 allQueryData: [],
+                queryResMap: {},
+                allQueryDatas: {},
                 total: 0,
+                totals: {},
                 formItem: {
                     textarea: ''
                 },
@@ -174,6 +182,13 @@
             }
         },
         methods: {
+            handleTabClick(vl) {
+                this.total = this.totals[vl];
+                this.currentTabIdx = vl;
+                this.queryRes = this.queryResMap[vl];
+                this.columnsName = this.columnsNameMap[vl];
+                this.allQueryData = this.allQueryDatas[vl];
+            },
             delSnippet(vl) {
                 this.$store.commit('snippetRemoveTag', vl)
             },
@@ -218,13 +233,15 @@
             },
             ex_arr(n) {
                 this.page_size = n;
-                this.queryRes = this.allQueryData.slice(this.$refs.total.currentPage * n - n, this.$refs.total.currentPage * n)
+                this.queryRes = this.allQueryData.slice(this.$refs.total[0].currentPage * n - n, this.$refs.total[0].currentPage * n)
             },
             clearObj() {
+                this.resTabs = 1;
                 this.formItem.textarea = '';
                 this.queryRes = [];
                 this.columnsName = [];
-                this.$refs.total.currentPage = 1;
+                this.columnsNameMap = {};
+                this.$refs.total[0].currentPage = 1;
                 this.total = 0
             },
             setCompletions(editor, session, pos, prefix, callback) {
@@ -242,8 +259,13 @@
                 });
             },
             querySQL() {
+                this.resTabs = 0;
+                this.currentTabIdx = 0;
                 this.columnsName = [];
                 this.queryRes = [];
+                this.columnsNameMap = {};
+                this.queryResMap = {};
+                this.multiSql = this.formItem.textarea.split(/;[ ]*\n/);
                 this.$Spin.show({
                     render: (h) => {
                         return h('div', [
@@ -260,38 +282,57 @@
                         ])
                     }
                 });
-                axios.post(`${this.$config.url}/query`, {
-                    'sql': this.formItem.textarea,
-                    'basename': this.dataBase,
-                    'source': this.source
+
+                this.multiSql.forEach((sql, index) => {
+                    this.resTabs++;
+                    const sqlregex = /;[ ]*/g;
+                    if(sql.search(sqlregex) === -1 ){
+                        sql = sql + ';'
+                    }
+                    this.columnsNameMap[index] = [];
+                    this.queryResMap[index] = [];
+                    this.allQueryDatas[index] = [];
+                    axios.post(`${this.$config.url}/query`, {
+                        'sql': sql,
+                        'basename': this.dataBase,
+                        'source': this.source
+                    })
+                        .then(res => {
+                            if (res.data.status) {
+                                this.expireInfo = true;
+                                this.$Spin.hide();
+                                return
+                            }
+                            if (res.data.data === null) {
+                                this.columnsNameMap[index] = res.data['title'];
+                                this.allQueryDatas[index] = [];
+                            } else if (!res.data['data']) {
+                                this.$Notice.warning({
+                                    title: '错误',
+                                    desc: res.data
+                                })
+                            } else {
+                                this.queryTime = res.data.time;
+                                res.data['title'].map(((item)=> {
+                                   this.columnsNameMap[index].push(Object.assign({},item,{resizable:true}));
+                                }))
+                                this.allQueryDatas[index] = res.data['data'];
+                                this.queryResMap[index] = this.allQueryDatas[index].slice(0, this.page_size);
+                                this.totals[index] = res.data['data'].length
+                                if (index == 0) {
+                                    this.allQueryData = this.allQueryDatas[index];
+                                    this.queryRes = this.queryResMap[index];
+                                    this.columnsName = this.columnsNameMap[index];
+                                    this.total = this.totals[index]
+                                }
+                            }
+                            this.$Spin.hide()
+                        })
+                        .catch(err => {
+                            this.$config.err_notice(this, err);
+                            this.$Spin.hide()
+                        })
                 })
-                    .then(res => {
-                        if (res.data.status) {
-                            this.expireInfo = true;
-                            this.$Spin.hide();
-                            return
-                        }
-                        if (res.data.data === null) {
-                            this.columnsName = res.data['title'];
-                            this.allQueryData = [];
-                        } else if (!res.data['data']) {
-                            this.$Notice.warning({
-                                title: '错误',
-                                desc: res.data
-                            })
-                        } else {
-                            this.queryTime = res.data.time;
-                            this.columnsName = res.data['title'];
-                            this.allQueryData = res.data['data'];
-                            this.queryRes = this.allQueryData.slice(0, this.page_size);
-                            this.total = res.data['data'].length
-                        }
-                        this.$Spin.hide()
-                    })
-                    .catch(err => {
-                        this.$config.err_notice(this, err);
-                        this.$Spin.hide()
-                    })
             }
         }
     }
