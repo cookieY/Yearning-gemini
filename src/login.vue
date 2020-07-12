@@ -350,7 +350,7 @@
                         this.switchCode = true;
                     }
                 })
-                .catch((err: any) => this.$config.auth_notice(err));
+                .catch((err: any) => this.$config.err_notice(this,err));
         }
     }
 </script>

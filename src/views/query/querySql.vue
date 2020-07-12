@@ -239,10 +239,7 @@
                     })
                         .then((res: { data: any; }) => {
                             this.validate_gen = true;
-                            this.$Notice.success({
-                                title: '成功',
-                                desc: res.data
-                            })
+                            this.$Notice.success({title: '成功', desc: res.data})
                         })
                         .catch((error: any) => {
                             this.validate_gen = true;

@@ -1,4 +1,5 @@
 import expandRow from "@/components/expandTable.vue";
+import {CreateElement} from "vue";
 
 let render = {
     tag: (h: any, params: { row: { status: number }; }) => {
@@ -8,7 +9,7 @@ let render = {
     expand: (h: any, params: { row: { sql: string }; }) => {
     },
     sub_sql: (h: any, params: { row: { sql: string }; }) => {
-    }
+    },
 }
 
 render.tag = (h: any, params: { row: { status: number }; }) => {
@@ -66,6 +67,5 @@ render.sub_sql = (h: any, params: { row: { sql: string } }) => {
     }
     return h('span', text)
 }
-
 // @ts-ignore
 export default render

@@ -3,6 +3,8 @@
 import Notice from 'view-design/src/components/notice'
 import {appRouter} from '../router'
 import axios from 'axios'
+import render from '@/interface/render'
+import {CreateElement} from "vue";
 
 let libs: any = {};
 libs.title = function (title: string) {
@@ -35,7 +37,6 @@ libs.mode = function (obj: any) {
 };
 
 libs.err_notice = function (vm: any, err: { response: { status: number, statusText: string } }) {
-
     let text: string = err.response.statusText;
     if (err.response.status === 401) {
         text = 'Token过期！请重新登录!';
@@ -45,7 +46,7 @@ libs.err_notice = function (vm: any, err: { response: { status: number, statusTe
             cancelText: '退出',
             okText: '登录',
             closable: true,
-            render: (h: any) => {
+            render: (h: CreateElement) => {
                 return h('div', [
                     h('br'),
                     h('Input', {
@@ -83,34 +84,30 @@ libs.err_notice = function (vm: any, err: { response: { status: number, statusTe
                 if (vm.$store.state.openReLogin) {
                     url = `${vm.$config.gen}/ldap`
                 }
-                axios.post(url, {
+                vm.$http.post(url, {
                     'username': sessionStorage.getItem('user'),
                     'password': vm.$store.state.password
                 })
-                    .then(res => {
-                        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
+                    .then((res: { data: { token: string } }) => {
+                        vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
                         sessionStorage.setItem('jwt', `Bearer ${res.data.token}`);
                         vm.$Message.success("已重新登录!");
                         vm.$store.state.password = '';
                         vm.$store.state.openReLogin = false
                     })
-                    .catch(err => {
+                    .catch((err: object) => {
                         vm.$config.auth_notice(err);
-                        vm.$router.push({
-                            name: 'login'
-                        })
+                        vm.$router.push({name: 'login'})
                     })
             },
             onCancel: () => {
-                vm.$router.push({
-                    name: 'login'
-                })
+                vm.$router.push({name: 'login'})
             }
         })
     } else {
-        Notice.error({
+        vm.$Message.error({
             title: '错误',
-            desc: text
+            content: text
         })
     }
 };
@@ -191,14 +188,16 @@ libs.clearObj = function (obj: any) {
 
 libs.clearOption = function (obj: any) {
     for (let i in obj) {
-        if (typeof obj[i] === 'object') {
-            obj[i] = []
-        } else if (typeof obj[i] === 'string') {
-            obj[i] = '0'
-        } else if (typeof obj[i] === 'number') {
-            obj[i] = 0
-        } else {
-            obj[i] = false
+        if (obj.hasOwnProperty(i)) {
+            if (typeof obj[i] === 'object') {
+                obj[i] = []
+            } else if (typeof obj[i] === 'string') {
+                obj[i] = '0'
+            } else if (typeof obj[i] === 'number') {
+                obj[i] = 0
+            } else {
+                obj[i] = false
+            }
         }
     }
     return obj
@@ -206,12 +205,14 @@ libs.clearOption = function (obj: any) {
 
 libs.clearPicker = function (obj: any) {
     for (let i in obj) {
-        if (typeof obj[i] === 'object') {
-            obj[i] = ['', '']
-        } else if (typeof obj[i] === 'string') {
-            obj[i] = ''
-        } else {
-            obj[i] = false
+        if (obj.hasOwnProperty(i)) {
+            if (typeof obj[i] === 'object') {
+                obj[i] = ['', '']
+            } else if (typeof obj[i] === 'string') {
+                obj[i] = ''
+            } else {
+                obj[i] = false
+            }
         }
     }
     return obj

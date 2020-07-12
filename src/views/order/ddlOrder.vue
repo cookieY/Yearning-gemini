@@ -15,18 +15,16 @@
 
     @Component({components: {orderFormContainer}})
     export default class ddl_order extends Mixins(att_mixins) {
-
         mounted() {
-            this.$store.commit('changed_is_dml', false)
-            for (let i of this.$config.highlight.split('|')) {
-                this.wordList.push({'vl': i, 'meta': '关键字'})
+            this.$store.commit("changed_is_dml", false);
+            for (let i of this.$config.highlight.split("|")) {
+                this.wordList.push({vl: i, meta: "关键字"});
             }
         }
 
         destroyed() {
-            this.$store.commit('clear_order')
-            this.$store.commit('clear_always')
+            this.$store.commit("clear_order");
+            this.$store.commit("clear_always");
         }
-
     }
 </script>
