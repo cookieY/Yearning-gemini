@@ -18,8 +18,10 @@
 
 <script lang="ts">
     import i18n from "@/language";
-    import {Component,Mixins, Prop, Watch} from "vue-property-decorator";
+    import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
+    import module_user from "@/store/modules/user";
+
     @Component({})
     export default class edit_password extends Mixins(att_mixins) {
 
@@ -58,7 +60,7 @@
 
         form = {
             password: '',
-            confirm: ''
+            confirm: '',
         }
 
         validate_form = {
@@ -104,7 +106,7 @@
         }
 
         get info() {
-            return this.$store.state.user_args.edit
+            return module_user.edit
         }
 
         change_password() {
@@ -131,7 +133,7 @@
                 }
             });
             this.cancel()
-            this.$config.clearObj(this.formItem)
+            this.resetFields('editPasswordForm')
         }
     }
 </script>

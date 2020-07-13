@@ -31,26 +31,4 @@ export default class order_mixins extends Mixins(att) {
             width: '120'
         }
     ];
-
-    sql  = ''
-
-    setCompletions(editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { caption: any; value: any; meta: any; }[]) => void) {
-        callback(null, this.wordList.map(function (word:any) {
-            return {
-                caption: word.vl,
-                value: word.vl,
-                meta: word.meta
-            }
-        }))
-    }
-
-
-    editorInit() {
-        require('brace/mode/mysql');
-        require('brace/theme/xcode')
-    }
-
-    beauty() {
-        this.sql = sqlFormatter.format(this.sql)
-    }
 }

@@ -101,6 +101,8 @@
     import att_mixins from "@/mixins/basic";
     import edit_rule from "@/components/modal/edit_rule.vue";
     import edit_info from "@/components/modal/edit_info.vue";
+    import module_verify from "@/store/modules/verify";
+    import module_user from "@/store/modules/user";
 
     @Component({components: {edit_password, edit_rule, edit_info}})
     export default class user_info extends Mixins(att_mixins) {
@@ -273,7 +275,7 @@
 
         edit_code(row: { username: string; }) {
             this.edit_password = true;
-            this.$store.commit("user_args/fetch_user_info", row)
+            module_user.fetch_user_info(row)
         }
 
         edit_user(row: any) {
@@ -289,7 +291,7 @@
                 .then((res: { data: { group_list: never[]; group: never[]; }; }) => {
                     let group = JSON.parse(JSON.stringify(res.data))
                     group.username = row.username
-                    this.$store.commit("verify_args/fetch_user_permissions", group)
+                    module_verify.fetch_user_permissions(group)
                     this.is_open = true;
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))

@@ -12,19 +12,20 @@
     import {Component, Mixins} from "vue-property-decorator";
     import orderFormContainer from "@/components/order/orderFormContainer.vue";
     import att_mixins from "@/mixins/basic";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {editor, orderFormContainer}})
     export default class dml_order extends Mixins(att_mixins) {
 
         mounted() {
-            this.$store.commit('changed_is_dml', true)
+            if (!modules_order.dml_save) {
+                modules_order.clear_always()
+                modules_order.clear_order()
+            }
+            modules_order.changed_is_dml(true)
             for (let i of this.$config.highlight.split('|')) {
                 this.wordList.push({'vl': i, 'meta': '关键字'})
             }
-        }
-        destroyed () {
-            this.$store.commit('clear_order', )
-            this.$store.commit('clear_always')
         }
     }
 </script>

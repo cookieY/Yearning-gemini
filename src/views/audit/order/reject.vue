@@ -13,6 +13,7 @@
     import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
     import axios from "axios"
+    import module_init_args from "@/store/modules/init_args";
 
     @Component({components: {}})
     export default class reject extends Mixins(att_mixins) {
@@ -31,7 +32,7 @@
         }
 
         get order() {
-            return this.$store.state.init_args.order_item;
+            return module_init_args.order_item
         }
 
         rejectText() {

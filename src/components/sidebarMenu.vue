@@ -42,6 +42,7 @@
 </template>
 <script>
     import libs from '../libs/libs'
+    import module_general from "@/store/modules/general";
 
     export default {
         name: 'sidebarMenu',
@@ -55,7 +56,7 @@
         },
         computed: {
             currentPageName() {
-                return this.$store.state.currentPageName
+                return module_general.currentPageName
             }
         },
         methods: {

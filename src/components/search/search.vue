@@ -1,9 +1,9 @@
 <template>
-    <Form inline ref="queryForm">
-        <FormItem>
+    <Form inline ref="queryForm" :model="find">
+        <FormItem prop="text">
             <Input :placeholder="text" v-model="find.text" @on-keyup.enter="queryData"></Input>
         </FormItem>
-        <FormItem>
+        <FormItem prop="picker">
             <DatePicker format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="请选择查询的时间范围"
                         v-model="find.picker" @on-change="find.picker=$event" style="width: 250px"
                         :editable="false"></DatePicker>
@@ -20,6 +20,7 @@
 <script lang="ts">
     import {Component, Mixins, Prop} from "vue-property-decorator";
     import att_mixins from "../../mixins/basic";
+    import modules_search from "@/store/modules/search";
 
     @Component({components: {}})
     export default class search extends Mixins(att_mixins) {
@@ -32,18 +33,18 @@
 
         queryData() {
             this.find.valve = true;
-            this.$store.commit("search_args/post_search_args", this.find)
+            modules_search.post_search_args(this.find)
             this.$emit("refresh")
         }
 
         queryCancel() {
-            this.$store.commit("search_args/post_search_args", this.$config.clearPicker(this.find))
+            this.resetFields('queryForm')
             this.current = 1;
             this.$emit("refresh")
         }
 
-        destroyed() {
-            this.$store.commit("search_args/post_search_args", this.$config.clearPicker(this.find))
+        beforeDestroy() {
+            this.resetFields('queryForm')
         }
     }
 </script>

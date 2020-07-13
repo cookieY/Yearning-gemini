@@ -12,9 +12,6 @@
 
    @Component({})
    export default class orderSteps extends Mixins(att_mixins){
-        get steps () {
-            return this.$store.state.steps
-        }
    }
 </script>
 

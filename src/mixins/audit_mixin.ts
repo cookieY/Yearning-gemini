@@ -1,6 +1,9 @@
 import {Component, Mixins} from "vue-property-decorator";
 import att_mixins from "@/mixins/basic";
 import render from "@/interface/render";
+import module_init_args from "@/store/modules/init_args";
+import {order} from "@/interface";
+import modules_order from "@/store/modules/order";
 
 @Component({components: {}})
 export default class audit_mixins extends Mixins(att_mixins) {
@@ -82,14 +85,14 @@ export default class audit_mixins extends Mixins(att_mixins) {
 
     timerOsc(vl: { work_id: string }) {
         this.is_osc = true;
-        this.$store.commit('fetch_order_osc_id', vl.work_id);
+        modules_order.fetch_order_osc_id(vl.work_id)
     }
 
     openOrder(row: { work_id: string }) {
         this.$http.get(`${this.$config.url}/audit/sql?k=${row.work_id}`)
-            .then((res: { data: { sqls: Array<Object>; }; }) => {
-                this.$store.commit("init_args/fetch_order_item", res.data);
-                this.$store.commit('fetch_order_sql', res.data.sqls);
+            .then((res: { data: { sqls: object[],order:order }; }) => {
+                module_init_args.fetch_order_item(res.data.order)
+                modules_order.fetch_order_sql(res.data.sqls)
                 this.is_order = true;
             })
             .catch((err: any) => {
@@ -136,7 +139,7 @@ export default class audit_mixins extends Mixins(att_mixins) {
     }
 
     orderDetail(row: any) {
-        this.$store.commit("init_args/fetch_order_item", row)
+        module_init_args.fetch_order_item(row)
         this.$router.push({
             name: 'profile',
         })

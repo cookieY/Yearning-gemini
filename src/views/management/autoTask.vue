@@ -9,13 +9,13 @@
                     <Icon type="md-sync"></Icon>
                     autoTask
                 </p>
-                <Form inline>
+                <Form inline ref="queryForm" :modal="find">
                     <FormItem>
                     </FormItem>
                     <FormItem>
                         <Button type="warning" @click="toggleShow">新建Task</Button>
                     </FormItem>
-                    <FormItem>
+                    <FormItem prop="text">
                         <Input placeholder="AutoTask名称" v-model="find.text"></Input>
                     </FormItem>
                     <FormItem>
@@ -95,6 +95,7 @@
     import {Mixins, Component} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
     import order_mixins from "@/mixins/order_mixin";
+    import modules_order from "@/store/modules/order";
 
     @Component
     export default class autoTask extends Mixins(fetch_mixins, order_mixins) {
@@ -239,7 +240,7 @@
         }
 
         queryCancel() {
-            this.find = this.$config.clearPicker(this.find);
+            this.resetFields('queryForm')
             this.fetchAutoTaskList();
         }
 
@@ -273,7 +274,7 @@
         mounted() {
             this.fetchAutoTaskList();
             this.fetchIDC()
-            this.$store.commit('changed_is_dml', false)
+            modules_order.changed_is_dml(false)
         }
     }
 </script>

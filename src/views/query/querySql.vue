@@ -69,14 +69,14 @@
                     </Select>
                 </FormItem>
 
-                <FormItem label="是否备份" required>
+                <FormItem label="是否备份" required prop="backup">
                     <RadioGroup v-model="formItem.backup">
                         <Radio :label=1>是</Radio>
                         <Radio :label=0>否</Radio>
                     </RadioGroup>
                 </FormItem>
 
-                <FormItem label="定时执行">
+                <FormItem label="定时执行" prop="delay">
                     <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点" :options="invalidDate"
                                 v-model="formItem.delay" @on-change="formItem.delay=$event"
                                 :editable="false"></DatePicker>
@@ -121,6 +121,7 @@
     import {Component, Mixins, Prop} from "vue-property-decorator";
     import fetch_mixin from "@/mixins/fetch_mixin";
     import order_mixin from "@/mixins/order_mixin";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {editor, tabQuery}})
     export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
@@ -250,7 +251,8 @@
         }
 
         clearForm() {
-            this.$store.commit('clear_order')
+            // this.$store.commit('clear_order')
+            this.resetFields('formItem')
         }
 
         openDrawer() {
@@ -273,7 +275,7 @@
                             spin.hide();
                             return
                         }
-                        this.$store.commit('changed_wordList', this.wordList.concat(res.data.highlight))
+                        modules_order.changed_wordList(this.wordList.concat(res.data.highlight))
                         for (let i = 0; i < this.tree_data[0].children.length; i++) {
                             if (this.tree_data[0].children[i].title === vl.title) {
                                 this.tree_data[0].children[i].children = res.data.table
@@ -292,13 +294,13 @@
             this.$router.push({
                 name: 'query'
             })
-            this.$store.commit('clear_order')
+            // this.$store.commit('clear_order')
+            this.resetFields('formItem')
         }
 
 
         mounted() {
-
-            this.$store.commit('changed_is_dml', false)
+            modules_order.changed_is_dml(false)
 
             this.$http.put(`${this.$config.url}/query/fetch_base`, {
                 'source': this.source
@@ -311,7 +313,7 @@
                     for (let i of tWord) {
                         this.wordList.push({'vl': i, 'meta': '关键字'})
                     }
-                    this.$store.commit('changed_wordList', this.wordList.concat(res.data.highlight))
+                    modules_order.changed_wordList(this.wordList.concat(res.data.highlight))
                     res.data['status'] === 1 ? this.export_data = true : this.export_data = false
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))

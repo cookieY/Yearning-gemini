@@ -45,6 +45,7 @@
     import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
 
     import att_mixins from "@/mixins/basic";
+    import module_verify from "@/store/modules/verify";
 
     @Component({components: {}})
     export default class edit_rule extends Mixins(att_mixins) {
@@ -72,11 +73,11 @@
         }
 
         get rule() {
-            return this.$store.state.verify_args.group
+            return module_verify.group
         }
 
         set rule(vl) {
-            this.$store.state.verify_args.group = vl
+            module_verify.fetch_user_permissions(vl)
         }
 
         is_post() {

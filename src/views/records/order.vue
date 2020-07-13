@@ -42,6 +42,7 @@
     import {Component, Mixins} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
     import search from "@/components/search/search.vue";
+    import module_init_args from "@/store/modules/init_args";
     @Component({components: {search}})
     export default class record extends Mixins(att_mixins) {
       columns = [
@@ -102,7 +103,7 @@
       }
 
       openOrder(row: any) {
-        this.$store.commit("init_args/fetch_order_item", row)
+        module_init_args.fetch_order_item(row)
         this.$router.push({
           name: 'profile',
         })

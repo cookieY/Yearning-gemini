@@ -80,6 +80,7 @@
 <script lang="ts">
     import {Mixins, Component} from "vue-property-decorator";
     import fetch_mixin from "@/mixins/fetch_mixin";
+    import modules_order from "@/store/modules/order";
 
 
     @Component({})
@@ -104,8 +105,8 @@
             let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    this.$store.commit('changed_always', {one: false, two: true, three: false})
-                    this.$store.commit('changed_step', 1)
+                    modules_order.changed_always({one: false, two: true, three: false})
+                    modules_order.changed_step(1)
                 } else {
                     this.$Message.warning("请填写必选项信息!")
                 }
@@ -121,7 +122,7 @@
 </script>
 
 <style lang="less" scoped>
- .div-a {
+    .div-a {
         position: absolute;
         z-index: 1000;
         width: 100%;
@@ -132,4 +133,3 @@
         font-weight: bold;
     }
 </style>>
-   

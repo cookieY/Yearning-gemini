@@ -127,7 +127,7 @@
 
         <Modal v-model="register" @on-ok="LoginRegister" :title="$t('sign')" :ok-text="$t('sign')"
                :mask-closable="false">
-            <Form ref="userinfova" :model="userinfo" :rules="userinfoValidate">
+            <Form ref="user_reg" :model="userinfo" :rules="userinfoValidate">
                 <FormItem :label="$t('sign_userInfo.username')" prop="username">
                     <Input v-model="userinfo.username"></Input>
                 </FormItem>
@@ -282,7 +282,7 @@
         }
 
         LoginRegister() {
-            let is_validate: any = this.$refs['userinfova'];
+            let is_validate: any = this.$refs['user_reg'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.$http.post(this.$config.register, {
@@ -290,7 +290,6 @@
                     })
                         .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
-                            this.$config.clearObj(this.userinfo)
                         })
                         .catch((error: any) => {
                             this.$config.err_notice(this, error)
@@ -299,6 +298,7 @@
                     this.$config.notice(i18n.t('sign_up_validate.sign_fail') as string)
                 }
             })
+            this.resetFields('user_reg')
         }
 
         signIn() {

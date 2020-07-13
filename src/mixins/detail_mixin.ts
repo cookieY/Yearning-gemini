@@ -1,6 +1,7 @@
 import {Component, Mixins} from "vue-property-decorator";
 import expandRow from "@/components/expandTable.vue";
 import att from "@/mixins/basic";
+import module_init_args from "@/store/modules/init_args";
 
 @Component({components: {}})
 export default class detail_mixins extends Mixins(att) {
@@ -40,7 +41,7 @@ export default class detail_mixins extends Mixins(att) {
     sqls = ''
 
     get order() {
-        return this.$store.state.init_args.order_item
+        return module_init_args.order_item
     }
 
     collapse = ['results', 'sql']

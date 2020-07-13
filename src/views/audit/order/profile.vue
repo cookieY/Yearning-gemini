@@ -57,6 +57,8 @@
     import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
     import render from "@/interface/render";
+    import module_init_args from "@/store/modules/init_args";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {}})
     export default class audit_detail extends Mixins(att_mixins) {
@@ -113,15 +115,15 @@
         }
 
         get order() {
-            return this.$store.state.init_args.order_item
+            return module_init_args.order_item
         }
 
         get sql_data() {
-            return this.$store.state.order_sql;
+            return modules_order.order_sql;
         }
 
         set sql_data(vl) {
-            this.$store.state.order_sql = vl;
+            modules_order.fetch_order_sql(vl)
         }
 
         reject() {
@@ -166,10 +168,10 @@
                 'sql': s,
                 'is_dml': isDML
             })
-                .then((res: { data: string[]; }) => {
+                .then((res: { data: object[]; }) => {
                     this.sql_data = res.data;
                     let gen = 0;
-                    this.sql_data.forEach((vl: { level: number; }) => {
+                    this.sql_data.forEach(vl => {
                         if (vl.level !== 0) {
                             gen += 1
                         }

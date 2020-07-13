@@ -12,12 +12,12 @@
                 </p>
                 <div class="edittable-testauto-con">
                     <Form ref="formValidate" :model="general" :label-width="100" :rules="ruleInline">
-                        <Form-item label="环境:" prop="add">
+                        <Form-item label="环境:" prop="idc">
                             <Select v-model="general.idc">
                                 <Option v-for="list in comList" :value="list" :key="list">{{ list }}</Option>
                             </Select>
                         </Form-item>
-                        <Form-item label="连接名称:" prop="name">
+                        <Form-item label="连接名称:" prop="source">
                             <Input v-model="general.source" placeholder="请输入"></Input>
                         </Form-item>
                         <Form-item label="数据库地址:" prop="ip">
@@ -32,7 +32,7 @@
                         <Form-item label="密码:" prop="password">
                             <Input v-model="general.password" placeholder="请输入" type="password"></Input>
                         </Form-item>
-                        <Form-item label="数据源类型:">
+                        <Form-item label="数据源类型:" prop="is_query">
                             <RadioGroup v-model="general.is_query">
                                 <Radio :label="2">读写</Radio>
                                 <Radio :label="1">读</Radio>
@@ -183,14 +183,14 @@
         ];
         // 添加表单验证规则
         ruleInline = {
-            add: [
+            idc: [
                 {
                     required: true,
                     message: '请选择对应环境',
                     trigger: 'change'
                 }
             ],
-            name: [
+            source: [
                 {
                     required: true,
                     message: '请填写连接名称',
@@ -246,7 +246,7 @@
         admin_list = []
 
         resetForm() {
-            this.general = this.$config.clearObj(this.general)
+            this.resetFields('formValidate')
         }
 
         testConnection() {

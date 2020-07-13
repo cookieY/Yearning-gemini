@@ -54,6 +54,8 @@
     import edit_rule from "@/components/modal/edit_rule.vue";
     import att_mixins from "@/mixins/basic";
     import {Component, Mixins} from "vue-property-decorator";
+    import module_verify from "@/store/modules/verify";
+    import module_general from "@/store/modules/general";
 
     @Component({components: {edit_password, edit_rule}})
     export default class personal extends Mixins(att_mixins) {
@@ -96,12 +98,12 @@
             this.$http.put(`${this.$config.url}/dash/profile`)
                 .then((res: { data: { u: { username: string; id: string; password: string; rule: string; department: string; real_name: string; email: string; }; g: any; p: any; s: { Stmt: number; }; }; }) => {
                     this.userForm = res.data.u;
-                    this.$store.commit("verify_args/fetch_user_permissions", {
+                    module_verify.fetch_user_permissions({
                         username: res.data.u.username,
                         list: res.data.g,
                         group: res.data.p
                     })
-                    this.$store.state.stmt = res.data.s.Stmt === 0;
+                    module_general.changed_stmt_status(res.data.s.Stmt === 0)
                 })
         }
 

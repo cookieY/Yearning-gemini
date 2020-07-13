@@ -1,21 +1,39 @@
 import {Component, Vue} from "vue-property-decorator";
 import {test_results, High_light, Connection_list} from "@/interface";
+import modules_order from "@/store/modules/order";
+import modules_search from "@/store/modules/search";
 
 @Component({components: {}})
 export default class att_mixins extends Vue {
     public $config: any;
     public $http: any;
 
-    get is_dml () {
-        return this.$store.state.is_dml
+    get steps() {
+        return modules_order.steps
+    }
+
+    get always() {
+        return modules_order.always
+    }
+
+    get is_dml() {
+        return modules_order.is_dml
     }
 
     get formItem() {
-        return this.$store.state.order
+        return modules_order.order
     }
 
-    get wordList () {
-        return this.$store.state.wordList
+    get wordList() {
+        return modules_order.wordList
+    }
+
+    get sql () {
+        return modules_order.sql
+    }
+
+    set sql (vl) {
+        modules_order.save_sql(vl)
     }
 
     // 通用
@@ -92,8 +110,8 @@ export default class att_mixins extends Vue {
         password: '',
         port: '',
         admin: '',
-        is_query: '',
-        tp:'',
+        is_query: 2,
+        tp: '',
         idc: '',
         source: '',
         name: '',
@@ -141,10 +159,34 @@ export default class att_mixins extends Vue {
         multi: false
     };
 
+    setCompletions(editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { caption: any; value: any; meta: any; }[]) => void) {
+        callback(null, this.wordList.map(function (word: any) {
+            return {
+                caption: word.vl,
+                value: word.vl,
+                meta: word.meta
+            }
+        }))
+    }
+
+    editorInit() {
+        require('brace/mode/mysql');
+        require('brace/theme/xcode')
+    }
+
+    beauty() {
+        modules_order.beauty_sql()
+    }
+
+    resetFields(key: string) {
+        let reset: any = this.$refs[key]
+        reset.resetFields()
+    }
+
     fetch_page(vl: number, url: string) {
         this.$http.put(url, {
             page: vl,
-            find: this.$store.state.search_args.find
+            find: modules_search.find
         })
             .then((res: { data: { multi: boolean; data: never[]; page: number; multi_list: string[]; source: never[]; query: never[]; audit: never[]; group_list: never[] }; }) => {
                 if (!res.data.multi) {

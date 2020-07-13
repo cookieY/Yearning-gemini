@@ -62,6 +62,7 @@
     import {Component, Mixins} from "vue-property-decorator";
     import editor from "@/components/editor.vue";
     import orderConfirm from "@/components/order/orderConfirm.vue";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {editor, orderConfirm}})
     export default class orderSQLs extends Mixins(order_mixin) {
@@ -160,9 +161,9 @@
             })
                 .then((res: { data: string; }) => {
                     this.$Message.success(res.data)
-                    this.$store.commit('changed_step', 2)
-                    this.$store.commit('changed_always', {one: false, two: false, three: true})
-                    this.$store.commit('clear_order')
+                    modules_order.changed_step(2)
+                    modules_order.changed_always({one: false, two: false, three: true})
+                    modules_order.clear_order()
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
@@ -184,9 +185,9 @@
         }
 
         previous() {
-            this.$store.commit('changed_step', 0)
-            this.$store.commit('changed_always', {one: true, two: false, three: false})
-            this.$store.commit('clear_order')
+            modules_order.changed_step(0)
+            modules_order.changed_always({one: true, two: false, three: false})
+            modules_order.clear_order()
         }
     }
 </script>

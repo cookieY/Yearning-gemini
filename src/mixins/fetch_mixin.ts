@@ -3,6 +3,7 @@ import att from "@/mixins/basic";
 import {Fetch_data, High_light} from "@/interface";
 import axios from "axios";
 import sqlFormatter from "sql-formatter";
+import modules_order from "@/store/modules/order";
 
 @Component({components: {}})
 export default class fetch_mixins extends Mixins(att) {
@@ -38,7 +39,7 @@ export default class fetch_mixins extends Mixins(att) {
                 .then((res: { data: { results: string[]; admin: string[]; highlight: never[] }; }) => {
                     this.fetchData.base = res.data.results;
                     this.fetchData.assigned = res.data.admin
-                    this.$store.commit('changed_wordList', this.$config.concat(this.wordList, res.data.highlight))
+                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
@@ -55,7 +56,7 @@ export default class fetch_mixins extends Mixins(att) {
                 })
                     .then((res: { data: { table: string[]; highlight: {} }; }) => {
                         this.fetchData.table = res.data.table;
-                        this.$store.commit('changed_wordList', this.$config.concat(this.wordList, res.data.highlight))
+                        modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
                     }).catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })

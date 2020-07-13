@@ -30,6 +30,7 @@
 <script lang="ts">
     import {Component, Prop, Mixins, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {}})
     export default class osc extends Mixins(att_mixins) {
@@ -55,7 +56,7 @@
         }
 
         get work_id() {
-            return this.$store.state.osc_id
+            return modules_order.osc_id
         }
 
         oscClose() {

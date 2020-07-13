@@ -42,10 +42,6 @@
 
     @Component({components: {orderSteps, orderForm, orderSQLs, orderIsPost}})
     export default class orderFormContainer extends Mixins(att_mixins) {
-        get always() {
-            return this.$store.state.always
-        }
-
         created() {
             let windows: any = window;
             windows.particlesJS.load('order', `${process.env.BASE_URL}particlesjs-config.json`);

@@ -15,6 +15,10 @@
                 <span>{{ formItem.data_base}}</span>
             </FormItem>
 
+            <FormItem label="表名:">
+                <span>{{ formItem.table}}</span>
+            </FormItem>
+
             <FormItem label="工单说明:">
                 <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4 maxlength="100"
                        show-word-limit readonly></Input>
@@ -37,6 +41,11 @@
                     <Radio :label=0 disabled>否</Radio>
                 </RadioGroup>
             </FormItem>
+
+            <FormItem >
+               <Button type="primary" long @click="drafts">保存本次工单</Button>
+            </FormItem>
+
             <FormItem>
                 <Alert v-if="is_dml">
                     <template slot="desc">
@@ -52,10 +61,13 @@
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
     import att_mixins from "../../mixins/basic";
+    import modules_order from "@/store/modules/order";
 
     @Component({})
     export default class orderConfirm extends Mixins(att_mixins) {
-
+        drafts () {
+            modules_order.draft_order()
+        }
     }
 </script>
 

@@ -1,18 +1,20 @@
 interface order {
-    work_id: string
-    idc: string
-    source: string,
-    data_base: string,
-    table: string,
-    text: string,
-    delay: string,
-    type: number,
-    status: number,
-    username: string,
-    date: string,
-    execute_time: string
-    rejected: string
-    assigned: string
+    work_id?: string
+    idc?: string
+    source?: string,
+    data_base?: string,
+    table?: string,
+    text?: string,
+    delay?: null,
+    type?: number,
+    status?: number,
+    username?: string,
+    date?: string,
+    execute_time?: string
+    rejected?: string
+    assigned?: string
+    backup?: number,
+    export?: number
 }
 
 interface other_modal {
@@ -71,6 +73,7 @@ interface con_args {
 
 interface Connection_list {
     [connection: string]: con_args[],
+
     query: con_args[],
     person: con_args[]
 }
@@ -88,4 +91,14 @@ interface High_light {
     vl: string
 }
 
-export {order, other_modal, message_modal, test_results, Permissions_check_all, Permission, Connection_list,Fetch_data,High_light}
+export {
+    order,
+    other_modal,
+    message_modal,
+    test_results,
+    Permissions_check_all,
+    Permission,
+    Connection_list,
+    Fetch_data,
+    High_light
+}

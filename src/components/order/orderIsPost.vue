@@ -35,12 +35,13 @@
 
 <script lang="ts">
     import {Component, Vue} from "vue-property-decorator";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {}})
     export default class orderIsPost extends Vue {
         toOriginal () {
-            this.$store.commit('changed_step', 0)
-            this.$store.commit('changed_always', {one: true, two: false, three: false})
+            modules_order.changed_step(0)
+            modules_order.changed_always({one: true, two: false, three: false})
         }
     }
 </script>

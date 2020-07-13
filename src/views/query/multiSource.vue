@@ -40,6 +40,7 @@
     import query_sql from "@/views/query/querySql.vue";
     import axios from 'axios'
     import {Component, Vue} from "vue-property-decorator";
+    import module_general from "@/store/modules/general";
 
     @Component({components: {query_sql}})
     export default class multiSource extends Vue {
@@ -67,21 +68,7 @@
         }
 
         addsnip() {
-            if (this.$store.state.snippet === null) {
-                this.$store.state.snippet = []
-            }
-            for (let i of this.$store.state.snippet) {
-                if (i.title === this.addSnippet.title) {
-                    this.$Message.error('snippet标签名不得重复!');
-                    return
-                }
-            }
-            if (this.$store.state.snippet.length > 14) {
-                this.$Message.error('snippet最多保存15个!');
-                return
-            }
-            this.$store.commit('snippetTag', this.addSnippet)
-            this.$Message.success('snippet已保存!');
+            module_general.snippetTag(this.addSnippet)
         }
 
         opensnip() {
