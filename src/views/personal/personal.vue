@@ -83,7 +83,7 @@
             this.$http.put(`${this.$config.url}/user/edit/mail`, {
                 'mail': this.editEmailForm.email,
                 'username': this.userForm.username,
-                'real': this.editEmailForm.real_name
+                'real_name': this.editEmailForm.real_name
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);

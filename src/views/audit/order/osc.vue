@@ -68,12 +68,11 @@
             this.$http.delete(`${this.$config.url}/audit/fetch_osc/${this.work_id}`)
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.oscClose()
                 })
                 .catch((err: any) => {
                     this.$config.err_notice(this, err);
-                    this.oscClose()
                 })
+                .finally(() => this.oscClose())
         }
 
         openOSC() {

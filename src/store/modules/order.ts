@@ -73,7 +73,9 @@ class order_local extends VuexModule {
             backup: 1,
             export: 0
         }
+        this.steps = 0
         this.sql = ''
+        this.wordList = []
     }
 
     @Mutation

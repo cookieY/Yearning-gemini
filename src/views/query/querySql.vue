@@ -157,12 +157,9 @@
                 this.showTableinfo = false;
                 this.slider2 = 24;
             } else {
-                this
-                    .showTableinfo = true;
-                this
-                    .slider2 = 19
+                this.showTableinfo = true;
+                this.slider2 = 19
             }
-            this.$store.commit('closeNav')
         }
 
         cur(vl: string) {
@@ -202,7 +199,6 @@
             let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    this.loading = true;
                     this.$http.put(`${this.$config.url}/fetch/test`, {
                         'data_base': this.formItem.data_base,
                         'sql': this.sql,
@@ -222,7 +218,9 @@
                         .catch((err: any) => {
                             this.$config.err_notice(this, err)
                         })
-                    spin.hide()
+                        .finally(() => {
+                            spin.hide()
+                        })
                 } else {
                     this.$Message.error('请填写具体地址或sql语句后再测试!')
                 }
@@ -251,7 +249,6 @@
         }
 
         clearForm() {
-            // this.$store.commit('clear_order')
             this.resetFields('formItem')
         }
 
@@ -269,10 +266,7 @@
                     .then((res: { data: any }) => {
                         if (res.data === 0) {
                             this.$config.notice("已到查询时限上限,请重新申请查询！");
-                            this.$router.push({
-                                name: 'query'
-                            });
-                            spin.hide();
+                            this.$router.push({name: 'query'});
                             return
                         }
                         modules_order.changed_wordList(this.wordList.concat(res.data.highlight))
@@ -281,27 +275,24 @@
                                 this.tree_data[0].children[i].children = res.data.table
                             }
                         }
-                        spin.hide()
                     })
-                    .catch(() => spin.hide())
+                    .finally(() => spin.hide())
             }
         }
 
         deferReply() {
             this.$http.delete(`${this.$config.url}/query/undo`)
                 .then((res: { data: string; }) => this.$config.notice(res.data))
-                .catch((err: any) => this.$config.err_notice(this, err));
-            this.$router.push({
-                name: 'query'
-            })
-            // this.$store.commit('clear_order')
-            this.resetFields('formItem')
+                .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => {
+                    this.$router.push({name: 'query'})
+                    this.resetFields('formItem')
+                })
         }
 
 
         mounted() {
             modules_order.changed_is_dml(false)
-
             this.$http.put(`${this.$config.url}/query/fetch_base`, {
                 'source': this.source
             })

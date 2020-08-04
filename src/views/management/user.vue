@@ -7,21 +7,21 @@
                     添加用户
                 </p>
                 <div class="edittable-testauto-con">
-                    <Form :model="userinfo" :label-width="80" ref="userinfova" :rules="userinfoValidate">
+                    <Form :model="userinfo" :label-width="80" ref="userinfova" :rules="userInfoValidate">
                         <FormItem label="用户名" prop="username">
                             <Input v-model="userinfo.username" placeholder="请输入"></Input>
                         </FormItem>
                         <FormItem label="密码" prop="password">
                             <Input v-model="userinfo.password" placeholder="请输入" type="password"></Input>
                         </FormItem>
-                        <FormItem label="确认密码" prop="confirmpassword">
-                            <Input v-model="userinfo.confirmpassword" placeholder="请输入" type="password"></Input>
+                        <FormItem label="确认密码" prop="confirm_password">
+                            <Input v-model="userinfo.confirm_password" placeholder="请输入" type="password"></Input>
                         </FormItem>
                         <FormItem label="部门" prop="department">
                             <Input v-model="userinfo.department" placeholder="请输入"></Input>
                         </FormItem>
-                        <FormItem label="姓名" prop="realname">
-                            <Input v-model="userinfo.realname" placeholder="请输入"></Input>
+                        <FormItem label="姓名" prop="real_name">
+                            <Input v-model="userinfo.real_name" placeholder="请输入"></Input>
                         </FormItem>
                         <FormItem label="角色" prop="group">
                             <Select v-model="userinfo.group" placeholder="请选择">
@@ -30,8 +30,8 @@
                                 <Option value="guest">提交人</Option>
                             </Select>
                         </FormItem>
-                        <FormItem label="电子邮箱" prop="email">
-                            <Input v-model="userinfo.email" placeholder="请输入"></Input>
+                        <FormItem label="电子邮箱" prop="mail">
+                            <Input v-model="userinfo.mail" placeholder="请输入"></Input>
                         </FormItem>
                         <Button type="primary" @click.native="registered" style="margin-left: 35%" :loading="loading">
                             注册
@@ -165,14 +165,14 @@
         userinfo = {
             username: '',
             password: '',
-            confirmpassword: '',
+            confirm_password: '',
             group: '',
             checkbox: '',
             department: '',
-            email: '',
-            realname: ''
+            mail: '',
+            real_name: ''
         };
-        userinfoValidate = {
+        userInfoValidate = {
             username: [{
                 required: true,
                 message: '请输入用户名',
@@ -199,7 +199,7 @@
                     trigger: 'blur'
                 }
             ],
-            confirmpassword: [
+            confirm_password: [
                 {
                     required: true,
                     message: '请再次输入新密码',
@@ -234,7 +234,7 @@
                     trigger: 'blur'
                 }
             ],
-            realname: [
+            real_name: [
                 {
                     required: true,
                     message: '请输入姓名',
@@ -250,7 +250,7 @@
                     message: '最多输入32个字符',
                     trigger: 'blur'
                 }],
-            email: [
+            mail: [
                 {
                     required: true,
                     message: '请输入工作邮箱',
@@ -292,9 +292,9 @@
                     let group = JSON.parse(JSON.stringify(res.data))
                     group.username = row.username
                     module_verify.fetch_user_permissions(group)
-                    this.is_open = true;
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => this.is_open = true)
         }
 
         registered() {
@@ -303,17 +303,19 @@
                 if (valid) {
                     this.loading = true;
                     this.$http.post(`${this.$config.url}/manage_user`, {
-                        'userinfo': this.userinfo
+                        'user_info': this.userinfo
                     })
                         .then((res: { data: string; }) => {
-                            this.loading = false;
                             this.$config.notice(res.data);
-                            this.current_page(this.current);
-                            is_validate.resetFields()
                         })
                         .catch((error: any) => {
-                            this.loading = false;
+
                             this.$config.err_notice(this, error)
+                        })
+                        .finally(() => {
+                            this.current_page(this.current);
+                            is_validate.resetFields()
+                            this.loading = !this.loading;
                         })
                 }
             })
@@ -339,11 +341,11 @@
             this.$http.delete(`${this.$config.url}/manage_user?user=${row.username}`)
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
-                    this.current_page(step)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
+                .finally(() => this.current_page(step))
         }
 
         queryData() {

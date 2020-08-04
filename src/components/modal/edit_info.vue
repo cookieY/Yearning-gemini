@@ -61,7 +61,7 @@
                 'username': this.edit.username,
                 'rule': this.edit.rule,
                 'department': this.edit.department,
-                'real': this.edit.real_name,
+                'real_name': this.edit.real_name,
                 'mail': this.edit.email,
                 'tp': 'info'
             })

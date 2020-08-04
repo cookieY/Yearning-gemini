@@ -9,6 +9,33 @@ let render = {
     },
     sub_sql: (h: any, params: { row: { sql: string }; }) => {
     },
+    query_tag: (h: any, params: { row: { query_per: number } }) => {
+    }
+}
+
+render.query_tag = (h: any, params: { row: { query_per: number } }) => {
+    const row = params.row
+    let color = ''
+    let text = ''
+    if (row.query_per === 2) {
+        color = 'primary'
+        text = '待审核'
+    } else if (row.query_per === 0) {
+        color = 'error'
+        text = '驳回'
+    } else if (row.query_per === 1) {
+        color = 'success'
+        text = '同意/查询'
+    } else {
+        color = 'warning'
+        text = '查询结束'
+    }
+    return h('Tag', {
+        props: {
+            type: 'dot',
+            color: color
+        }
+    }, text)
 }
 
 render.tag = (h: any, params: { row: { status: number }; }) => {

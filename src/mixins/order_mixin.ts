@@ -1,6 +1,5 @@
 import {Component, Mixins} from "vue-property-decorator";
 import att from "@/mixins/basic";
-import sqlFormatter from "sql-formatter";
 @Component({components: {}})
 export default class order_mixins extends Mixins(att) {
 
@@ -19,6 +18,7 @@ export default class order_mixins extends Mixins(att) {
             title: '错误信息',
             key: 'error',
             tooltip: true,
+            width: 500
         },
         {
             title: '当前检查的sql',

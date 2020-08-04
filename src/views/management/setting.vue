@@ -46,8 +46,8 @@
                                             <span slot="close">关</span>
                                         </i-switch>
                                     </Form-item>
-                                    <Button type="primary" @click="dingding_test()">hook测试</Button>
-                                    <Button type="warning" @click="mail_test()" style="margin-left: 5%">邮件测试</Button>
+                                    <Button type="primary" @click="message_test('ding')">hook测试</Button>
+                                    <Button type="warning" @click="message_test('mail')" style="margin-left: 5%">邮件测试</Button>
                                 </Form>
                             </Card>
                         </Col>
@@ -257,11 +257,11 @@
 
 <script lang="ts">
 
-    import axios from 'axios'
     import {Component, Mixins} from "vue-property-decorator";
     // eslint-disable-next-line no-unused-vars
     import {other_modal, message_modal} from "@/interface";
     import att_mixins from "../../mixins/basic";
+
     @Component
     export default class setting extends Mixins(att_mixins) {
         ldap = {};
@@ -274,19 +274,19 @@
         } as other_modal;
 
         del_order() {
-            axios.post(`${this.$config.url}/group/setting/del/order`, {
+            this.$http.post(`${this.$config.url}/group/setting/del/order`, {
                 date: this.other.overdue
             })
-                .then(res => this.$config.notice(res.data))
-                .catch(err => this.$config.err_notice(this, err))
+                .then((res: { data: string; }) => this.$config.notice(res.data))
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         del_query() {
-            axios.post(`${this.$config.url}/group/setting/del/query`, {
+            this.$http.post(`${this.$config.url}/group/setting/del/query`, {
                 date: this.other.query_expire
             })
-                .then(res => this.$config.notice(res.data))
-                .catch(err => this.$config.err_notice(this, err))
+                .then((res: { data: string; }) => this.$config.notice(res.data))
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         handleAdd() {
@@ -339,63 +339,51 @@
         }
 
         ldap_test() {
-            axios.put(`${this.$config.url}/group/setting/test/ldap`, {
+            this.$http.put(`${this.$config.url}/group/setting/test/ldap`, {
                 'ldap': this.ldap
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
-        dingding_test() {
-            axios.put(`${this.$config.url}/group/setting/test/ding`, {
+        message_test(ty: string) {
+            this.$http.put(`${this.$config.url}/group/setting/test/${ty}`, {
                 'mail': this.message
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
-                    this.$config.err_notice(this, error)
-                })
-        }
-
-        mail_test() {
-            axios.put(`${this.$config.url}/group/setting/test/mail`, {
-                'mail': this.message
-            })
-                .then(res => {
-                    this.$config.notice(res.data)
-                })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         save_upload() {
-            axios.post(`${this.$config.url}/group/setting/add`, {
+            this.$http.post(`${this.$config.url}/group/setting/add`, {
                 'ldap': this.ldap,
                 'message': this.message,
                 'other': this.other
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         mounted() {
-            axios.get(`${this.$config.url}/group/setting`)
-                .then(res => {
+            this.$http.get(`${this.$config.url}/group/setting`)
+                .then((res: { data: { Message: message_modal; Other: other_modal; Ldap: {}; }; }) => {
                     this.message = res.data.Message;
                     this.other = res.data.Other;
                     this.ldap = res.data.Ldap;
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }

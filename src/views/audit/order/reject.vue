@@ -12,7 +12,6 @@
 <script lang="ts">
     import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
-    import axios from "axios"
     import module_init_args from "@/store/modules/init_args";
 
     @Component({components: {}})
@@ -36,15 +35,15 @@
         }
 
         rejectText() {
-            axios.post(`${this.$config.url}/audit/reject`, {
+            this.$http.post(`${this.$config.url}/audit/reject`, {
                 'text': this.reject,
                 'work': this.order.work_id
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
                     this.$emit("post")
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }

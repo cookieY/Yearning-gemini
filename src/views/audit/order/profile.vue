@@ -177,10 +177,12 @@
                         }
                     });
                     this.summit = gen !== 0;
-                    this.loading = false
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
+                })
+                .finally(() => {
+                    this.loading = false
                 })
         }
     }

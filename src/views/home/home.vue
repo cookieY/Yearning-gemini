@@ -177,17 +177,16 @@
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
     import dataSourcePie from '@/components/dataSourcePie.vue'
     import dataSourceAxis from '@/components/dataSourceAxis.vue'
     import info_card from '@/components/inforCard.vue'
     import myself from '@/views/personal/personal.vue'
-    import {Vue, Component} from 'vue-property-decorator'
+    import {Component, Mixins} from 'vue-property-decorator'
     import i18n from "@/language";
+    import att_mixins from "@/mixins/basic";
 
     @Component({components: {dataSourcePie, info_card, dataSourceAxis, myself}})
-    export default class home extends Vue {
-        $config: any;
+    export default class home extends Mixins(att_mixins) {
         columnsTop5 = [
             {
                 title: i18n.t('general.db'),
@@ -216,11 +215,11 @@
             this.time = date.getFullYear() + '/' + month + '/' + date.getDate() + '  ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
         }
         mounted() {
-            axios.get(`${this.$config.url}/dash/count`)
-                .then(res => {
+            this.$http.get(`${this.$config.url}/dash/count`)
+                .then((res: { data: { dataTop5: never[]; createUser: number; order: number; source: number; query: number; ddl: number; dml: number } }) => {
                     this.count = res.data;
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 });
             this.formatDate()

@@ -26,10 +26,5 @@
                 this.wordList.push({vl: i, meta: "关键字"});
             }
         }
-
-        // destroyed() {
-        //     modules_order.clear_always()
-        //     modules_order.clear_order()
-        // }
     }
 </script>

@@ -280,12 +280,14 @@
                     })
                         .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
-                            this.getPageInfo(this.current);
-                            is_validate.resetFields()
                         })
                         .catch((error: any) => {
                             this.$config.err_notice(this, error)
-                        });
+                        })
+                        .finally(() => {
+                            is_validate.resetFields()
+                            this.getPageInfo(this.current);
+                        })
                 }
             })
         }
@@ -303,11 +305,11 @@
             this.$http.delete(`${this.$config.url}/management_db?source=${vl.source}`)
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.getPageInfo(step)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
+                .finally(() => this.getPageInfo(step))
         }
 
         getPageInfo(vl = 1) {
@@ -331,9 +333,9 @@
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
-                    this.getPageInfo(this.current)
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => this.getPageInfo(this.current))
         }
 
         queryData() {

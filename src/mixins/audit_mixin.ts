@@ -88,16 +88,16 @@ export default class audit_mixins extends Mixins(att_mixins) {
         modules_order.fetch_order_osc_id(vl.work_id)
     }
 
-    openOrder(row: { work_id: string }) {
+    openOrder(row: any) {
+        module_init_args.fetch_order_item(row)
         this.$http.get(`${this.$config.url}/audit/sql?k=${row.work_id}`)
-            .then((res: { data: { sqls: object[],order:order }; }) => {
-                module_init_args.fetch_order_item(res.data.order)
-                modules_order.fetch_order_sql(res.data.sqls)
-                this.is_order = true;
+            .then((res: { data: object[]; }) => {
+                modules_order.fetch_order_sql(res.data)
             })
             .catch((err: any) => {
                 this.$config.err_notice(this, err)
             })
+            .finally(() => this.is_order = !this.is_order)
     }
 
     agreedTo(multi_name: string, work_id: string) {
@@ -106,15 +106,17 @@ export default class audit_mixins extends Mixins(att_mixins) {
         } else {
             this.$http.post(`${this.$config.url}/audit/refer/perform`, {
                 'perform': multi_name,
-                'WorkId': work_id
+                'work_id': work_id
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.is_order = false;
-                    this.current_page(this.current)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
+                })
+                .finally(() => {
+                    this.is_order = !this.is_order;
+                    this.current_page(this.current)
                 })
         }
     }
@@ -122,15 +124,15 @@ export default class audit_mixins extends Mixins(att_mixins) {
     performTo(work_id: string) {
         this.is_order = false;
         this.$http.post(`${this.$config.url}/audit/execute`, {
-            'workid': work_id
+            'work_id': work_id
         })
             .then((res: { data: string; }) => {
                 this.$config.notice(res.data);
-                this.current_page(this.current)
             })
             .catch((error: any) => {
                 this.$config.err_notice(this, error)
             })
+            .finally(() => this.current_page(this.current))
     }
 
     rejectTo() {
@@ -146,7 +148,7 @@ export default class audit_mixins extends Mixins(att_mixins) {
     }
 
     current_page(vl = 1) {
-        this.fetch_page(vl,this.url)
+        this.fetch_page(vl, this.url)
     }
 
     refreshForm(vl: boolean) {

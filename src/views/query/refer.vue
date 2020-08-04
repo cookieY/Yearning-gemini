@@ -22,12 +22,11 @@
 </template>
 
 <script lang="ts">
-    //
-    import axios from 'axios'
-    import {Component, Vue} from "vue-property-decorator";
+  import {Component, Mixins} from "vue-property-decorator";
+  import att_mixins from "@/mixins/basic";
 
     @Component({components: {}})
-    export default class put_ready extends Vue {
+    export default class put_ready extends Mixins(att_mixins) {
         stepData = {
             title: 'Yearning SQL查询系统',
             describe: `欢迎你！ ${sessionStorage.getItem('user')}`,
@@ -47,7 +46,6 @@
                 describe: '审核完毕，进入查询页面'
             }
         ];
-        $config: any;
 
         back() {
             this.$router.push({
@@ -56,7 +54,7 @@
         }
 
         del() {
-            axios.delete(`${this.$config.url}/query/undo`)
+            this.$http.delete(`${this.$config.url}/query/undo`)
                 .then(() => {
                     this.$router.push({
                         name: 'query'
@@ -65,8 +63,8 @@
         }
 
         mounted() {
-            axios.put(`${this.$config.url}/query/status`)
-                .then(res => {
+            this.$http.put(`${this.$config.url}/query/status`)
+                .then((res: { data: { status: number; }; }) => {
                     if (res.data.status === 1) {
                         this.$router.push({
                             name: 'query_page'

@@ -43,12 +43,6 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
-                          <FormItem label="检查时间字段默认值">
-                            <i-switch size="large" v-model="juno.DDLTimeFieldDefault">
-                              <span slot="open">开</span>
-                              <span slot="close">关</span>
-                            </i-switch>
-                          </FormItem>
                           <FormItem label="是否允许跨库表迁移">
                             <i-switch size="large" v-model="juno.DDLEnableAcrossDBRename">
                               <span slot="open">开</span>
@@ -75,6 +69,12 @@
                           </FormItem>
                           <FormItem label="强制主键为自增列">
                             <i-switch size="large" v-model="juno.DDLEnableAutoIncrement">
+                              <span slot="open">开</span>
+                              <span slot="close">关</span>
+                            </i-switch>
+                          </FormItem>
+                          <FormItem label="允许主键类型非int/bigint">
+                            <i-switch size="large" v-model="juno.DDLAllowPRINotInt">
                               <span slot="open">开</span>
                               <span slot="close">关</span>
                             </i-switch>
@@ -119,12 +119,6 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
-                          <FormItem label="打开OSC">
-                            <i-switch size="large" v-model="juno.IsOSC">
-                              <span slot="open">开</span>
-                              <span slot="close">关</span>
-                            </i-switch>
-                          </FormItem>
                           <FormItem label="允许字段类型转换">
                             <i-switch size="large" v-model="juno.DDLAllowColumnType">
                               <span slot="open">开</span>
@@ -137,22 +131,22 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
-                        </Form>
-                      </Col>
-                      <Col span="6">
-                        <Form :label-width="150">
-                          <FormItem label="允许主键类型非int/bigint">
-                            <i-switch size="large" v-model="juno.DDLAllowPRINotInt">
-                              <span slot="open">开</span>
-                              <span slot="close">关</span>
-                            </i-switch>
-                          </FormItem>
                           <FormItem label="检查类型隐式转换">
                             <i-switch size="large" v-model="juno.DDLImplicitTypeConversion">
                               <span slot="open">开</span>
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
+                          <FormItem label="打开OSC">
+                            <i-switch size="large" v-model="juno.IsOSC">
+                              <span slot="open">开</span>
+                              <span slot="close">关</span>
+                            </i-switch>
+                          </FormItem>
+                        </Form>
+                      </Col>
+                      <Col span="6">
+                        <Form :label-width="150">
                           <FormItem label="单个索引指定字段上限">
                             <InputNumber :min="0" v-model="juno.DDLMaxKeyParts"></InputNumber>
                           </FormItem>

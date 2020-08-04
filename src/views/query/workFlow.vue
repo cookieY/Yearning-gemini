@@ -65,7 +65,6 @@
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
     import fetch_mixins from "@/mixins/fetch_mixin";
     import {Component, Mixins} from "vue-property-decorator";
 
@@ -121,7 +120,7 @@
             let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    axios.post(`${this.$config.url}/query/refer`, {
+                    this.$http.post(`${this.$config.url}/query/refer`, {
                         'idc': this.formItem.idc,
                         'source': this.formItem.source,
                         'export': this.formItem.export,
@@ -133,7 +132,7 @@
                                 name: 'query_apply'
                             })
                         })
-                        .catch(err => {
+                        .catch((err: any) => {
                             this.$config.err_notice(this, err)
                         })
                 }
@@ -141,8 +140,8 @@
         }
 
         fetchQueryStatus() {
-            axios.put(`${this.$config.url}/query/status`)
-                .then(res => {
+            this.$http.put(`${this.$config.url}/query/status`)
+                .then((res: { data: { status: number; export: boolean; }; }) => {
                     if (res.data.status === 1) {
                         this.$router.push({
                             name: 'query_page'

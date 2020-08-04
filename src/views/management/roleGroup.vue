@@ -163,13 +163,15 @@
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.current = 1;
-                    this.current_page()
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
-                });
-            this.addAuthGroupForm.open = false
+                })
+                .finally(() => {
+                    this.current_page()
+                    this.current = 1;
+                    this.addAuthGroupForm.open = false
+                })
         }
 
         current_page(vl = 1) {
@@ -180,9 +182,9 @@
             this.$http.delete(`${this.$config.url}/group/del/${vl.name}`)
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.current_page()
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => this.current_page())
         }
 
         batchOpen() {

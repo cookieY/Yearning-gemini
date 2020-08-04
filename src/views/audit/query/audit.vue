@@ -44,6 +44,7 @@
     import att_mixins from "@/mixins/basic";
     import render from "@/interface/render";
     import search from "@/components/search/search.vue";
+
     @Component({components: {search}})
     export default class query_audit extends Mixins(att_mixins) {
         columns = [
@@ -76,30 +77,7 @@
             {
                 title: '状态',
                 key: 'query_per',
-                render: (h: any, params: { row: { query_per: number } }) => {
-                    const row = params.row
-                    let color = ''
-                    let text = ''
-                    if (row.query_per === 2) {
-                        color = 'primary'
-                        text = '待审核'
-                    } else if (row.query_per === 0) {
-                        color = 'error'
-                        text = '驳回'
-                    } else if (row.query_per === 1) {
-                        color = 'success'
-                        text = '同意/查询'
-                    } else {
-                        color = 'warning'
-                        text = '查询结束'
-                    }
-                    return h('Tag', {
-                        props: {
-                            type: 'dot',
-                            color: color
-                        }
-                    }, text)
-                }
+                render: render.query_tag
             },
             {
                 title: '操作',
@@ -127,31 +105,31 @@
             this.$http.post(`${this.$config.url}/audit/query/handle/agreed`, {'work_id': row.work_id})
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.current_page(this.current)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
+                .finally(() => this.current_page(this.current))
         }
 
-        reject(row:{work_id:string}) {
+        reject(row: { work_id: string }) {
             this.$http.post(`${this.$config.url}/audit/query/handle/disagreed`, {'work_id': row.work_id})
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
-                    this.current_page(this.current)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
+                .finally(() => this.current_page(this.current))
         }
 
-        stop_query(vl:{work_id:string}) {
+        stop_query(vl: { work_id: string }) {
             this.$http.post(`${this.$config.url}/audit/query/handle/undo`, {'work_id': vl.work_id})
                 .then((res: { data: any; }) => {
                     this.$config.notice(res.data)
-                    this.current_page(this.current)
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => this.current_page(this.current))
         }
 
         mounted() {

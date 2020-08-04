@@ -127,7 +127,7 @@
 
         <Modal v-model="register" @on-ok="LoginRegister" :title="$t('sign')" :ok-text="$t('sign')"
                :mask-closable="false">
-            <Form ref="user_reg" :model="userinfo" :rules="userinfoValidate">
+            <Form ref="user_reg" :model="userinfo" :rules="userInfoValidate">
                 <FormItem :label="$t('sign_userInfo.username')" prop="username">
                     <Input v-model="userinfo.username"></Input>
                 </FormItem>
@@ -136,20 +136,20 @@
                     <Input type="password" v-model="userinfo.password"></Input>
                 </FormItem>
 
-                <FormItem :label="$t('sign_userInfo.confirm')" prop="confirmpassword">
-                    <Input v-model="userinfo.confirmpassword" type="password"></Input>
+                <FormItem :label="$t('sign_userInfo.confirm')" prop="confirm_password">
+                    <Input v-model="userinfo.confirm_password" type="password"></Input>
                 </FormItem>
 
-                <FormItem prop="realname" :label="$t('sign_userInfo.real')">
-                    <Input v-model="userinfo.realname"></Input>
+                <FormItem prop="real_name" :label="$t('sign_userInfo.real')">
+                    <Input v-model="userinfo.real_name"></Input>
                 </FormItem>
 
                 <FormItem prop="department" :label="$t('sign_userInfo.department')">
                     <Input v-model="userinfo.department"></Input>
                 </FormItem>
 
-                <FormItem prop="email" :label="$t('sign_userInfo.mail')">
-                    <Input v-model="userinfo.email"></Input>
+                <FormItem prop="mail" :label="$t('sign_userInfo.mail')">
+                    <Input v-model="userinfo.mail"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -206,12 +206,12 @@
         userinfo = {
             username: '',
             password: '',
-            confirmpassword: '',
-            email: '',
-            realname: '',
+            confirm_password: '',
+            mail: '',
+            real_name: '',
             department: ''
         };
-        userinfoValidate = {
+        userInfoValidate = {
             username: [
                 {
                     required: true,
@@ -265,7 +265,7 @@
                     trigger: 'blur'
                 }
             ],
-            email: [
+            mail: [
                 {required: true, message: i18n.t('sign_up_validate.mail'), trigger: 'blur'},
                 {type: 'email', message: i18n.t('sign_up_validate.mail_format'), trigger: 'blur'}
             ]
@@ -286,7 +286,7 @@
             is_validate.validate((valid: boolean) => {
                 if (valid) {
                     this.$http.post(this.$config.register, {
-                        'userinfo': this.userinfo
+                        'user_info': this.userinfo
                     })
                         .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
