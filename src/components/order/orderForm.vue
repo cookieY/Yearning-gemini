@@ -48,7 +48,7 @@
                     <FormItem label="定时执行">
                         <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
                                     :options="invalidDate"
-                                    v-model="formItem.delay" @on-change="formItem.delay=$event"
+                                    @on-change="getDate"
                                     :editable="false"></DatePicker>
                     </FormItem>
 
@@ -98,7 +98,7 @@
             let is_validate: any = this.$refs['formItem'];
             is_validate.resetFields();
             this.formItem.table = ''
-            this.formItem.delay = null
+            this.formItem.delay = ''
         }
 
         nextStep() {

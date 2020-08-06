@@ -25,7 +25,7 @@
                     </Col>
                 </Row>
                 <br>
-                <Row type="flex" justify="center" align="bottom" >
+                <Row type="flex" justify="center" align="bottom">
                     <Button type="primary" long @click="toOriginal">返回</Button>
                 </Row>
             </Col>
@@ -39,9 +39,13 @@
 
     @Component({components: {}})
     export default class orderIsPost extends Vue {
-        toOriginal () {
-            modules_order.changed_step(0)
+        toOriginal() {
+            modules_order.clear_order()
             modules_order.changed_always({one: true, two: false, three: false})
+        }
+
+        destroyed() {
+            modules_order.clear_order()
         }
     }
 </script>

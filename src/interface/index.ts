@@ -5,7 +5,7 @@ interface order {
     data_base?: string,
     table?: string,
     text?: string,
-    delay?: null,
+    delay?: string,
     type?: number,
     status?: number,
     username?: string,

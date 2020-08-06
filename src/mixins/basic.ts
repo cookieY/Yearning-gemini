@@ -215,6 +215,10 @@ export default class att_mixins extends Vue {
         }
     };
 
+    getDate (vl:string) {
+        this.formItem.delay
+    }
+
     cancel() {
         this.$emit("input", false)
     }

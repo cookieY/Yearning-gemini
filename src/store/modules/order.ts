@@ -24,7 +24,7 @@ class order_local extends VuexModule {
         data_base: '',
         table: '',
         text: '',
-        delay: null,
+        delay: '',
         assigned: '',
         backup: 1,
         export: 0
@@ -68,7 +68,7 @@ class order_local extends VuexModule {
             data_base: '',
             table: '',
             text: '',
-            delay: null,
+            delay: '',
             assigned: '',
             backup: 1,
             export: 0

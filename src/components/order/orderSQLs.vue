@@ -14,7 +14,8 @@
                                 </TabPane>
                                 <template v-if="!is_dml">
                                     <TabPane label="表结构详情" name="order2" icon="md-folder">
-                                        <Table :columns="field_columns" :data="field_data" border max-height="250"></Table>
+                                        <Table :columns="field_columns" :data="field_data" border
+                                               max-height="250"></Table>
                                     </TabPane>
                                     <TabPane label="索引详情" name="order3" icon="md-folder">
                                         <Table :columns="idx_columns" :data="idx_data" border max-height="250"></Table>
@@ -154,16 +155,13 @@
 
         commitOrder() {
             let ty = this.is_dml ? 1 : 0
-            this.$http.post(`${this.$config.url}/sql/refer`, {
-                'ddl': this.formItem,
-                'sql': this.sql,
-                'ty': ty
-            })
+            let order = {sql: this.sql, type: ty, real_name: sessionStorage.getItem("real_name")}
+            Object.assign(order, this.formItem)
+            this.$http.post(`${this.$config.url}/sql/refer`, order)
                 .then((res: { data: string; }) => {
                     this.$Message.success(res.data)
-                    modules_order.changed_step(2)
+                    modules_order.changed_step(3)
                     modules_order.changed_always({one: false, two: false, three: true})
-                    modules_order.clear_order()
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)

@@ -11,7 +11,7 @@ class init_args extends VuexModule {
         data_base: '',
         table: '',
         text: '',
-        delay: null,
+        delay: '',
         type: 0,
         status: 0,
         username: '',

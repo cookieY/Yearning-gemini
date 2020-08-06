@@ -2,7 +2,7 @@
     <div>
         <h3>工单信息</h3>
         <br>
-        <Form >
+        <Form>
             <FormItem label="环境:">
                 <span>{{ formItem.idc}}</span>
             </FormItem>
@@ -29,10 +29,7 @@
             </FormItem>
 
             <FormItem label="定时执行">
-                <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
-                            :options="invalidDate"
-                            v-model="formItem.delay" @on-change="formItem.delay=$event"
-                            :editable="false" readonly></DatePicker>
+                <span>{{formItem.delay}}</span>
             </FormItem>
 
             <FormItem label="是否备份">
@@ -42,8 +39,8 @@
                 </RadioGroup>
             </FormItem>
 
-            <FormItem >
-               <Button type="primary" long @click="drafts">保存本次工单</Button>
+            <FormItem>
+                <Button type="primary" long @click="drafts">保存本次工单</Button>
             </FormItem>
 
             <FormItem>
@@ -65,7 +62,7 @@
 
     @Component({})
     export default class orderConfirm extends Mixins(att_mixins) {
-        drafts () {
+        drafts() {
             modules_order.draft_order()
         }
     }
