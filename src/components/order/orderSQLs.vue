@@ -1,5 +1,5 @@
 <template>
-    <div class="div-a">
+    <div>
         <Row>
             <Col span="4" class="margin-left-10">
                 <orderConfirm></orderConfirm>
@@ -12,7 +12,7 @@
                                 <TabPane label="填写SQL语句" name="order1" icon="md-code">
                                     <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
                                 </TabPane>
-                                <template v-if="!is_dml">
+                                <template>
                                     <TabPane label="表结构详情" name="order2" icon="md-folder">
                                         <Table :columns="field_columns" :data="field_data" border
                                                max-height="250"></Table>
@@ -196,7 +196,7 @@
 
     .div-a {
         position: absolute;
-        z-index: 1000;
         width: 100%;
+        min-height: 1000px;
     }
 </style>

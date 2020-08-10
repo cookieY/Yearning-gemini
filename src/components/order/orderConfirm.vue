@@ -3,6 +3,10 @@
         <h3>工单信息</h3>
         <br>
         <Form>
+            <FormItem label="工单类型:">
+                <span v-if="formItem.tp === 0">DDL</span>
+                <span v-else>DML</span>
+            </FormItem>
             <FormItem label="环境:">
                 <span>{{ formItem.idc}}</span>
             </FormItem>
@@ -15,8 +19,11 @@
                 <span>{{ formItem.data_base}}</span>
             </FormItem>
 
-            <FormItem label="表名:">
-                <span>{{ formItem.table}}</span>
+            <FormItem label="表名:" prop="table">
+                <Select v-model="formItem.table" placeholder="请选择">
+                    <Option v-for="item in fetchData.table" :value="item" :key="item">{{item}}
+                    </Option>
+                </Select>
             </FormItem>
 
             <FormItem label="工单说明:">
@@ -40,11 +47,7 @@
             </FormItem>
 
             <FormItem>
-                <Button type="primary" long @click="drafts">保存本次工单</Button>
-            </FormItem>
-
-            <FormItem>
-                <Alert v-if="is_dml">
+                <Alert>
                     <template slot="desc">
                         <p>1.错误等级 0正常,其他均为有问题。</p>
                         <p>2.只有错误等级等于0时提交按钮才会激活</p>
@@ -57,13 +60,12 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "../../mixins/basic";
-    import modules_order from "@/store/modules/order";
+    import fetch_mixin from "@/mixins/fetch_mixin";
 
     @Component({})
-    export default class orderConfirm extends Mixins(att_mixins) {
-        drafts() {
-            modules_order.draft_order()
+    export default class orderConfirm extends Mixins(fetch_mixin) {
+        mounted() {
+            this.fetchTable()
         }
     }
 </script>

@@ -1,26 +1,23 @@
 <template>
-    <div class="edittable-test-con">
+    <div  class="edittable-test-con">
         <Card>
             <div class="margin-bottom-10" style="margin-top: 2%">
                 <Row type="flex" justify="center" align="middle">
-                    <Col span="16">
+                    <Col span="22">
                         <orderSteps></orderSteps>
                     </Col>
                 </Row>
                 <br>
                 <Row>
-                    <div id="order" class="div-relative">
+                    <div>
                         <transition name="fade">
                             <div v-if="always.one">
                                 <orderForm></orderForm>
                             </div>
-                        </transition>
-                        <transition name="fade">
                             <div v-if="always.two">
                                 <orderSQLs></orderSQLs>
                             </div>
-                        </transition>
-                        <transition name="fade">
+
                             <div v-if="always.three">
                                 <orderIsPost></orderIsPost>
                             </div>
@@ -42,19 +39,10 @@
 
     @Component({components: {orderSteps, orderForm, orderSQLs, orderIsPost}})
     export default class orderFormContainer extends Mixins(att_mixins) {
-        created() {
-            let windows: any = window;
-            windows.particlesJS.load('order', `${process.env.BASE_URL}particlesjs-config.json`);
-        }
     }
 </script>
 
 <style scoped>
-    .div-relative {
-        position: relative;
-        width: 100%;
-        height: 100%;
-    }
     .fade-enter-active, .fade-leave-active {
         transition: opacity .5s;
     }

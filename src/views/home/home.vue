@@ -89,43 +89,6 @@
         </Row>
         <br>
         <Row style="margin-left: 0.5%">
-            <Col span="23">
-                <Card>
-                    <p slot="title" class="card-title">
-                        <Icon type="ios-megaphone" size="24"/>
-                        {{$t('dash.quick')}}
-                    </p>
-                    <Row>
-                        <Col span="1" offset="2">
-                            <Button type="text" to="order/ddl">
-                                <Icon type="md-git-merge" size="24"/>
-                                DDL工单提交
-                            </Button>
-                        </Col>
-                        <Col span="1" offset="3">
-                            <Button type="text" to="order/dml">
-                                <Icon type="md-code" size="24"/>
-                                DML工单提交
-                            </Button>
-                        </Col>
-                        <Col span="1" offset="3">
-                            <Button type="text" to="query_page">
-                                <Icon type="ios-podium" size="24"/>
-                                查询
-                            </Button>
-                        </Col>
-                        <Col span="1" offset="3">
-                            <Button type="text" to="my_order">
-                                <Icon type="md-person" size="24"/>
-                                我的工单
-                            </Button>
-                        </Col>
-                    </Row>
-                </Card>
-            </Col>
-        </Row>
-        <br>
-        <Row style="margin-left: 0.5%">
             <Col span="7">
                 <Card>
                     <p slot="title" class="card-title">

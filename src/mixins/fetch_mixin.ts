@@ -48,19 +48,17 @@ export default class fetch_mixins extends Mixins(att) {
     }
 
     fetchTable() {
-        if (!this.is_dml) {
-            if (this.formItem.data_base) {
-                this.$http.put(`${this.$config.url}/fetch/table`, {
-                    'source': this.formItem.source,
-                    'base': this.formItem.data_base
-                })
-                    .then((res: { data: { table: string[]; highlight: {} }; }) => {
-                        this.fetchData.table = res.data.table;
-                        modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
-                    }).catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-            }
+        if (this.formItem.data_base) {
+            this.$http.put(`${this.$config.url}/fetch/table`, {
+                'source': this.formItem.source,
+                'base': this.formItem.data_base
+            })
+                .then((res: { data: { table: string[]; highlight: {} }; }) => {
+                    this.fetchData.table = res.data.table;
+                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
+                }).catch((error: any) => {
+                this.$config.err_notice(this, error)
+            })
         }
     }
 

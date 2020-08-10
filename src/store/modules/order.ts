@@ -8,8 +8,8 @@ import sqlFormatter from "sql-formatter";
 interface SQLTest {
     status?: string
     level?: number
-    sql?:string
-    error?:string
+    sql?: string
+    error?: string
     affect_rows?: number
 }
 
@@ -19,6 +19,7 @@ class order_local extends VuexModule {
     is_dml: boolean = false
     sql: string = ''
     order: order = {
+        tp: 0,
         idc: '',
         source: '',
         data_base: '',

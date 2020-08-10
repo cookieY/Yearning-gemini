@@ -12,7 +12,7 @@
                 <Row>
                     <Col span="24">
                         <search text="账号名" @refresh="current_page"></search>
-                        <Button type="info" @click="queryQuickCancel" class="margin-left-10" size="small">全部中止</Button>
+                        <Button type="warning" @click="queryQuickCancel" class="margin-left-10" size="small">全部中止</Button>
                         <br>
                         <br>
                         <Table border :columns="columns" :data="table_data" stripe>

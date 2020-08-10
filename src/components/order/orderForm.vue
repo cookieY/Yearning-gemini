@@ -1,8 +1,16 @@
 <template>
-    <div class="div-a">
+    <div>
         <Row type="flex" justify="center" align="middle">
             <Col span="10">
                 <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" id="fontsize">
+
+                    <FormItem label="工单类型:" required>
+                        <Select v-model="formItem.tp" @on-change="changedTp">
+                            <Option :value="0" label="DDL"></Option>
+                            <Option :value="1" label="DML"></Option>
+                        </Select>
+                    </FormItem>
+
                     <FormItem label="环境:" prop="idc">
                         <Select v-model="formItem.idc" @on-change="fetchDiffSource">
                             <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
@@ -21,15 +29,8 @@
                     </FormItem>
 
                     <FormItem label="库名:" prop="data_base">
-                        <Select v-model="formItem.data_base" placeholder="请选择" @on-change="fetchTable">
+                        <Select v-model="formItem.data_base" placeholder="请选择">
                             <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}
-                            </Option>
-                        </Select>
-                    </FormItem>
-
-                    <FormItem label="表名:" prop="table" v-if="!is_dml">
-                        <Select v-model="formItem.table" placeholder="请选择">
-                            <Option v-for="item in fetchData.table" :value="item" :key="item">{{item}}
                             </Option>
                         </Select>
                     </FormItem>
@@ -111,8 +112,11 @@
                     this.$Message.warning("请填写必选项信息!")
                 }
             })
+        }
 
-
+        changedTp(vl: number) {
+            modules_order.changed_is_dml(vl === 1)
+            this.resetFields('formItem')
         }
 
         mounted() {

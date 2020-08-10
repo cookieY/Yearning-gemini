@@ -120,6 +120,8 @@ export default class att_mixins extends Vue {
         row: 0
     }
 
+    is_multi = false
+
     is_open = false;
 
     edit_password = false;
@@ -214,6 +216,15 @@ export default class att_mixins extends Vue {
             return date && date.valueOf() < Date.now() - 86400000
         }
     };
+
+    fetch_perform() {
+        this.$http.get(`${this.$config.url}/fetch/perform`)
+            .then((res: { data: { perform: string[], multi: boolean }; }) => {
+                this.multi_list = res.data.perform
+                this.is_multi = res.data.multi
+            })
+            .catch((err: any) => this.$config.err_notice(this, err))
+    }
 
     getDate (vl:string) {
         this.formItem.delay

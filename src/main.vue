@@ -89,6 +89,7 @@
     import axios from 'axios'
     import {Component, Vue} from "vue-property-decorator";
     import module_general from "@/store/modules/general";
+    import module_init_args from "@/store/modules/init_args";
 
     @Component({components: {sidebarMenu, breadcrumbNav}})
     export default class main_farm extends Vue {
@@ -243,6 +244,10 @@
 
         beforeunloadFn() {
             module_general.snippetTagToJson()
+            let root = {
+                order_item: module_init_args.order_item,
+            }
+            sessionStorage.setItem("root", JSON.stringify(root));
         }
 
         mounted() {
@@ -259,6 +264,10 @@
             module_general.snippetTagFromJson()
             axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('jwt');
             window.addEventListener('beforeunload', () => this.beforeunloadFn())
+            if (sessionStorage.getItem("root") !== null) {
+                let root = JSON.parse(sessionStorage.getItem("root") as string)
+                module_init_args.fetch_order_item(root.order_item)
+            }
         }
 
         destroyed() {

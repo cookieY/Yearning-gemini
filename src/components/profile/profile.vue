@@ -1,49 +1,51 @@
 <template>
     <div>
         <Row>
-            <Card>
-                <p slot="title">
-                    单号：{{ this.order.work_id }}
-                </p>
-                <h3>工单基础信息</h3>
-                <br>
-                <basic></basic>
-                <h3>操作</h3>
-                <br>
+            <Card dis-hover>
                 <Row>
-                    <Col span="24">
-                        <Form inline>
-                            <FormItem>
-                                <Button type="info" @click.native="$router.go(-1)" size="small">返回</Button>
-                            </FormItem>
-                            <FormItem>
-                                <Button type="warning" v-if="order.status === 1" @click.native="open_form()"
-                                        size="small">查看回滚语句
-                                </Button>
-                            </FormItem>
-                            <FormItem>
-                                <Button type="primary"
-                                        v-if="order.status === 0 || order.status ===4 || order.status ===0"
-                                        @click.native="open_form()" size="small">重新提交
-                                </Button>
-                            </FormItem>
-                            <FormItem>
-                                <Poptip
-                                        confirm
-                                        title="确定要撤销工单吗？"
-                                        @on-ok="delOrder(order.work_id)"
-                                        transfer>
-                                    <Button type="primary" v-if="order.status === 2 " ghost size="small">工单撤销
-                                    </Button>
-                                </Poptip>
-                            </FormItem>
-                        </Form>
+                    <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
+                    <Col span="5" offset="14">
+                        <Button type="warning" v-if="order.status === 1" @click.native="open_form()">查看回滚语句
+                        </Button>
+                        <Button type="primary"
+                                v-if="order.status === 0 || order.status ===4 || order.status ===0"
+                                @click.native="open_form()">重新提交
+                        </Button>
+                        <Poptip
+                                confirm
+                                title="确定要撤销工单吗？"
+                                @on-ok="delOrder(order.work_id)"
+                                transfer>
+                            <Button type="primary" v-if="order.status === 2 " ghost>工单撤销
+                            </Button>
+                        </Poptip>
+                        <Button type="info" @click.native="$router.go(-1)" style="margin-left: 2%">返回</Button>
                     </Col>
                 </Row>
-                <h3>SQL详情</h3>
                 <br>
-                <collapse></collapse>
+                <basic></basic>
             </Card>
+            <br>
+            <Row type="flex" justify="center">
+                <Card dis-hover style="width: 98%;">
+                    <p slot="title">执行进度</p>
+                    <Steps :current="2" size="small">
+                        <Step title="工单提交">
+                            <div slot="content">
+                                <p>审核人: henry</p>
+                                <p>提交时间: 2020-08-08</p>
+                            </div>
+                        </Step>
+                        <Step title="工单审核"></Step>
+                        <Step title="工单转交"></Step>
+                        <Step title="工单执行"></Step>
+                    </Steps>
+                    <br>
+                    <h3>SQL详情</h3>
+                    <br>
+                    <collapse></collapse>
+                </Card>
+            </Row>
         </Row>
 
         <BackTop :height="100" :bottom="200">

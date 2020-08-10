@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import {appRouter} from '@/router'
 import createVuexAlong from "vuex-along";
+import module_init_args from "@/store/modules/init_args";
 
 Vue.use(Vuex);
 
@@ -16,14 +16,5 @@ export default new Vuex.Store({
         unlock() {
             sessionStorage.setItem('locking', '0')
         },
-    },
-    plugins: [
-        createVuexAlong({
-            name: "yearning",
-            justSession: true,
-            session: {
-                list: ["init_args.order_item"],
-            }
-        })
-    ]
+    }
 });

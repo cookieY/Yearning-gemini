@@ -65,7 +65,6 @@
         auth = sessionStorage.getItem('auth');
         summit = true;
         multi_name = '';
-        is_multi = false
         sql_columns = [
             {
                 type: 'expand',
@@ -143,15 +142,6 @@
         cancel() {
             this.$emit("input", false);
             this.summit = true
-        }
-
-        fetch_perform() {
-            this.$http.get(`${this.$config.url}/fetch/perform`)
-                .then((res: { data: { perform: string[], multi: boolean }; }) => {
-                    this.multi_list = res.data.perform
-                    this.is_multi = res.data.multi
-                })
-                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         testTo() {

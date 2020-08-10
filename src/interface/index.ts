@@ -1,4 +1,5 @@
 interface order {
+    tp?: number
     work_id?: string
     idc?: string
     source?: string,

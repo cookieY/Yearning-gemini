@@ -1,7 +1,7 @@
 <template>
     <Form :label-width="80" :model="order">
         <Row>
-            <Col span="12">
+            <Col span="8">
                 <FormItem label="环境">
                     <span>{{order.idc}}</span>
                 </FormItem>
@@ -11,6 +11,8 @@
                 <FormItem label="数据库">
                     <span>{{order.data_base}}</span>
                 </FormItem>
+            </Col>
+            <Col span="8">
                 <FormItem label="数据表">
                     <span>{{order.table}}</span>
                 </FormItem>
@@ -22,14 +24,11 @@
                     <Tag color="primary" v-else-if="order.status === 5">待执行</Tag>
                     <Tag color="warning" v-else-if="order.status === 2">执行中</Tag>
                 </FormItem>
-            </Col>
-            <Col span="12">
                 <FormItem label="提交时间">
                     <span>{{order.date}}</span>
                 </FormItem>
-                <FormItem label="执行时间">
-                    <span>{{order.execute_time}}</span>
-                </FormItem>
+            </Col>
+            <Col span="8">
                 <FormItem label="提交人">
                     <span>{{order.username}}</span>
                 </FormItem>

@@ -40,6 +40,13 @@ const main_child = [
         component: () => import('./views/order/myOrder.vue')
     },
     {
+        path: 'order',
+        name: 'order',
+        title: 'order',
+        icon: 'md-code',
+        component: () => import('./views/order/order.vue')
+    },
+    {
         path: 'board',
         name: 'board',
         title: '公告',
@@ -73,36 +80,6 @@ export const appRouter = [
         redirect: '/home',
         children: [
             ...main_child
-        ]
-    },
-    {
-        path: '/order',
-        icon: 'md-folder',
-        name: 'order',
-        title: '工单提交',
-        component: Index,
-        access: 0,
-        children: [
-            {
-                path: 'ddl',
-                name: 'ddl',
-                title: 'DDL',
-                icon: 'md-git-merge',
-                meta: {
-                    keepAlive: true
-                },
-                component: () => import('./views/order/ddlOrder.vue')
-            },
-            {
-                path: 'dml',
-                name: 'dml',
-                title: 'DML',
-                icon: 'md-code',
-                meta: {
-                    keepAlive: true
-                },
-                component: () => import('./views/order/dmlOrder.vue')
-            }
         ]
     },
     {
@@ -205,6 +182,13 @@ export const appRouter = [
                 title: '设置',
                 icon: 'md-settings',
                 component: () => import('./views/management/setting.vue')
+            },
+            {
+                path: 'flow',
+                name: 'flow',
+                title: '流程模板',
+                icon: 'md-trophy',
+                component: () => import('./views/management/flow.vue')
             },
             {
                 path: 'roles',
