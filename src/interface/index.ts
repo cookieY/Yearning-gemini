@@ -16,6 +16,7 @@ interface order {
     assigned?: string
     backup?: number,
     export?: number
+    current_step?: number
 }
 
 interface other_modal {
@@ -92,6 +93,12 @@ interface High_light {
     vl: string
 }
 
+interface StepOrder {
+    desc: string
+    auditor: string[],
+    type: number  // 0 audit 1 executor
+}
+
 export {
     order,
     other_modal,
@@ -101,5 +108,6 @@ export {
     Permission,
     Connection_list,
     Fetch_data,
-    High_light
+    High_light,
+    StepOrder
 }

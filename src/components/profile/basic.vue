@@ -17,7 +17,7 @@
                     <span>{{order.table}}</span>
                 </FormItem>
                 <FormItem label="当前状态">
-                    <Tag color="primary" v-if="order.status === 2">待审核</Tag>
+                    <Tag color="primary" v-if="order.status === 2">审核中</Tag>
                     <Tag color="error" v-else-if="order.status === 0">驳回</Tag>
                     <Tag color="success" v-else-if="order.status === 1">已执行</Tag>
                     <Tag color="error" v-else-if="order.status === 4">执行失败</Tag>

@@ -38,7 +38,13 @@ export default class detail_mixins extends Mixins(att) {
         is_more: '10'
     }
 
-    sqls = ''
+    get sqls() {
+        return module_init_args.order_sql
+    }
+
+    set sqls(vl) {
+        module_init_args.fetch_order_sql(vl)
+    }
 
     get order() {
         return module_init_args.order_item
@@ -51,7 +57,7 @@ export default class detail_mixins extends Mixins(att) {
         spin.show()
         this.$http.get(`${this.$config.url}/fetch/sql?work_id=${this.order.work_id}&limit=${vl}`)
             .then((res: { data: string; }) => {
-                this.sqls = res.data
+                module_init_args.fetch_order_sql(res.data)
             })
             .catch((err: any) => this.$config.err_notice(this, err))
             .finally(() => {

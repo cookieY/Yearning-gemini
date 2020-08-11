@@ -28,7 +28,7 @@ class order_local extends VuexModule {
         delay: '',
         assigned: '',
         backup: 1,
-        export: 0
+        export: 0,
     }
     always: object = {
         one: true,
@@ -72,7 +72,8 @@ class order_local extends VuexModule {
             delay: '',
             assigned: '',
             backup: 1,
-            export: 0
+            export: 0,
+            tp: 0
         }
         this.steps = 0
         this.sql = ''

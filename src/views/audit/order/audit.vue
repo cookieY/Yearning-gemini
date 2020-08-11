@@ -21,10 +21,7 @@
                         <search text="账号名" @refresh="current_page"></search>
                         <Table border :columns="columns" :data="table_data" stripe>
                             <template slot-scope="{ row }" slot="action">
-                                <div v-if="row.status !== 5 || auth==='perform'">
-                                    <Button type="primary" @click="openOrder(row)" size="small" ghost
-                                            v-if="row.status === 2 || auth==='perform' && row.status === 5">审批
-                                    </Button>
+                                <div v-if="row.status !== 5">
                                     <Button type="success" @click="orderDetail(row)" class="margin-left-10"
                                             size="small" ghost>
                                         工单信息
@@ -57,20 +54,14 @@
                 </Row>
             </Card>
         </Row>
-
-
         <osc v-model="is_osc"></osc>
-
-        <profile v-model="is_order" @reject="rejectTo" @agreed="agreedTo"
-                 @perform="performTo"></profile>
-        <reject @post="current_page(this.current)" v-model="is_open"></reject>
     </div>
 </template>
 <script lang="ts">
     import audit_mixins from "@/mixins/audit_mixin";
     import {Component, Mixins} from "vue-property-decorator";
     import search from "@/components/search/search.vue";
-    import profile from "@/views/audit/order/profile.vue";
+    import profile from "@/components/profile/testing.vue";
     import osc from "@/views/audit/order/osc.vue";
     import reject from "@/views/audit/order/reject.vue";
 

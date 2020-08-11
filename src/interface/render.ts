@@ -44,7 +44,7 @@ render.tag = (h: any, params: { row: { status: number }; }) => {
     let text = '';
     if (row.status === 2) {
         color = 'primary';
-        text = '待审核';
+        text = '审核中';
     } else if (row.status === 0) {
         color = 'error';
         text = '驳回';

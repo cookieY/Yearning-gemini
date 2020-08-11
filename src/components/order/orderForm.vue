@@ -96,10 +96,7 @@
         }
 
         clearForm() {
-            let is_validate: any = this.$refs['formItem'];
-            is_validate.resetFields();
-            this.formItem.table = ''
-            this.formItem.delay = ''
+            modules_order.clear_order()
         }
 
         nextStep() {

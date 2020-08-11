@@ -88,58 +88,6 @@ export default class audit_mixins extends Mixins(att_mixins) {
         modules_order.fetch_order_osc_id(vl.work_id)
     }
 
-    openOrder(row: any) {
-        module_init_args.fetch_order_item(row)
-        this.$http.get(`${this.$config.url}/audit/sql?k=${row.work_id}`)
-            .then((res: { data: object[]; }) => {
-                modules_order.fetch_order_sql(res.data)
-            })
-            .catch((err: any) => {
-                this.$config.err_notice(this, err)
-            })
-            .finally(() => this.is_order = !this.is_order)
-    }
-
-    agreedTo(multi_name: string, work_id: string) {
-        if (multi_name === '') {
-            this.$Message.error('请选择执行人!')
-        } else {
-            this.$http.post(`${this.$config.url}/audit/refer/perform`, {
-                'perform': multi_name,
-                'work_id': work_id
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-                .finally(() => {
-                    this.is_order = !this.is_order;
-                    this.current_page(this.current)
-                })
-        }
-    }
-
-    performTo(work_id: string) {
-        this.is_order = false;
-        this.$http.post(`${this.$config.url}/audit/execute`, {
-            'work_id': work_id
-        })
-            .then((res: { data: string; }) => {
-                this.$config.notice(res.data);
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
-            })
-            .finally(() => this.current_page(this.current))
-    }
-
-    rejectTo() {
-        this.is_open = !this.is_open;
-        this.is_order = !this.is_order;
-    }
-
     orderDetail(row: any) {
         module_init_args.fetch_order_item(row)
         this.$router.push({

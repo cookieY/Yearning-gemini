@@ -25,7 +25,7 @@
                                style="background: #5cadff"
                                size="large"></Table>
                         <br>
-                        <Page :total="page_number" show-elevator @on-change="current_page" :page-size="20"
+                        <Page :total="page_number" show-elevator @on-change="current_page" :page-size="10"
                               ref="page"></Page>
                     </Col>
                 </Row>
