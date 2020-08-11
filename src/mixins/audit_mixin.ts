@@ -70,7 +70,6 @@ export default class audit_mixins extends Mixins(att_mixins) {
     auth = sessionStorage.getItem('auth');
     reboot = 0;
     valve = true;
-    is_order = false;
     is_osc = false;
     url = `${this.$config.url}/audit`
 
