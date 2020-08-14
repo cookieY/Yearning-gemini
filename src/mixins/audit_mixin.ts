@@ -48,8 +48,8 @@ export default class audit_mixins extends Mixins(att_mixins) {
             slot: 'delay'
         },
         {
-            title: '执行人',
-            key: 'executor',
+            title: '当前操作人',
+            key: 'assigned',
             sortable: true
         },
         {

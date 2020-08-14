@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Col span="4">
+        <Col span="5">
             <Card>
                 <p slot="title">
                     <Icon type="md-settings"></Icon>
@@ -25,8 +25,7 @@
                         </FormItem>
                         <FormItem label="角色" prop="group">
                             <Select v-model="userinfo.group" placeholder="请选择">
-                                <Option value="admin">审核人</Option>
-                                <Option value="perform" v-if="connectionList.multi">执行人</Option>
+                                <Option value="admin">操作人</Option>
                                 <Option value="guest">提交人</Option>
                             </Select>
                         </FormItem>
@@ -40,7 +39,7 @@
                 </div>
             </Card>
         </Col>
-        <Col span="20" class="padding-left-10">
+        <Col span="19" class="padding-left-10">
             <Card>
                 <p slot="title">
                     <Icon type="md-people"></Icon>
@@ -54,9 +53,8 @@
                 <div class="edittable-con-1">
                     <Table border :columns="columns" :data="table_data" stripe height="520">
                         <template slot-scope="{ row }" slot="rule">
-                            <span v-if="row.rule === 'admin' && row.username !== 'admin'">审核人</span>
+                            <span v-if="row.rule === 'admin'">操作人</span>
                             <span v-else-if="row.rule === 'guest'">提交人</span>
-                            <span v-else-if="row.rule === 'perform'">执行人</span>
                             <span v-else-if="row.rule === 'super'">超级管理员</span>
                         </template>
                         <template slot-scope="{ row }" slot="action">
@@ -69,14 +67,9 @@
                             <Button type="info" size="small" @click="edit_user(row)" class="margin-left-10">详细信息
                             </Button>
                             <template v-if="row.username !== 'admin'">
-                                <Poptip
-                                        confirm
-                                        title="确定删除改用户吗？"
-                                        transfer
-                                        @on-ok="delUser(row)">
-                                    <Button type="warning" size="small" v-if="row.id !== 1" class="margin-left-10">删除
-                                    </Button>
-                                </Poptip>
+                                <Button type="warning" size="small" v-if="row.id !== 1" class="margin-left-10"
+                                        @click="show_depend(row)">删除
+                                </Button>
                             </template>
                         </template>
                     </Table>
@@ -87,6 +80,18 @@
             </Card>
         </Col>
 
+        <Modal v-model="is_depend" title="依赖清单">
+            <Divider orientation="left">自定义流程</Divider>
+            <Tag type="border" v-for="i in depend_list.source" :key="`source-${i.source}`">{{i.source}}</Tag>
+            <Divider orientation="left">权限组</Divider>
+            <Tag type="border" v-for="i in depend_list.grained" :key="`grained-${i.name}`">{{i.name}}</Tag>
+            <Divider orientation="left">用户权限</Divider>
+            <Tag type="border" v-for="i in depend_list.up" :key="`up-${i.username}`">{{i.username}}</Tag>
+            <div slot="footer">
+                <Button type="error" @click="delUser" :disabled="del_disabled">删除</Button>
+            </div>
+        </Modal>
+
         <edit_password v-model="edit_password" is_admin></edit_password>
 
         <edit_rule is_admin v-model="is_open" @success="current_page"></edit_rule>
@@ -95,7 +100,7 @@
     </div>
 </template>
 <script lang="ts">
-    import '../../styles/tablesmargintop.css'
+    import '../../../styles/tablesmargintop.css'
     import edit_password from "@/components/modal/edit_password.vue";
     import {Mixins, Component} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
@@ -103,6 +108,8 @@
     import edit_info from "@/components/modal/edit_info.vue";
     import module_verify from "@/store/modules/verify";
     import module_user from "@/store/modules/user";
+    // eslint-disable-next-line no-unused-vars
+    import {DependUser} from "@/views/management/user/types";
 
     @Component({components: {edit_password, edit_rule, edit_info}})
     export default class user_info extends Mixins(att_mixins) {
@@ -123,6 +130,8 @@
                 callback()
             }
         };
+
+        is_depend = false
 
         is_edit = false
 
@@ -271,9 +280,13 @@
         // 用户名
         username = '';
 
+        del_disabled = true
+
         payload = {} as any
 
-        edit_code(row: { username: string; }) {
+        depend_list = {} as DependUser
+
+        edit_code(row: { username: string }) {
             this.edit_password = true;
             module_user.fetch_user_info(row)
         }
@@ -333,19 +346,38 @@
                 })
         }
 
-        delUser(row: { username: string; }) {
+        show_depend(row: { username: string; }) {
+            this.is_depend = !this.is_depend
+            this.del_disabled = true
+            this.username = row.username
+            this.$http.get(`${this.$config.url}/manage_user/depend?user=${row.username}`)
+                .then((res: { data: DependUser }) => {
+                    this.depend_list = res.data
+                })
+                .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => {
+                    if (this.depend_list.up.length === 0 && this.depend_list.grained.length === 0 && this.depend_list.source.length === 0) {
+                        this.del_disabled = !this.del_disabled
+                    }
+                })
+        }
+
+        delUser() {
             let step = this.current;
             if (this.table_data.length === 1) {
                 step = step - 1
             }
-            this.$http.delete(`${this.$config.url}/manage_user?user=${row.username}`)
+            this.$http.delete(`${this.$config.url}/manage_user?user=${this.username}`)
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
-                .finally(() => this.current_page(step))
+                .finally(() => {
+                    this.current_page(step)
+                    this.is_depend = !this.is_depend
+                })
         }
 
         queryData() {
@@ -364,6 +396,6 @@
     }
 </script>
 <style lang="less" scoped>
-    @import '../../styles/common.less';
-    @import '../../styles/table.less';
+    @import '../../../styles/common.less';
+    @import '../../../styles/table.less';
 </style>

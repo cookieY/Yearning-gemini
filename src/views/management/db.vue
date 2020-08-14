@@ -39,11 +39,6 @@
                                 <Radio :label="0">写</Radio>
                             </RadioGroup>
                         </Form-item>
-                        <FormItem label="所属管理者:" prop="admin">
-                            <Select v-model="general.admin" multiple>
-                                <Option v-for="i in admin_list" :key="i.username" :value="i.username"></Option>
-                            </Select>
-                        </FormItem>
                         <Button type="info" @click="testConnection()">测试连接</Button>
                         <Button type="success" @click="addConnection()" style="margin-left: 5%">确定</Button>
                         <Button type="warning" @click="resetForm()" style="margin-left: 5%">重置</Button>
@@ -112,11 +107,6 @@
                 <FormItem label="密码:">
                     <Input v-model="edit_base_info.password" type="password"></Input>
                 </FormItem>
-                <FormItem label="所属管理员:">
-                    <Select v-model="edit_base_info.admin" multiple>
-                        <Option v-for="i in admin_list" :key="i.username" :value="i.username">{{i.username}}</Option>
-                    </Select>
-                </FormItem>
             </Form>
         </Modal>
 
@@ -133,7 +123,6 @@
         port: string,
         username: string,
         password: string,
-        admin: string
     }
 
     const regExp_Name = (rule: any, value: any, callback: any) => {
@@ -233,17 +222,10 @@
                     validator: regExp_password,
                     trigger: 'blur'
                 }
-            ],
-            admin: {
-                required: true,
-                message: '请选择所属管理员',
-                type: 'array',
-                min: 1,
-            }
+            ]
         };
         comList = [];
         edit_base_info = {} as edit_modal;
-        admin_list = []
 
         resetForm() {
             this.resetFields('formValidate')
@@ -276,7 +258,6 @@
                         'password': this.general.password,
                         'port': parseInt(this.general.port),
                         'is_query': this.general.is_query,
-                        'admin': this.general.admin
                     })
                         .then((res: { data: string; }) => {
                             this.$config.notice(res.data);
@@ -318,7 +299,6 @@
                     this.table_data = res.data.data;
                     this.page_number = parseInt(res.data.page);
                     this.comList = res.data.custom;
-                    this.admin_list = res.data.admin;
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)

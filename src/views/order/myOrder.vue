@@ -64,13 +64,8 @@
                 sortable: true
             },
             {
-                title: '审核/执行人',
+                title: '当前操作人',
                 key: 'assigned',
-                sortable: true
-            },
-            {
-                title: '多级审核执行人',
-                key: 'executor',
                 sortable: true
             },
             {

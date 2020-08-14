@@ -1,8 +1,11 @@
 <template>
     <div>
-        <Table :columns="col" :data="table_data">
+        <Table :columns="col" :data="table_data" max-height="200">
             <template slot-scope="{row}" slot="action">
-                <Tag color="primary">{{row.action}}</Tag>
+                <Tag color="blue" v-if="row.action === '已提交'">{{row.action}}</Tag>
+                <Tag color="error" v-else-if="row.action === '驳回'">{{row.action}}</Tag>
+                <Tag color="success" v-else-if="row.action === '审核通过并执行'">{{row.action}}</Tag>
+                <Tag color="primary" v-else>{{row.action}}</Tag>
             </template>
         </Table>
     </div>
@@ -35,7 +38,7 @@
         ]
 
         mounted() {
-            this.$http.get(`${this.$config.url}/audit/steps?work_id=${this.order.work_id}`)
+            this.$http.get(`${this.$config.url}/steps?work_id=${this.order.work_id}`)
                 .then((res: { data: never[]; }) => this.table_data = res.data)
                 .catch((err: any) => this.$config.err_notice(this, err))
         }

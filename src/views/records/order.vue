@@ -69,12 +69,8 @@
           key: 'real_name'
         },
         {
-          title: '审核/执行人',
+          title: '当前操作人',
           key: 'assigned'
-        },
-        {
-          title: '执行人',
-          key: 'executor'
         },
         {
           title: '环境',

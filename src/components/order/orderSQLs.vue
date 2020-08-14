@@ -186,6 +186,7 @@
             modules_order.changed_step(0)
             modules_order.changed_always({one: true, two: false, three: false})
             modules_order.clear_order()
+            modules_order.changed_is_dml(this.formItem.tp === 1)
         }
     }
 </script>

@@ -8,12 +8,10 @@
             <FormItem label="真实姓名" prop="real_name">
                 <Input v-model="edit.real_name"></Input>
             </FormItem>
-            <FormItem label="角色" v-if="edit.username !== 'admin'" props="rule">
-                <Select v-model="edit.rule" placeholder="请选择">
-                    <Option value="admin">管理员</Option>
-                    <Option value="perform" v-if="edit.multi && edit.id !== 1">执行人</Option>
-                    <Option value="guest" v-if="edit.id !== 1">提交人</Option>
-                </Select>
+            <FormItem >
+                <span v-if="edit.rule === 'guest'">提交人</span>
+                <span v-else-if="edit.rule === 'admin'">操作人</span>
+                <span v-else>超级管理员</span>
             </FormItem>
             <FormItem label="部门" prop="department">
                 <Input v-model="edit.department" placeholder="请输入新部门"></Input>

@@ -2,7 +2,7 @@
     <div>
         <Form>
             <FormItem v-if="c_flag === 0">
-                <Select v-model="personal" placeholder="请选择转交人" style="width: 20%">
+                <Select v-model="personal" placeholder="请选择下一级审核人" style="width: 20%">
                     <Option v-for="i in p_flag" :key="i" :value="i" :label="i"></Option>
                 </Select>
             </FormItem>
@@ -21,7 +21,7 @@
                 <Table :columns="sql_columns" :data="sql_data" :max-height="300"></Table>
             </FormItem>
         </Form>
-        <reject @post="this.$router.go(-1)" v-model="is_open"></reject>
+        <reject v-model="is_open"></reject>
     </div>
 </template>
 
@@ -90,8 +90,10 @@
 
         get p_flag() {
             let flag = this.order.current_step as number;
-            if (flag >= module_init_args.order_step.length) {
+            if (flag >= module_init_args.order_step.length || this.c_flag === 1) {
                 flag = 0
+            } else {
+                flag = flag + 1
             }
             return module_init_args.order_step[flag].auditor
         }
@@ -101,9 +103,15 @@
         }
 
         agreed() {
+            if (this.personal === '') {
+                this.$Message.error({content:'请选择下一级审核人!'})
+                return
+            }
             this.$http.post(`${this.$config.url}/audit/agree`, {
                 // 接口需要修改 取消执行人角色
-                'work_id': this.order.work_id
+                'work_id': this.order.work_id,
+                'perform': this.personal,
+                'flag': this.order.current_step
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
@@ -129,6 +137,7 @@
                 })
                 .finally(() => {
                     this.summit = !this.summit
+                    this.$router.go(-1)
                 })
         }
 

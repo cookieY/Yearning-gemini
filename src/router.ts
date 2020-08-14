@@ -160,7 +160,7 @@ export const appRouter = [
                 name: 'management-user',
                 title: '用户',
                 icon: 'md-people',
-                component: () => import('./views/management/user.vue')
+                component: () => import('./views/management/user/user.vue')
             },
             {
                 path: 'management-database',
@@ -195,7 +195,7 @@ export const appRouter = [
                 name: 'roles',
                 title: '审核规则',
                 icon: 'md-aperture',
-                component: () => import('./views/management/roles.vue')
+                component: () => import('./views/management/role.vue')
             },
             {
                 path: 'task',

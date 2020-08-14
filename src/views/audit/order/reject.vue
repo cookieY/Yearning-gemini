@@ -41,7 +41,7 @@
             })
                 .then((res: { data: string; }) => {
                     this.$config.notice(res.data);
-                    this.$emit("post")
+                    this.$router.go(-1)
                 })
                 .catch((error: any) => {
                     this.$config.err_notice(this, error)

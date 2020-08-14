@@ -9,7 +9,6 @@ interface Edit {
     real_name?: string
     rule?: string
     email?: string
-    multi?: boolean
     password?: string
 }
 
@@ -23,7 +22,6 @@ class user extends VuexModule {
         real_name: '',
         rule: '',
         email: '',
-        multi: false,
         password: ''
     }
 

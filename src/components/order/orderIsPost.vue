@@ -34,13 +34,15 @@
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from "vue-property-decorator";
+    import {Component, Mixins} from "vue-property-decorator";
     import modules_order from "@/store/modules/order";
+    import att_mixins from "@/mixins/basic";
 
     @Component({components: {}})
-    export default class orderIsPost extends Vue {
+    export default class orderIsPost extends Mixins(att_mixins) {
         toOriginal() {
             modules_order.clear_order()
+            modules_order.changed_is_dml(this.formItem.tp === 1)
             modules_order.changed_always({one: true, two: false, three: false})
         }
 
@@ -52,9 +54,7 @@
 
 <style scoped>
     .div-a {
-        position: absolute;
-        z-index: 1000;
         width: 100%;
-        margin-top: 10%;
+        height: 500px;
     }
 </style>

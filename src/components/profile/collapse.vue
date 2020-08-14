@@ -31,12 +31,6 @@
                 </Row>
             </div>
         </Panel>
-        <Panel name="reject" v-if="order.status === 0">
-            驳回理由
-            <div slot="content">
-                {{order.rejected}}
-            </div>
-        </Panel>
     </Collapse>
 </template>
 

@@ -104,6 +104,8 @@
 
         raw_code = ''
 
+        relevant: string[] = []
+
         tmp_steps = [] as any
 
         tpl_step = [
@@ -130,21 +132,21 @@
 
         open_order(vl: string) {
             // 如果回传为null 则使用初始化数据
-            this.$http.put(`${this.$config.url}/tpl`,{
+            this.$http.put(`${this.$config.url}/tpl`, {
                 source: vl
             })
-            .then((res: { data: any; }) => {
-               if (res.data.steps === null) {
-                   this.tmp_steps = this.tpl_step
-               } else {
-                   this.tmp_steps = res.data.steps
-               }
-            })
-            .catch((err: any) => this.$config.err_notice(this,err))
-            .finally(() => {
-                this.is_open = !this.is_open
-                this.tpl.source = vl
-            })
+                .then((res: { data: any; }) => {
+                    if (res.data.steps === null) {
+                        this.tmp_steps = this.tpl_step
+                    } else {
+                        this.tmp_steps = res.data.steps
+                    }
+                })
+                .catch((err: any) => this.$config.err_notice(this, err))
+                .finally(() => {
+                    this.is_open = !this.is_open
+                    this.tpl.source = vl
+                })
 
         }
 
@@ -166,7 +168,7 @@
             if (this.tpl.tmp_type === 1) {
                 for (let i of this.tmp_steps) {
                     if (i.type === 1) {
-                        this.$Message.warning({content:'执行阶段仅允许添加一次!'})
+                        this.$Message.warning({content: '执行阶段仅允许添加一次!'})
                         return;
                     }
                 }

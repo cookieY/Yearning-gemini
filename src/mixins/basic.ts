@@ -109,7 +109,6 @@ export default class att_mixins extends Vue {
         username: '',
         password: '',
         port: '',
-        admin: '',
         is_query: 2,
         tp: '',
         idc: '',
@@ -119,8 +118,6 @@ export default class att_mixins extends Vue {
         table: '',
         row: 0
     }
-
-    is_multi = false
 
     is_open = false;
 
@@ -157,8 +154,7 @@ export default class att_mixins extends Vue {
     connectionList: any = {
         connection: [],
         query: [],
-        person: [],
-        multi: false
+        person: []
     };
 
     setCompletions(editor: any, session: any, pos: any, prefix: any, callback: (arg0: null, arg1: { caption: any; value: any; meta: any; }[]) => void) {
@@ -190,21 +186,14 @@ export default class att_mixins extends Vue {
             page: vl,
             find: modules_search.find
         })
-            .then((res: { data: { multi: boolean; data: never[]; page: number; multi_list: string[]; source: never[]; query: never[]; audit: never[]; group_list: never[] }; }) => {
-                if (!res.data.multi) {
-                    for (let i = 0; i < this.columns.length; i++) {
-                        if (this.columns[i].key === 'executor') {
-                            this.columns.splice(i, 1)
-                        }
-                    }
-                }
+            .then((res: { data: { multi: boolean; data: never[]; page: number; multi_list: string[]; source: never[]; query: never[]; common: never[]; group_list: never[] }; }) => {
                 // 通用fetch
                 this.table_data = res.data.data;
                 this.page_number = res.data.page;
                 // 权限组fetch
                 this.connectionList.connection = res.data.source;
                 this.connectionList.query = res.data.query;
-                this.connectionList.person = res.data.audit;
+                this.connectionList.person = res.data.common;
             })
             .catch((error: any) => {
                 this.$config.err_notice(this, error)
@@ -221,7 +210,6 @@ export default class att_mixins extends Vue {
         this.$http.get(`${this.$config.url}/fetch/perform`)
             .then((res: { data: { perform: string[], multi: boolean }; }) => {
                 this.multi_list = res.data.perform
-                this.is_multi = res.data.multi
             })
             .catch((err: any) => this.$config.err_notice(this, err))
     }
