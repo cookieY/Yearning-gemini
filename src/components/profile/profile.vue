@@ -44,7 +44,7 @@
                     <h3>SQL审核</h3>
                     <collapse></collapse>
                     <br>
-                    <Testing v-if="order.status ===2"></Testing>
+                    <Testing v-if="order.status ===2 && order.assigned ===user"></Testing>
                 </Card>
             </Row>
         </Row>
@@ -74,6 +74,8 @@
         get order_step() {
             return module_init_args.order_step
         }
+
+        user = sessionStorage.getItem('user')
 
         mounted() {
             this.$http.put(`${this.$config.url}/tpl`, {source: this.order.source})
