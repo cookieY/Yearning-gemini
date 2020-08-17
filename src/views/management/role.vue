@@ -6,15 +6,14 @@
         </p>
         <Row>
             <Col :span="15">
-<!--                <Input placeholder="根据描述信息搜索" v-model="find.text"-->
-<!--                       clearable @on-clear="clear_data" @on-enter="search_data"/>-->
-<!--                -->
-                <Input search enter-button="Search" placeholder="Enter something..." clearable/>
+                <Input placeholder="根据描述信息搜索" v-model="find.text"
+                       clearable @on-clear="clear_data" @on-enter="search_data"/>
+
             </Col>
             <Col :span="1">
                 <Button @click="search_data" class="margin-left-10" type="primary">搜索</Button>
             </Col>
-            <Col :span="1">
+            <Col :span="1" offset="1">
                 <Button type="info" @click="referRoles" class="margin-left-10">保存</Button>
             </Col>
         </Row>

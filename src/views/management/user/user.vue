@@ -58,8 +58,7 @@
                             <span v-else-if="row.rule === 'super'">超级管理员</span>
                         </template>
                         <template slot-scope="{ row }" slot="action">
-                            <Button type="primary" size="small" @click="edit_code(row)"
-                                    v-if="row.username !== 'admin'">更改密码
+                            <Button type="primary" size="small" @click="edit_code(row)">更改密码
                             </Button>
                             <Button type="success" size="small" @click="edit_rule(row)" class="margin-left-10">
                                 权限
@@ -85,8 +84,6 @@
             <Tag type="border" v-for="i in depend_list.source" :key="`source-${i.source}`">{{i.source}}</Tag>
             <Divider orientation="left">权限组</Divider>
             <Tag type="border" v-for="i in depend_list.grained" :key="`grained-${i.name}`">{{i.name}}</Tag>
-            <Divider orientation="left">用户权限</Divider>
-            <Tag type="border" v-for="i in depend_list.up" :key="`up-${i.username}`">{{i.username}}</Tag>
             <div slot="footer">
                 <Button type="error" @click="delUser" :disabled="del_disabled">删除</Button>
             </div>
@@ -356,7 +353,7 @@
                 })
                 .catch((err: any) => this.$config.err_notice(this, err))
                 .finally(() => {
-                    if (this.depend_list.up.length === 0 && this.depend_list.grained.length === 0 && this.depend_list.source.length === 0) {
+                    if (this.depend_list.grained.length === 0 && this.depend_list.source.length === 0) {
                         this.del_disabled = !this.del_disabled
                     }
                 })

@@ -23,12 +23,12 @@
                 <Submenu v-if="item.children.length>=1 && item.name !== 'main'" :name="item.name" :key="item.path">
                     <template slot="title">
                         <Icon :type="item.icon" :size="iconSize"></Icon>
-                        <span class="layout-text">{{ item.title }}</span>
+                        <span class="layout-text">{{ item.meta.title }}</span>
                     </template>
                     <template v-for="child in item.children">
                         <MenuItem :name="child.name" :key="child.name" style="margin-left: -5%">
                             <Icon :type="child.icon" :size="iconSize" :key="child.name"></Icon>
-                            <span class="layout-text" :key="child.name + 1">{{ child.title }}</span>
+                            <span class="layout-text" :key="child.name + 1">{{ child.meta.title }}</span>
                         </MenuItem>
                     </template>
                 </Submenu>

@@ -65,7 +65,7 @@
                             <template slot="desc">
                                 1.中间审核人最多支持5层
                                 <br>
-                                2.可使用预览编辑/代码编辑两种方式编辑(预览编辑不支持删除)
+                                2.可使用预览编辑/代码编辑两种方式编辑(预览编辑不支持删除,更改顺序)
                                 <br>
                                 3.代码编辑参数解释:
                                 <br>
@@ -78,6 +78,8 @@
                                 4.仅允许一个执行阶段! 请将审核阶段的参数添加在执行阶段之前。
                                 <br>
                                 5.如代码编辑后点击生成无法生成对应步骤,请检查JSON格式是否正确!
+                                <br>
+                                6.特别注意,如对现有流程进行更改。请确保当前流程下所有工单都已执行完毕，否则将会导致未执行工单流程错乱!
                             </template>
                         </Alert>
                     </Col>
@@ -103,8 +105,6 @@
         }
 
         raw_code = ''
-
-        relevant: string[] = []
 
         tmp_steps = [] as any
 
@@ -161,7 +161,11 @@
         }
 
         raw_gen() {
-            this.tmp_steps = JSON.parse(this.raw_code)
+            try {
+                this.tmp_steps = JSON.parse(this.raw_code)
+            } catch (e) {
+                this.$Message.error({content: e, duration: 10})
+            }
         }
 
         add_step() {

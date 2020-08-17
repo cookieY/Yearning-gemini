@@ -5,8 +5,7 @@ import module_general from "@/store/modules/general";
 
 let libs: any = {};
 libs.title = function (title: string) {
-    title = title || 'Yearning SQL审核平台';
-    window.document.title = title
+    window.document.title = `Yearning || ${title}`
 };
 
 libs.random = function (lower: number, upper: number) {

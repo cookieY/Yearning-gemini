@@ -205,18 +205,6 @@ const rule: Rule[] = [
         tp: 0
     },
     {
-        name: 'DMLOrder',
-        desc: '禁止DML语句使用Order by子句',
-        type: 'DML',
-        tp: 0
-    },
-    {
-        name: 'DMLOrder',
-        desc: '禁止DML语句使用Order by子句',
-        type: 'DML',
-        tp: 0
-    },
-    {
         name: 'MaxAffectRows',
         desc: 'DML最大影响行数',
         type: 'DML',

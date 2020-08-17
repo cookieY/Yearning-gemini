@@ -91,17 +91,17 @@ class general extends VuexModule {
     @Mutation
     breadcrumb_set(name?: string) {
         this.currentPath = []
-        appRouter.forEach((val) => {
+        appRouter.forEach((val: any) => {
             for (let i of val.children) {
                 if (i.name === name) {
                     if (val.name !== 'main') {
                         this.currentPath = [
                             {
-                                title: val.title,
+                                title: val.meta.title,
                                 path: val.path,
                                 name: val.name
                             }, {
-                                title: i.title,
+                                title: i.meta.title,
                                 path: `${val.path}/${i.path}`,
                                 name: i.name
                             }
@@ -109,7 +109,7 @@ class general extends VuexModule {
                     } else {
                         this.currentPath = [
                             {
-                                title: i.title,
+                                title: i.meta.title,
                                 path: i.path,
                                 name: i.name
                             }
@@ -141,10 +141,10 @@ class general extends VuexModule {
                 this.pageOpenedList.splice(index, 1)
             }
         });
-        appRouter.forEach((val) => {
+        appRouter.forEach((val: any) => {
             for (let i of val.children) {
                 if (i.name === name && name !== 'home_index') {
-                    this.pageOpenedList.push({'title': i.title, 'name': i.name})
+                    this.pageOpenedList.push({'title': i.meta.title, 'name': i.name})
                 }
             }
         });
