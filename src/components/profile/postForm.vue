@@ -25,8 +25,14 @@
                     <Input v-model="sqls"
                            v-if="this.order.status === 0 || this.order.status ===4"
                            type="textarea"></Input>
-                    <Table :columns="roll_column" :data="roll_data" v-if="this.order.status ===1"
-                           max-height="300"></Table>
+                    <template v-if="this.order.status ===1">
+                        <Table :columns="roll_column" :data="roll_data"
+                               height="300"></Table>
+                        <br>
+                        <Page :total="page_number" show-elevator @on-change="rollback" :page-size="5"
+                              :current.sync="current"></Page>
+                    </template>
+
                 </FormItem>
                 <FormItem label="工单提交说明:">
                     <Input v-model="order.text" placeholder="最多不超过20个字"></Input>
@@ -86,16 +92,10 @@
         }
 
         referOrder() {
-            if (this.order.status === 1) {
-                let sql = '';
-                this.roll_data.forEach((item: { sql: string; }) => {
-                    sql += item.sql
-                });
-                this.sqls = sql;
-            }
             this.$http.post(`${this.$config.url}/fetch/roll_order`, {
                 'data': this.order,
-                'sqls': this.sqls
+                'sqls': this.sqls,
+                'tp': this.order.status
             })
                 .then(() => {
                     this.$router.go(-1)
@@ -106,13 +106,11 @@
                 })
         }
 
-        rollback() {
-            this.$http.get(`${this.$config.url}/fetch/roll?workid=${this.order.work_id}`)
-                .then((res: { data: { sql: string }[] }) => {
-                    if (res.data === []) {
-                        return
-                    }
-                    this.roll_data = res.data;
+        rollback(vl = 1) {
+            this.$http.get(`${this.$config.url}/fetch/roll?workid=${this.order.work_id}&page=${vl}`)
+                .then((res: { data: { sql: { sql: string; }[]; count: number; }; })  => {
+                    this.roll_data = res.data.sql;
+                    this.page_number = res.data.count
                 })
                 .catch((err: any) => {
                     this.$config.err_notice(this, err)

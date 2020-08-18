@@ -20,13 +20,13 @@ const rule: Rule[] = [
     },
     {
         name: 'DDLCheckColumnNullable',
-        desc: '强制表字段必须为NOT NULL',
+        desc: '强制非text,blob,json类型字段必须为NOT NULL',
         type: 'DDL',
         tp: 0
     },
     {
         name: 'DDLCheckColumnDefault',
-        desc: '强制表字段必须拥有默认值',
+        desc: '强制非text,blob,json类型字段必须拥有默认值',
         type: 'DDL',
         tp: 0
     },

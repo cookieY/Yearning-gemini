@@ -58,7 +58,7 @@
         sourceList = [] as any;
 
         deferReply() {
-            this.$config.delete(`${this.$config.url}/query/undo`)
+            this.$http.delete(`${this.$config.url}/query/undo`)
                 .then((res: { data: string; }) => this.$config.notice(res.data))
                 .catch((err: any) => this.$config.err_notice(this, err))
                 .finally(() => this.$router.push({name: 'query'}))

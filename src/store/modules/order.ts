@@ -36,8 +36,6 @@ class order_local extends VuexModule {
         three: false
     }
     wordList: object[] = []
-    ddl_save: boolean = false
-    dml_save: boolean = false
     osc_id: string = ''
     order_sql: SQLTest[] = []
 
@@ -49,16 +47,6 @@ class order_local extends VuexModule {
     @Mutation
     fetch_order_osc_id(vm: string) {
         return this.osc_id = vm
-    }
-
-    @Mutation
-    draft_order() {
-        if (this.is_dml) {
-            this.dml_save = !this.dml_save
-        } else {
-            this.ddl_save = !this.ddl_save
-        }
-        Message.success({content: '工单已保存!'})
     }
 
     @Mutation

@@ -31,7 +31,7 @@
             },
             {
                 title: '查询语句:',
-                key: 'SQL',
+                key: 'sql',
                 sortable: true
             },
             {

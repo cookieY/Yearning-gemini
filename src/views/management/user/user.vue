@@ -91,7 +91,7 @@
 
         <edit_password v-model="edit_password" is_admin></edit_password>
 
-        <edit_rule is_admin v-model="is_open" @success="current_page"></edit_rule>
+        <edit_rule is_admin v-model="is_open" @success="current_page(current)"></edit_rule>
 
         <edit_info v-model="is_edit" @call="current_page(current)" :user_info="payload"></edit_info>
     </div>

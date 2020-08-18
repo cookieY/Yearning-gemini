@@ -143,11 +143,10 @@
         get snippetList() {
             return this.$store.state.snippet
         }
-
         openDrawer = false
         expireInfo = false
         page_size = 10
-        columnsName:object[] = []
+        columnsName: object[] = []
         queryRes = []
         allQueryData = []
         total = 0
@@ -247,9 +246,9 @@
         querySQL() {
             this.columnsName = [];
             this.queryRes = [];
-            let spin :any = this.$Spin
+            let spin: any = this.$Spin
             spin.show({
-                render: (h:CreateElement) => {
+                render: (h: CreateElement) => {
                     return h('div', [
                         h('Icon', {
                             props: {
@@ -269,7 +268,7 @@
                 'basename': this.dataBase,
                 'source': this.source
             })
-                .then((res: { data: any})=> {
+                .then((res: { data: any }) => {
                     if (res.data.status) {
                         this.expireInfo = true;
                         spin.hide()
