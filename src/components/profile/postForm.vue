@@ -88,6 +88,7 @@
 
         cancel() {
             this.is_open = false;
+            this.current = 1;
             this.$emit('input', false);
         }
 

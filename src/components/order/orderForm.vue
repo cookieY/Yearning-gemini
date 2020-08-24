@@ -119,6 +119,12 @@
         mounted() {
             this.fetchIDC();
         }
+
+        destroyed() {
+            if (modules_order.steps ===0) {
+                modules_order.clear_order()
+            }
+        }
     }
 </script>
 

@@ -21,7 +21,7 @@
                 <FormItem :label="$t('general.mail')">
                     <span>{{ userForm.email }}</span>
                 </FormItem>
-                <Button type="warning" size="small" @click="edit_password=true">{{$t('general.change_password')}}
+                <Button type="warning" size="small" @click="show_edit_password">{{$t('general.change_password')}}
                 </Button>
                 <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">
                     {{$t('dash.edit_permissions')}}
@@ -56,6 +56,7 @@
     import {Component, Mixins} from "vue-property-decorator";
     import module_verify from "@/store/modules/verify";
     import module_general from "@/store/modules/general";
+    import module_user from "@/store/modules/user";
 
     @Component({components: {edit_password, edit_rule}})
     export default class personal extends Mixins(att_mixins) {
@@ -73,7 +74,10 @@
             real_name: '',
             email: ''
         };
-
+        show_edit_password () {
+            this.edit_password = !this.edit_password
+            module_user.change_username(this.userForm.username)
+        }
         openMailChange() {
             this.editEmailModal = true;
             this.editEmailForm = JSON.parse(JSON.stringify(this.userForm))

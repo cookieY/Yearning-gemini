@@ -141,7 +141,7 @@
 
 
         get snippetList() {
-            return this.$store.state.snippet
+            return module_general.snippet
         }
         openDrawer = false
         expireInfo = false

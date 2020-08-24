@@ -15,7 +15,7 @@
           .then(res => {
             let piedata = [{
               value: res.data.ddl,
-              name: i18n.t('dash.axis.ddl'),
+              name: "DDL",
               itemStyle: {
                 normal: {
                   color: '#ed7996'
@@ -24,7 +24,7 @@
             },
               {
                 value: res.data.dml,
-                name: i18n.t('dash.axis.dml'),
+                name: "DML",
                 itemStyle: {
                   normal: {
                     color: '#78beea'
@@ -50,7 +50,7 @@
                 orient: 'horizontal',
                 left: 'center',
                 bottom: 10,
-                data: [i18n.t('dash.axis.dml'), i18n.t('dash.axis.ddl'), i18n.t('dash.axis.query')]
+                data: [i18n.t('dash.axis.ddl'), i18n.t('dash.axis.dml'), i18n.t('dash.axis.query')]
               },
               series: [
                 {

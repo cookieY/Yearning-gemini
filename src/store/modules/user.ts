@@ -29,6 +29,11 @@ class user extends VuexModule {
     fetch_user_info(vm: object) {
         this.edit = vm
     }
+
+    @Mutation
+    change_username(user:string) {
+        this.edit.username = user
+    }
 }
 
 const module_user = getModule(user)
