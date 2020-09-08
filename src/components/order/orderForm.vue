@@ -14,16 +14,16 @@
 
                     <FormItem label="环境:" prop="idc">
                         <Select v-model="formItem.idc" @on-change="fetchDiffSource">
-                            <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
+                            <Option v-for="i in fetchData.idc" :key="i" :value="i">{{ i }}</Option>
                         </Select>
                     </FormItem>
 
                     <FormItem label="连接名:" prop="source">
                         <Select v-model="formItem.source" @on-change="fetchBase">
                             <Option
-                                    v-for="i in fetchData.source"
-                                    :value="i"
-                                    :key="i"
+                                v-for="i in fetchData.source"
+                                :value="i"
+                                :key="i"
                             >{{ i }}
                             </Option>
                         </Select>
@@ -31,10 +31,10 @@
 
                     <FormItem label="库名:" prop="data_base" v-if="formItem.tp !==3">
                         <Select v-model="formItem.data_base" placeholder="请选择">
-                            <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}
+                            <Option v-for="item in fetchData.base" :value="item" :key="item">{{ item }}
                             </Option>
                         </Select>
-                    </FormItem >
+                    </FormItem>
 
                     <FormItem label="工单说明:" prop="text">
                         <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4 maxlength="100"
@@ -43,10 +43,10 @@
 
                     <FormItem label="审核人:" prop="assigned">
                         <Select v-model="formItem.assigned" filterable>
-                            <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
+                            <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
                         </Select>
                     </FormItem>
-                    <template  v-if="formItem.tp !==3">
+                    <template v-if="formItem.tp !==3">
                         <FormItem label="定时执行">
                             <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
                                         :options="invalidDate"
@@ -63,15 +63,19 @@
                     </template>
                     <template v-else>
                         <FormItem label="SQL文件上传">
-
+                            <Upload :action="upload" :format="['zip','rar','7z','sql','txt']" name="file"
+                                    :headers="{'Authorization':jwt}" :on-success="upload_success"
+                                    :on-format-error="format_error">
+                                <Button icon="ios-cloud-upload-outline">上传脚本</Button>
+                            </Upload>
                         </FormItem>
                     </template>
 
                     <FormItem>
                         <Button
-                                type="error"
-                                icon="md-trash"
-                                @click.native="clearForm()"
+                            type="error"
+                            icon="md-trash"
+                            @click.native="clearForm()"
                         >重置
                         </Button>
                         <Button type="primary" icon="md-arrow-round-forward" @click.native="nextStep()"
@@ -89,64 +93,78 @@
 </template>
 
 <script lang="ts">
-    import {Mixins, Component} from "vue-property-decorator";
-    import fetch_mixin from "@/mixins/fetch_mixin";
-    import modules_order from "@/store/modules/order";
+import {Mixins, Component} from "vue-property-decorator";
+import fetch_mixin from "@/mixins/fetch_mixin";
+import modules_order from "@/store/modules/order";
 
 
-    @Component({})
-    export default class order_form extends Mixins(fetch_mixin) {
+@Component({})
+export default class order_form extends Mixins(fetch_mixin) {
 
-        fetchDiffSource(idc: string) {
-            if (this.is_dml) {
-                this.fetchSource(idc, "dml")
-            } else {
-                this.fetchSource(idc, "ddl")
-            }
-        }
+    jwt = sessionStorage.getItem('jwt')
 
-        clearForm() {
-            modules_order.clear_order()
-        }
-
-        nextStep() {
-            let is_validate: any = this.$refs['formItem'];
-            is_validate.validate((valid: boolean) => {
-                if (valid) {
-                    modules_order.changed_always({one: false, two: true, three: false})
-                    modules_order.changed_step(1)
-                } else {
-                    this.$Message.warning("请填写必选项信息!")
-                }
-            })
-        }
-
-        changedTp(vl: number) {
-            modules_order.changed_is_dml(vl === 1)
-            this.resetFields('formItem')
-        }
-
-        mounted() {
-            this.fetchIDC();
-        }
-
-        destroyed() {
-            if (modules_order.steps ===0) {
-                modules_order.clear_order()
-            }
+    fetchDiffSource(idc: string) {
+        if (this.is_dml) {
+            this.fetchSource(idc, "dml")
+        } else {
+            this.fetchSource(idc, "ddl")
         }
     }
+
+    upload_success(res: string) {
+        this.formItem.uuid = res
+        this.$config.notice("文件上传成功")
+    }
+
+    format_error(file: any) {
+        this.$Message.error({
+            content: `${file.name}格式不正确,请的上传后缀名为'zip','rar','7z','sql','txt'的压缩包！`,
+            duration: 3
+        })
+    }
+
+    clearForm() {
+        modules_order.clear_order()
+    }
+
+    nextStep() {
+        let is_validate: any = this.$refs['formItem'];
+        is_validate.validate((valid: boolean) => {
+            if (valid) {
+                modules_order.changed_always({one: false, two: true, three: false})
+                modules_order.changed_step(1)
+            } else {
+                this.$Message.warning("请填写必选项信息!")
+            }
+        })
+    }
+
+    changedTp(vl: number) {
+        modules_order.changed_is_dml(vl === 1)
+        this.resetFields('formItem')
+    }
+
+    mounted() {
+        this.fetchIDC();
+    }
+
+    destroyed() {
+        if (modules_order.steps === 0) {
+            modules_order.clear_order()
+        }
+    }
+}
 </script>
 
 <style lang="less" scoped>
-    .div-a {
-        position: absolute;
-        z-index: 1000;
-        width: 100%;
-    }
+.div-a {
+    position: absolute;
+    z-index: 1000;
+    width: 100%;
+}
 
-    #fontsize .ivu-form-item-label {
-        font-size: 13px;
-        font-weight: bold;
-    }
+#fontsize .ivu-form-item-label {
+    font-size: 13px;
+    font-weight: bold;
+}
 </style>>

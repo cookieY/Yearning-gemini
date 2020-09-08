@@ -29,6 +29,7 @@ class order_local extends VuexModule {
         assigned: '',
         backup: 1,
         export: 0,
+        uuid: ''
     }
     always: object = {
         one: true,

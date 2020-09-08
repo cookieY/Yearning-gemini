@@ -17,6 +17,7 @@ interface order {
     backup?: number,
     export?: number
     current_step?: number
+    uuid?: string
 }
 
 interface other_modal {
