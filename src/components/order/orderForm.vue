@@ -2,12 +2,13 @@
     <div>
         <Row type="flex" justify="center" align="middle">
             <Col span="10">
-                <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="80" id="fontsize">
+                <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="100" id="fontsize">
 
                     <FormItem label="工单类型:" required>
                         <Select v-model="formItem.tp" @on-change="changedTp">
                             <Option :value="0" label="DDL"></Option>
                             <Option :value="1" label="DML"></Option>
+                            <Option :value="3" label="仅审核"></Option>
                         </Select>
                     </FormItem>
 
@@ -28,12 +29,12 @@
                         </Select>
                     </FormItem>
 
-                    <FormItem label="库名:" prop="data_base">
+                    <FormItem label="库名:" prop="data_base" v-if="formItem.tp !==3">
                         <Select v-model="formItem.data_base" placeholder="请选择">
                             <Option v-for="item in fetchData.base" :value="item" :key="item">{{item}}
                             </Option>
                         </Select>
-                    </FormItem>
+                    </FormItem >
 
                     <FormItem label="工单说明:" prop="text">
                         <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4 maxlength="100"
@@ -45,20 +46,26 @@
                             <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
                         </Select>
                     </FormItem>
+                    <template  v-if="formItem.tp !==3">
+                        <FormItem label="定时执行">
+                            <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
+                                        :options="invalidDate"
+                                        @on-change="getDate"
+                                        :editable="false"></DatePicker>
+                        </FormItem>
 
-                    <FormItem label="定时执行">
-                        <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
-                                    :options="invalidDate"
-                                    @on-change="getDate"
-                                    :editable="false"></DatePicker>
-                    </FormItem>
+                        <FormItem label="是否备份" prop="backup">
+                            <RadioGroup v-model="formItem.backup">
+                                <Radio :label=1>是</Radio>
+                                <Radio :label=0>否</Radio>
+                            </RadioGroup>
+                        </FormItem>
+                    </template>
+                    <template v-else>
+                        <FormItem label="SQL文件上传">
 
-                    <FormItem label="是否备份" prop="backup">
-                        <RadioGroup v-model="formItem.backup">
-                            <Radio :label=1>是</Radio>
-                            <Radio :label=0>否</Radio>
-                        </RadioGroup>
-                    </FormItem>
+                        </FormItem>
+                    </template>
 
                     <FormItem>
                         <Button
@@ -68,7 +75,10 @@
                         >重置
                         </Button>
                         <Button type="primary" icon="md-arrow-round-forward" @click.native="nextStep()"
-                                style="margin-left: 10%">下一步
+                                style="margin-left: 10%" v-if="formItem.tp !==3">下一步
+                        </Button>
+                        <Button type="primary" icon="md-arrow-round-forward" @click.native="nextStep()"
+                                style="margin-left: 10%" v-else>提交
                         </Button>
                     </FormItem>
                 </Form>
