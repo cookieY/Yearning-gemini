@@ -22,7 +22,7 @@ export default class audit_mixins extends Mixins(att_mixins) {
             tooltip: true
         },
         {
-            title: '是否备份',
+            title: '工单类型',
             key: 'type',
             width: 100,
             render: render.backup
