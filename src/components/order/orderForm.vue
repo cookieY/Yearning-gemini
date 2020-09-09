@@ -41,11 +41,12 @@
                                show-word-limit></Input>
                     </FormItem>
 
-                    <FormItem label="审核人:" prop="assigned">
+                    <FormItem label="审核人:" prop="assigned" required>
                         <Select v-model="formItem.assigned" filterable>
                             <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
                         </Select>
                     </FormItem>
+
                     <template v-if="formItem.tp !==3">
                         <FormItem label="定时执行">
                             <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
@@ -81,7 +82,7 @@
                         <Button type="primary" icon="md-arrow-round-forward" @click.native="nextStep()"
                                 style="margin-left: 10%" v-if="formItem.tp !==3">下一步
                         </Button>
-                        <Button type="primary" icon="md-arrow-round-forward" @click.native="nextStep()"
+                        <Button type="primary" icon="md-arrow-round-forward" @click.native="commitOrder()"
                                 style="margin-left: 10%" v-else>提交
                         </Button>
                     </FormItem>
@@ -102,6 +103,31 @@ import modules_order from "@/store/modules/order";
 export default class order_form extends Mixins(fetch_mixin) {
 
     jwt = sessionStorage.getItem('jwt')
+
+    upload: string = `${this.$config.url}/order/upload`
+
+    commitOrder() {
+        if (this.formItem.assigned ==='') {
+            this.$Message.error("请选择上级审核人")
+            return
+        }
+        let is_validate: any = this.$refs['formItem'];
+        is_validate.validate((valid: boolean) => {
+            if (valid) {
+                let order = {type: 3, real_name: sessionStorage.getItem("real_name")}
+                Object.assign(order, this.formItem)
+                this.$http.post(`${this.$config.url}/sql/refer`, order)
+                    .then((res: { data: string; }) => {
+                        this.$Message.success(res.data)
+                        modules_order.changed_step(3)
+                        modules_order.changed_always({one: false, two: false, three: true})
+                    })
+                    .catch((error: any) => {
+                        this.$config.err_notice(this, error)
+                    })
+            }
+        })
+    }
 
     fetchDiffSource(idc: string) {
         if (this.is_dml) {

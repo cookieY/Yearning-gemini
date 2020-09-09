@@ -96,7 +96,7 @@
         }
 
         fetchSource() {
-            this.$http.get(`${this.$config.url}/fetch/source/${this.idc}/query`)
+            this.$http.get(`${this.$config.url}/fetch/source?idc=${this.idc}&xxx=query`)
                 .then((res: { data: { x: string; source: never[]; }; }) => {
                     if (res.data.x === 'query') {
                         this.fetchData.source = res.data.source;

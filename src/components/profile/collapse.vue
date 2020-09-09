@@ -1,5 +1,5 @@
 <template>
-    <Collapse v-model="collapse" simple >
+    <Collapse v-model="collapse" simple v-if="order.type !==3">
         <Panel name="sql" >
             提交的SQL语句
             <div slot="content">
@@ -31,7 +31,7 @@
                 </Row>
             </div>
         </Panel>
-    </Collapse>
+    </Collapse >
 </template>
 
 <script lang="ts">

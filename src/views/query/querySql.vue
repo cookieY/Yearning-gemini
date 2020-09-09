@@ -262,7 +262,7 @@
             this.put_info.base = vl.title;
             if (vl.expand === true) {
                 spin.show();
-                this.$http.get(`${this.$config.url}/query/fetch_table/${vl.title}/${this.source}`)
+                this.$http.get(`${this.$config.url}/query/fetch_table?t=${vl.title}&source=${this.source}`)
                     .then((res: { data: any }) => {
                         if (res.data === 0) {
                             this.$config.notice("已到查询时限上限,请重新申请查询！");

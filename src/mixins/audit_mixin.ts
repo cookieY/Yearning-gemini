@@ -90,7 +90,7 @@ export default class audit_mixins extends Mixins(att_mixins) {
     orderDetail(row: any) {
         module_init_args.fetch_order_item(row)
         this.$router.push({
-            name: 'profile',
+            name: 'profile'
         })
     }
 

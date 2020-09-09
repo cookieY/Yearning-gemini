@@ -13,8 +13,10 @@
             <Col :span="1">
                 <Button @click="search_data" class="margin-left-10" type="primary">搜索</Button>
             </Col>
-            <Col :span="1" offset="1">
-                <Button type="info" @click="referRoles" class="margin-left-10">保存</Button>
+            <Col :span="1" offset="2">
+                <Affix :offset-top="100">
+                    <Button type="info" @click="referRoles" class="margin-left-10">保存</Button>
+                </Affix>
             </Col>
         </Row>
         <br>
@@ -44,10 +46,6 @@
         };
 
         col = [
-            {
-                title: '规则名称',
-                key: 'name'
-            },
             {
                 title: '规则类型',
                 key: 'type'

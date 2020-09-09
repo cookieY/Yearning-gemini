@@ -7,7 +7,7 @@ import modules_search from "@/store/modules/search";
 export default class att_mixins extends Vue {
     public $config: any;
     public $http: any;
-
+    public url = ''
     get steps() {
         return modules_order.steps
     }

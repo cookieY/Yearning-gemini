@@ -200,10 +200,11 @@
                 this.$Message.error("请选中对应库/表");
                 return
             }
-            this.$http.get(`${this.$config.url}/query/table_info/${this.dataBase}/${this.table}/${this.source}`)
+            this.$http.get(`${this.$config.url}/query/table_info?base=${this.dataBase}&table=${this.table}&source=${this.source}`)
                 .then((res: { data: never[]; }) => {
                     this.columnsName = this.fieldColumns;
                     this.queryRes = res.data
+                    this.$Message.success({content:"已获取表结构!"})
                 })
                 .catch((err: any) => {
                     this.$config.err_notice(this, err)
@@ -263,7 +264,7 @@
                     ])
                 }
             });
-            this.$http.post(`${this.$config.url}/query`, {
+            this.$http.post(`${this.$config.url}/query/results`, {
                 'sql': this.sql,
                 'basename': this.dataBase,
                 'source': this.source

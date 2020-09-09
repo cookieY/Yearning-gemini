@@ -18,7 +18,7 @@ export default class fetch_mixins extends Mixins(att) {
 
     fetchSource(idc: string, tp: string) {
         if (idc) {
-            this.$http.get(`${this.$config.url}/fetch/source/${idc}/${tp}`)
+            this.$http.get(`${this.$config.url}/fetch/source?idc=${idc}&xxx=${tp}`)
                 .then((res: { data: { x: string; source: string[]; assigned: string[]; }; }) => {
                     if (res.data.x === tp) {
                         this.fetchData.source = res.data.source;
@@ -35,7 +35,7 @@ export default class fetch_mixins extends Mixins(att) {
 
     fetchBase(source: string) {
         if (source) {
-            this.$http.get(`${this.$config.url}/fetch/base/${source}`)
+            this.$http.get(`${this.$config.url}/fetch/base?source=${source}`)
                 .then((res: { data: { results: string[]; admin: string[]; highlight: never[] }; }) => {
                     this.fetchData.base = res.data.results;
                     this.fetchData.assigned = res.data.admin

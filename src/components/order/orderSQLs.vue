@@ -121,6 +121,7 @@
                 .then((res: { data: { f: never[]; i: never[]; }; }) => {
                     this.field_data = res.data.f;
                     this.idx_data = res.data.i;
+                    this.$Message.success({content:"已获取表结构!"})
                 })
                 .catch((err: any) => {
                     this.$config.err_notice(this, err)
