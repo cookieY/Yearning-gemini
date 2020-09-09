@@ -23,7 +23,7 @@ export default class audit_mixins extends Mixins(att_mixins) {
         },
         {
             title: '是否备份',
-            key: 'backup',
+            key: 'type',
             width: 100,
             render: render.backup
         },

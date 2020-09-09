@@ -3,7 +3,7 @@ import expandRow from "@/components/expandTable.vue";
 let render = {
     tag: (h: any, params: { row: { status: number }; }) => {
     },
-    backup: (h: any, params: { row: { backup: number }; }) => {
+    backup: (h: any, params: { row: { type: number }; }) => {
     },
     expand: (h: any, params: { row: { sql: string }; }) => {
     },
@@ -69,11 +69,11 @@ render.tag = (h: any, params: { row: { status: number }; }) => {
     }, text)
 }
 
-render.backup = (h: any, params: { row: { backup: number }; }) => {
+render.backup = (h: any, params: { row: { type: number }; }) => {
     const row = params.row;
-    let text = "是"
-    if (row.backup == 0) {
-        text = "否"
+    let text = "DDL"
+    if (row.type == 1) {
+        text = "DML"
     }
     return h('span', {}, text)
 }
