@@ -46,14 +46,14 @@
                             <TabPane label="预览编辑" name="preview">
                                 <Form>
                                     <FormItem label="步骤类型">
-                                        <Select v-model="tpl.type">
-                                            <Option label="审核" :value="0"></Option>
+                                        <Select v-model="tpl.type" transfer>
+                                        <Option label="审核" :value="0"></Option>
                                             <Option label="执行" :value="1"></Option>
                                         </Select>
                                     </FormItem>
                                     <FormItem label="相关人员">
-                                        <Select v-model="tpl.auditor" multiple>
-                                            <Option v-for="i in multi_list" :key="i.username" :value="i.username"
+                                        <Select v-model="tpl.auditor" multiple transfer filterable>
+                                        <Option v-for="i in multi_list" :key="i.username" :value="i.username"
                                                     :label="i.username"></Option>
                                         </Select>
                                     </FormItem>
