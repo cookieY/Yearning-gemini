@@ -7,7 +7,7 @@
                 </Select>
             </FormItem>
             <FormItem>
-                <Button type="primary" @click.native="testTo()" :loading="loading" v-if="order.type !==3">
+                <Button type="primary" @click.native="testTo()" :loading="loading">
                     <span v-if="!loading">检测sql</span>
                     <span v-else>检测中</span>
                 </Button>
@@ -17,7 +17,7 @@
                 </Button>
                 <Button type="success" @click="perform()" :disabled="summit" class="margin-left-10" v-else>执行</Button>
             </FormItem>
-            <FormItem v-if="order.type !== 3">
+            <FormItem>
                 <Table :columns="sql_columns" :data="sql_data" :max-height="300"></Table>
             </FormItem>
         </Form>
@@ -166,12 +166,6 @@ export default class Testing extends Mixins(detail_mixin) {
             .finally(() => {
                 this.loading = false
             })
-    }
-
-    mounted() {
-        if (this.order.type === 3) {
-            this.summit = false
-        }
     }
 }
 </script>

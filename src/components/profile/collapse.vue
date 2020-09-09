@@ -1,5 +1,5 @@
 <template>
-    <Collapse v-model="collapse" simple v-if="order.type !==3">
+    <Collapse v-model="collapse" simple>
         <Panel name="sql" >
             提交的SQL语句
             <div slot="content">

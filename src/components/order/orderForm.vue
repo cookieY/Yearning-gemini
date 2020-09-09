@@ -3,21 +3,17 @@
         <Row type="flex" justify="center" align="middle">
             <Col span="10">
                 <Form ref="formItem" :model="formItem" :rules="ruleValidate" :label-width="100" id="fontsize">
-
                     <FormItem label="工单类型:" required>
                         <Select v-model="formItem.tp" @on-change="changedTp">
                             <Option :value="0" label="DDL"></Option>
                             <Option :value="1" label="DML"></Option>
-                            <Option :value="3" label="仅审核"></Option>
                         </Select>
                     </FormItem>
-
                     <FormItem label="环境:" prop="idc">
                         <Select v-model="formItem.idc" @on-change="fetchDiffSource">
                             <Option v-for="i in fetchData.idc" :key="i" :value="i">{{ i }}</Option>
                         </Select>
                     </FormItem>
-
                     <FormItem label="连接名:" prop="source">
                         <Select v-model="formItem.source" @on-change="fetchBase">
                             <Option
@@ -28,50 +24,33 @@
                             </Option>
                         </Select>
                     </FormItem>
-
-                    <FormItem label="库名:" prop="data_base" v-if="formItem.tp !==3">
+                    <FormItem label="库名:" prop="data_base">
                         <Select v-model="formItem.data_base" placeholder="请选择">
                             <Option v-for="item in fetchData.base" :value="item" :key="item">{{ item }}
                             </Option>
                         </Select>
                     </FormItem>
-
                     <FormItem label="工单说明:" prop="text">
                         <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4 maxlength="100"
                                show-word-limit></Input>
                     </FormItem>
-
                     <FormItem label="审核人:" prop="assigned" required>
                         <Select v-model="formItem.assigned" filterable>
                             <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
                         </Select>
                     </FormItem>
-
-                    <template v-if="formItem.tp !==3">
-                        <FormItem label="定时执行">
-                            <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
-                                        :options="invalidDate"
-                                        @on-change="getDate"
-                                        :editable="false"></DatePicker>
-                        </FormItem>
-
-                        <FormItem label="是否备份" prop="backup">
-                            <RadioGroup v-model="formItem.backup">
-                                <Radio :label=1>是</Radio>
-                                <Radio :label=0>否</Radio>
-                            </RadioGroup>
-                        </FormItem>
-                    </template>
-                    <template v-else>
-                        <FormItem label="SQL文件上传">
-                            <Upload :action="upload" :format="['zip','rar','7z','sql','txt']" name="file"
-                                    :headers="{'Authorization':jwt}" :on-success="upload_success"
-                                    :on-format-error="format_error">
-                                <Button icon="ios-cloud-upload-outline">上传脚本</Button>
-                            </Upload>
-                        </FormItem>
-                    </template>
-
+                    <FormItem label="定时执行">
+                        <DatePicker format="yyyy-MM-dd HH:mm" type="datetime" placeholder="选择时间点"
+                                    :options="invalidDate"
+                                    @on-change="getDate"
+                                    :editable="false"></DatePicker>
+                    </FormItem>
+                    <FormItem label="是否备份" prop="backup">
+                        <RadioGroup v-model="formItem.backup">
+                            <Radio :label=1>是</Radio>
+                            <Radio :label=0>否</Radio>
+                        </RadioGroup>
+                    </FormItem>
                     <FormItem>
                         <Button
                             type="error"
@@ -80,10 +59,7 @@
                         >重置
                         </Button>
                         <Button type="primary" icon="md-arrow-round-forward" @click.native="nextStep()"
-                                style="margin-left: 10%" v-if="formItem.tp !==3">下一步
-                        </Button>
-                        <Button type="primary" icon="md-arrow-round-forward" @click.native="commitOrder()"
-                                style="margin-left: 10%" v-else>提交
+                                style="margin-left: 10%">下一步
                         </Button>
                     </FormItem>
                 </Form>
@@ -104,49 +80,12 @@ export default class order_form extends Mixins(fetch_mixin) {
 
     jwt = sessionStorage.getItem('jwt')
 
-    upload: string = `${this.$config.url}/order/upload`
-
-    commitOrder() {
-        if (this.formItem.assigned ==='') {
-            this.$Message.error("请选择上级审核人")
-            return
-        }
-        let is_validate: any = this.$refs['formItem'];
-        is_validate.validate((valid: boolean) => {
-            if (valid) {
-                let order = {type: 3, real_name: sessionStorage.getItem("real_name")}
-                Object.assign(order, this.formItem)
-                this.$http.post(`${this.$config.url}/sql/refer`, order)
-                    .then((res: { data: string; }) => {
-                        this.$Message.success(res.data)
-                        modules_order.changed_step(3)
-                        modules_order.changed_always({one: false, two: false, three: true})
-                    })
-                    .catch((error: any) => {
-                        this.$config.err_notice(this, error)
-                    })
-            }
-        })
-    }
-
     fetchDiffSource(idc: string) {
         if (this.is_dml) {
             this.fetchSource(idc, "dml")
         } else {
             this.fetchSource(idc, "ddl")
         }
-    }
-
-    upload_success(res: string) {
-        this.formItem.uuid = res
-        this.$config.notice("文件上传成功")
-    }
-
-    format_error(file: any) {
-        this.$Message.error({
-            content: `${file.name}格式不正确,请的上传后缀名为'zip','rar','7z','sql','txt'的压缩包！`,
-            duration: 3
-        })
     }
 
     clearForm() {

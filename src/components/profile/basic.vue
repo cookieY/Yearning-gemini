@@ -38,7 +38,6 @@
                 <FormItem label="工单类型">
                     <Tag color="success" v-if="order.type===0">ddl</Tag>
                     <Tag color="magenta" v-else-if="order.type === 1">dml</Tag>
-                    <Tag color="blue" v-else>仅审核</Tag>
                 </FormItem>
             </Col>
         </Row>

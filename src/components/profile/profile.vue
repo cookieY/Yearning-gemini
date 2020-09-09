@@ -5,7 +5,7 @@
                 <Row>
                     <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
                     <Col span="5" offset="14">
-                        <Button type="warning" v-if="order.status === 1 && order.type !==3" @click.native="open_form()">
+                        <Button type="warning" v-if="order.status === 1" @click.native="open_form()">
                             查看回滚语句
                         </Button>
                         <Button type="primary"
@@ -41,11 +41,6 @@
                             <StepDetail></StepDetail>
                         </TabPane>
                     </Tabs>
-                    <template v-if="order.type ===3">
-                        <h3>SQL脚本下载</h3>
-                        <br>
-                        <a :href="url">下载SQL文件</a>
-                    </template>
                     <br>
                     <template v-if="order.assigned ===user">
                         <br>
@@ -85,10 +80,6 @@ export default class profile extends Mixins(detail_mixins) {
     }
 
     user = sessionStorage.getItem('user')
-
-    mounted() {
-        this.url = `${this.$config.gen}/download/${this.order.uuid}`
-    }
 
     created() {
         this.$http.put(`${this.$config.url}/tpl`, {source: this.order.source})
