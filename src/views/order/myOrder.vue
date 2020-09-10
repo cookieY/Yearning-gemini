@@ -54,6 +54,11 @@
                 tooltip: true
             },
             {
+                title: '工单类型',
+                key: 'type',
+                render: render.type
+            },
+            {
                 title: '是否备份',
                 key: 'backup',
                 render: render.backup
