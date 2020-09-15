@@ -18,7 +18,7 @@
                 <Button type="success" @click="perform()" :disabled="summit" class="margin-left-10" v-else>执行</Button>
             </FormItem>
             <FormItem>
-                <Table :columns="sql_columns" :data="sql_data" :max-height="300"></Table>
+                <Table :columns="sql_columns" :data="testing_sql" :max-height="300"></Table>
             </FormItem>
         </Form>
         <reject v-model="is_open"></reject>
@@ -70,7 +70,8 @@ export default class Testing extends Mixins(detail_mixin) {
             width: '120'
         }
     ];
-    personal = ''
+    private personal = ''
+    private testing_sql = []
 
     get sql_data() {
         return modules_order.order_sql;
@@ -150,8 +151,8 @@ export default class Testing extends Mixins(detail_mixin) {
         this.$http.post(`${this.$config.url}/audit/test`, {
             work_id: this.order.work_id
         })
-            .then((res: { data: object[]; }) => {
-                this.sql_data = res.data;
+            .then((res: { data: never[]; }) => {
+                this.testing_sql = res.data;
                 let gen = 0;
                 this.sql_data.forEach(vl => {
                     if (vl.level !== 0) {
