@@ -71,7 +71,7 @@ export default class Testing extends Mixins(detail_mixin) {
         }
     ];
     private personal = ''
-    private testing_sql = []
+    private testing_sql = [] as any[]
 
     get sql_data() {
         return modules_order.order_sql;
@@ -154,7 +154,7 @@ export default class Testing extends Mixins(detail_mixin) {
             .then((res: { data: never[]; }) => {
                 this.testing_sql = res.data;
                 let gen = 0;
-                this.sql_data.forEach(vl => {
+                this.testing_sql.forEach(vl => {
                     if (vl.level !== 0) {
                         gen += 1
                     }
