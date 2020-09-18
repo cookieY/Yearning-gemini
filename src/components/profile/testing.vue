@@ -28,7 +28,6 @@
 <script lang="ts">
 import {Component, Mixins} from "vue-property-decorator";
 import render from "@/interface/render";
-import modules_order from "@/store/modules/order";
 import detail_mixin from "@/mixins/detail_mixin";
 import reject from "@/views/audit/order/reject.vue";
 import module_init_args from "@/store/modules/init_args";
@@ -72,14 +71,6 @@ export default class Testing extends Mixins(detail_mixin) {
     ];
     private personal = ''
     private testing_sql = [] as any[]
-
-    get sql_data() {
-        return modules_order.order_sql;
-    }
-
-    set sql_data(vl) {
-        modules_order.fetch_order_sql(vl)
-    }
 
     get c_flag() {
         let flag = this.order.current_step as number;
