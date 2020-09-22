@@ -42,11 +42,11 @@
                         </TabPane>
                     </Tabs>
                     <br>
+                    <br>
+                    <h3>SQL审核</h3>
+                    <collapse></collapse>
+                    <br>
                     <template v-if="order.assigned ===user">
-                        <br>
-                        <h3>SQL审核</h3>
-                        <collapse></collapse>
-                        <br>
                         <Testing></Testing>
                     </template>
                 </Card>
@@ -86,6 +86,11 @@ export default class profile extends Mixins(detail_mixins) {
             .then((res: { data: any; }) => {
                 module_init_args.fetch_order_step(res.data.steps)
             })
+    }
+
+    mounted() {
+        this.fetch_post_sql()
+        this.current_page()
     }
 }
 </script>

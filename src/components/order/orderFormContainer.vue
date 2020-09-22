@@ -1,5 +1,5 @@
 <template>
-    <div  class="edittable-test-con">
+    <div class="edittable-test-con">
         <Card>
             <div class="margin-bottom-10" style="margin-top: 2%">
                 <Row type="flex" justify="center" align="middle">
@@ -30,25 +30,15 @@
 </template>
 
 <script lang="ts">
-    import {Component, Mixins} from "vue-property-decorator";
-    import orderSteps from "./orderSteps.vue"
-    import orderForm from "./orderForm.vue"
-    import att_mixins from "@/mixins/basic";
-    import orderSQLs from "@/components/order/orderSQLs.vue";
-    import orderIsPost from "@/components/order/orderIsPost.vue";
+import {Component, Mixins} from "vue-property-decorator";
+import orderSteps from "./orderSteps.vue"
+import orderForm from "./orderForm.vue"
+import att_mixins from "@/mixins/basic";
+import orderSQLs from "@/components/order/orderSQLs.vue";
+import orderIsPost from "@/components/order/orderIsPost.vue";
 
-    @Component({components: {orderSteps, orderForm, orderSQLs, orderIsPost}})
-    export default class orderFormContainer extends Mixins(att_mixins) {
-    }
+@Component({components: {orderSteps, orderForm, orderSQLs, orderIsPost}})
+export default class orderFormContainer extends Mixins(att_mixins) {
+}
 </script>
 
-<style scoped>
-    .fade-enter-active, .fade-leave-active {
-        transition: opacity .5s;
-    }
-
-    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-    {
-        opacity: 0;
-    }
-</style>

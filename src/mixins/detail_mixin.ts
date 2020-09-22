@@ -90,10 +90,5 @@ export default class detail_mixins extends Mixins(att) {
                 this.$config.err_notice(this, error)
             })
     }
-
-    mounted() {
-        this.fetch_post_sql()
-        this.current_page()
-    }
 }
 

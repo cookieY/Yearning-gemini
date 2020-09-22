@@ -18,6 +18,7 @@ interface order {
     export?: number
     current_step?: number
     uuid?: string
+    relevant?: string[]
 }
 
 interface other_modal {
