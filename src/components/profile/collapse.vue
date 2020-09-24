@@ -1,6 +1,6 @@
 <template>
     <Collapse v-model="collapse" simple>
-        <Panel name="sql" >
+        <Panel name="sql">
             提交的SQL语句
             <div slot="content">
                 <RadioGroup v-model="switch_args.is_more" @on-change="fetch_post_sql">
@@ -13,7 +13,7 @@
                 </RadioGroup>
                 <br>
                 <br>
-                <editor v-model="sqls" :is_read="true"   @init="editorInit"></editor>
+                <editor v-model="sqls" :is_read="true" @init="editorInit"></editor>
             </div>
         </Panel>
         <Panel name="results" v-if="order.status ===1 || order.status ===4">
@@ -31,22 +31,21 @@
                 </Row>
             </div>
         </Panel>
-    </Collapse >
+    </Collapse>
 </template>
 
 <script lang="ts">
 
-    import {Component, Vue} from "vue-property-decorator";
-    import Editor from "../editor.vue";
-    import detail_mixins from "../../mixins/detail_mixin";
+import {Component, Mixins} from "vue-property-decorator";
+import Editor from "../editor.vue";
+import detail_mixins from "../../mixins/detail_mixin";
 
-    @Component({components: {Editor}, mixins: [detail_mixins]})
-    export default class collapse extends Vue {
-        editorInit() {
-            require('brace/mode/mysql');
-            require('brace/theme/xcode')
-        }
+@Component({components: {Editor}})
+export default class collapse extends Mixins(detail_mixins) {
+    mounted () {
+        this.current_page()
     }
+}
 </script>
 
 <style scoped>

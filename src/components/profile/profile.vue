@@ -90,7 +90,6 @@ export default class profile extends Mixins(detail_mixins) {
 
     mounted() {
         this.fetch_post_sql()
-        this.current_page()
     }
 }
 </script>
