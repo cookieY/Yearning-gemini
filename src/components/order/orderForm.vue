@@ -15,19 +15,18 @@
                         </Select>
                     </FormItem>
                     <FormItem label="连接名:" prop="source">
-                        <Select v-model="formItem.source" @on-change="fetchBase">
+                        <Select v-model="formItem.source" @on-change="fetchBase" filterable>
                             <Option
                                 v-for="i in fetchData.source"
                                 :value="i"
                                 :key="i"
-                            >{{ i }}
-                            </Option>
+                                :label="i"
+                            ></Option>
                         </Select>
                     </FormItem>
                     <FormItem label="库名:" prop="data_base">
-                        <Select v-model="formItem.data_base" placeholder="请选择">
-                            <Option v-for="item in fetchData.base" :value="item" :key="item">{{ item }}
-                            </Option>
+                        <Select v-model="formItem.data_base" placeholder="请选择" filterable>
+                            <Option v-for="item in fetchData.base" :value="item" :key="item" :label="item"></Option>
                         </Select>
                     </FormItem>
                     <FormItem label="工单说明:" prop="text">

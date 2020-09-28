@@ -20,9 +20,8 @@
             </FormItem>
 
             <FormItem label="表名:" prop="table">
-                <Select v-model="formItem.table" placeholder="请选择">
-                    <Option v-for="item in fetchData.table" :value="item" :key="item">{{item}}
-                    </Option>
+                <Select v-model="formItem.table" placeholder="请选择" filterable>
+                    <Option v-for="item in fetchData.table" :value="item" :key="item" :label="item"></Option>
                 </Select>
             </FormItem>
 
