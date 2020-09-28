@@ -153,14 +153,6 @@
                                     </FormItem>
                                     <Row>
                                         <Col span="6">
-                                            <Form-item label="多级审核:">
-                                                <i-switch size="large" v-model="other.multi">
-                                                    <span slot="open">开</span>
-                                                    <span slot="close">关</span>
-                                                </i-switch>
-                                            </Form-item>
-                                        </Col>
-                                        <Col span="6">
                                             <Form-item label="查询审核:">
                                                 <i-switch size="large" v-model="other.query">
                                                     <span slot="open">开</span>
@@ -169,21 +161,15 @@
                                             </Form-item>
                                         </Col>
                                         <Col span="6">
-                                            <Form-item label="查询超时时间:">
-                                                <InputNumber :max="600" :min="1" v-model="other.query_timeout"
-                                                             :formatter="value => `${value}秒`"></InputNumber>
-                                            </Form-item>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span="6">
-                                            <Form-item label="注册:">
+                                            <Form-item label="允许注册:">
                                                 <i-switch size="large" v-model="other.register">
                                                     <span slot="open">开</span>
                                                     <span slot="close">关</span>
                                                 </i-switch>
                                             </Form-item>
                                         </Col>
+                                    </Row>
+                                    <Row>
                                         <Col span="6">
                                             <Form-item label="查询导出:">
                                                 <i-switch size="large" v-model="other.export">
@@ -239,11 +225,9 @@
                                 <template slot="desc">
                                     1.设置最大Limit数后，所有的查询语句的查询结果都不会超过这个数值。
                                     <br>
-                                    2.开启多级审核开关后,用户组将新增执行人角色，只有执行人角色的用户才能最终执行工单。关闭后执行人角色用户将全部更改为使用者
+                                    2.查询审核开关开启后，所有的查询都必须通过管理员同意才能进行。关闭则可自主查询
                                     <br>
-                                    3.查询审核开关开启后，所有的查询都必须通过管理员同意才能进行。关闭则可自主查询
-                                    <br>
-                                    4.设置脱敏字段后，查询时如匹配到对应字段则该字段将只会以******显示
+                                    3.设置脱敏字段后，查询时如匹配到对应字段则该字段将只会以******显示
                                 </template>
                             </Alert>
                             <Button style="margin-left: 5%;width: 95%" type="primary" @click="save_upload">保存</Button>

@@ -332,7 +332,10 @@
         }
 
         current_page(vl = 1) {
-            this.$http.get(`${this.$config.url}/manage_user?page=${vl}&con=${JSON.stringify(this.query)}`)
+            this.$http.put(`${this.$config.url}/manage_user/fetch`,{
+                page: vl,
+                query: this.query
+            })
                 .then((res: { data: { multi: any; data: never[]; page: number; }; }) => {
                     this.connectionList.multi = res.data.multi;
                     this.table_data = res.data.data;
