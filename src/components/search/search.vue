@@ -18,37 +18,31 @@
 </template>
 
 <script lang="ts">
-    import {Component, Mixins, Prop} from "vue-property-decorator";
-    import att_mixins from "../../mixins/basic";
-    import modules_search from "@/store/modules/search";
-
-    @Component({components: {}})
-    export default class search extends Mixins(att_mixins) {
-
-        @Prop({
-            type: String,
-            required: true,
-            default: ''
-        }) public text !: string
-
-        queryData() {
-            this.find.valve = true;
-            modules_search.post_search_args(this.find)
-            this.$emit("refresh")
-        }
-
-        queryCancel() {
-            this.resetFields('queryForm')
-            this.current = 1;
-            this.$emit("refresh")
-        }
-
-        beforeDestroy() {
-            this.resetFields('queryForm')
-        }
+import {Component, Mixins, Prop} from "vue-property-decorator";
+import att_mixins from "../../mixins/basic";
+import modules_search from "@/store/modules/search";
+@Component({components: {}})
+export default class search extends Mixins(att_mixins) {
+    @Prop({
+        type: String,
+        required: true,
+        default: ''
+    }) public text !: string
+    queryData() {
+        this.find.valve = true;
+        modules_search.post_search_args(this.find)
+        this.$emit("refresh")
     }
+    queryCancel() {
+        this.resetFields('queryForm')
+        this.current = 1;
+        this.$emit("refresh")
+    }
+    beforeDestroy() {
+        this.resetFields('queryForm')
+    }
+}
 </script>
 
 <style scoped>
-
 </style>

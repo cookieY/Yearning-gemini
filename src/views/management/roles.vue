@@ -225,7 +225,7 @@
                               <span slot="close">关</span>
                             </i-switch>
                           </FormItem>
-                          <FormItem label="DML最大提交行数">
+                          <FormItem label="Insert最大插入行数上限">
                             <InputNumber :min="0" v-model="juno.DMLMaxInsertRows"></InputNumber>
                           </FormItem>
                         </Form>

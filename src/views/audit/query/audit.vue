@@ -64,7 +64,7 @@
             {
                 title: '是否导出',
                 key: 'export',
-                render: render.backup
+                render: render.queryExport
             },
             {
                 title: '申请人',

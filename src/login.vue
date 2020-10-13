@@ -34,7 +34,7 @@ a:visited {
             <div class="container">
                 <div>
                     <a class="navbar-brand">
-                        {{ $t('version') }}: v2.3.0 Interstellar
+                        {{ $t('version') }}: v2.3.0 Interstellar RC7
                     </a>
                     <Button v-if="switchCode" type="default" ghost @click="register= true"> {{ $t('sign') }}</Button>
                 </div>

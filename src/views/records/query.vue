@@ -33,6 +33,7 @@
     import {Component, Mixins} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
     import search from "@/components/search/search.vue";
+    import render from "@/interface/render";
 
     @Component({components: {search}})
     export default class query_record extends Mixins(att_mixins) {
@@ -53,6 +54,11 @@
             {
                 title: '工单说明',
                 key: 'text'
+            },
+            {
+                title: '是否导出',
+                key: 'export',
+                render: render.queryExport
             },
             {
                 title: '提交时间:',

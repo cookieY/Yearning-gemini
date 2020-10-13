@@ -5,6 +5,8 @@ let render = {
     },
     backup: (h: any, params: { row: { backup: number }; }) => {
     },
+    queryExport: (h: any, params: { row: { export: number }; }) => {
+    },
     type: (h: any, params: { row: { type: number }; }) => {
     },
     expand: (h: any, params: { row: { sql: string }; }) => {
@@ -75,6 +77,15 @@ render.backup = (h: any, params: { row: { backup: number }; }) => {
     const row = params.row;
     let text = "否"
     if (row.backup == 1) {
+        text = "是"
+    }
+    return h('span', {}, text)
+}
+
+render.queryExport = (h: any, params: { row: { export: number }; }) => {
+    const row = params.row;
+    let text = "否"
+    if (row.export == 1) {
         text = "是"
     }
     return h('span', {}, text)
