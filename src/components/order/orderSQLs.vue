@@ -34,7 +34,7 @@
                         <Button type="info" @click="merge" :loading="loading" class="margin-left-10" v-if="!is_dml">
                             ALTER语句合并
                         </Button>
-                        <Button type="success" @click="fetchStruct()" class="margin-left-10" v-if="!is_dml">获取表结构信息
+                        <Button type="success" @click="fetchStruct()" class="margin-left-10" >获取表结构信息
                         </Button>
                         <Button type="warning" icon="ios-brush" @click.native="beauty()"
                                 :loading="loading" class="margin-left-10">美化

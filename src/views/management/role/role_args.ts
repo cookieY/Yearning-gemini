@@ -157,6 +157,12 @@ const rule: Rule[] = [
         tp: 1
     },
     {
+        name: 'DMLMaxInsertRows',
+        desc: 'Insert最大插入行数上限',
+        type: 'DDL',
+        tp: 1
+    },
+    {
         name: 'DDLMaxKey',
         desc: '单个表最多允许几个索引',
         type: 'DDL',
@@ -179,6 +185,12 @@ const rule: Rule[] = [
         desc: '表名最大长度限制',
         type: 'DDL',
         tp: 1
+    },
+    {
+        name: 'DDLImplicitTypeConversion',
+        desc: '不允许隐式转换',
+        type: 'DML',
+        tp: 0
     },
     {
         name: 'DMLInsertColumns',

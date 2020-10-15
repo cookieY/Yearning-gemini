@@ -48,7 +48,9 @@
 
         <Drawer title="DML语句快速提交" v-model="drawer.open" width="700">
             <Form :rules="ruleValidate" ref="formItem" :model="formItem">
-
+                <FormItem label="连接名:">
+                    <span>{{ formItem.idc }}</span>
+                </FormItem>
                 <FormItem label="连接名:">
                     <span>{{ formItem.source }}</span>
                 </FormItem>
@@ -295,10 +297,11 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
         this.$http.put(`${this.$config.url}/query/fetch_base`, {
             'source': this.source
         })
-            .then((res: { data: { [x: string]: number; sign: any; info: any; highlight: any; }; }) => {
+            .then((res: { data: { [x: string]: number; sign: any; info: any; highlight: any; idc: any }; }) => {
                 this.fetchData.assigned = res.data.sign;
                 this.tree_data = res.data.info;
                 this.formItem.source = this.tree_data[0].title
+                this.formItem.idc = res.data.idc
                 let tWord = this.$config.highlight.split('|');
                 for (let i of tWord) {
                     this.wordList.push({'vl': i, 'meta': '关键字'})
