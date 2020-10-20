@@ -3,11 +3,10 @@
 import Vue from 'vue'
 import Subnet from './framework.vue'
 import iView from 'view-design'
-import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import {MainRoute} from './router'
-import store from './store'
+import store from '@/store'
 import './styles/theme.less'
 import config from './libs/libs'
 import particles from 'particles.js/particles'
@@ -18,8 +17,8 @@ import i18n from "@/language";
 
 Vue.config.productionTip = false;
 Vue.prototype.$config = config;
+Vue.use(iView)
 Vue.use(particles);
-Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(mavonEditor);
 Vue.prototype.$http = axios;
@@ -35,11 +34,17 @@ router.beforeEach((to, from, next) => {
     config.title(to.meta.title);
     if (sessionStorage.getItem('locking') === '1' && to.name !== 'locking') { // 判断当前是否是锁定状态
         next(false);
-        router.replace({name: 'login'})
+        router.replace({name: 'login'}).then(() => {
+        }).catch(() => {
+            LoadingBar.finish()
+        })
     } else {
         if (!sessionStorage.getItem('user') && to.name !== 'login') { // 判断是否已经登录且前往的页面不是登录页
             next(false);
-            router.replace({name: 'login'})
+            router.replace({name: 'login'}).then(() => {
+            }).catch(() => {
+                LoadingBar.finish()
+            })
         } else {
             next()
         }

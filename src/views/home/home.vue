@@ -89,43 +89,6 @@
         </Row>
         <br>
         <Row style="margin-left: 0.5%">
-            <Col span="23">
-                <Card>
-                    <p slot="title" class="card-title">
-                        <Icon type="ios-megaphone" size="24"/>
-                        {{$t('dash.quick')}}
-                    </p>
-                    <Row>
-                        <Col span="1" offset="2">
-                            <Button type="text" to="order/ddl">
-                                <Icon type="md-git-merge" size="24"/>
-                                DDL工单提交
-                            </Button>
-                        </Col>
-                        <Col span="1" offset="3">
-                            <Button type="text" to="order/dml">
-                                <Icon type="md-code" size="24"/>
-                                DML工单提交
-                            </Button>
-                        </Col>
-                        <Col span="1" offset="3">
-                            <Button type="text" to="query_page">
-                                <Icon type="ios-podium" size="24"/>
-                                查询
-                            </Button>
-                        </Col>
-                        <Col span="1" offset="3">
-                            <Button type="text" to="my_order">
-                                <Icon type="md-person" size="24"/>
-                                我的工单
-                            </Button>
-                        </Col>
-                    </Row>
-                </Card>
-            </Col>
-        </Row>
-        <br>
-        <Row style="margin-left: 0.5%">
             <Col span="7">
                 <Card>
                     <p slot="title" class="card-title">
@@ -177,17 +140,16 @@
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
     import dataSourcePie from '@/components/dataSourcePie.vue'
     import dataSourceAxis from '@/components/dataSourceAxis.vue'
     import info_card from '@/components/inforCard.vue'
-    import myself from '@/views/personalCenter/myself.vue'
-    import {Vue, Component} from 'vue-property-decorator'
+    import myself from '@/views/personal/personal.vue'
+    import {Component, Mixins} from 'vue-property-decorator'
     import i18n from "@/language";
+    import att_mixins from "@/mixins/basic";
 
     @Component({components: {dataSourcePie, info_card, dataSourceAxis, myself}})
-    export default class home extends Vue {
-        $config: any;
+    export default class home extends Mixins(att_mixins) {
         columnsTop5 = [
             {
                 title: i18n.t('general.db'),
@@ -216,11 +178,11 @@
             this.time = date.getFullYear() + '/' + month + '/' + date.getDate() + '  ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
         }
         mounted() {
-            axios.get(`${this.$config.url}/dash/count`)
-                .then(res => {
+            this.$http.get(`${this.$config.url}/dash/count`)
+                .then((res: { data: { dataTop5: never[]; createUser: number; order: number; source: number; query: number; ddl: number; dml: number } }) => {
                     this.count = res.data;
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 });
             this.formatDate()

@@ -1,127 +1,94 @@
 import {Component, Mixins} from "vue-property-decorator";
 import expandRow from "@/components/expandTable.vue";
-import axios from 'axios'
-import att from "@/mixins/att";
+import att from "@/mixins/basic";
+import module_init_args from "@/store/modules/init_args";
 
 @Component({components: {}})
 export default class detail_mixins extends Mixins(att) {
     columns = [
         {
             title: 'sql语句',
-            key: 'SQL',
+            key: 'sql',
 
         },
         {
             title: '状态',
-            key: 'State',
+            key: 'state',
         },
         {
             title: '错误信息',
-            key: 'Error',
+            key: 'error',
             tooltip: true
         },
         {
             title: '影响行数',
-            key: 'Affectrow',
+            key: 'affect_row',
             width: 100
         },
         {
             title: '执行时间/秒',
-            key: 'Time',
+            key: 'time',
         }
     ];
-    TableDataNew = [];
-    reload_sql = false;
-    formItem = {} as any;
-    rollColumn = [
-        {
-            type: 'expand',
-            width: 50,
-            render: (h: any, params: { row: {SQL:string} }) => {
-                return h(expandRow, {
-                    props: {
-                        row: params.row.SQL
-                    }
-                })
-            }
-        },
-        {
-            title: '当前检查的sql',
-            key: 'SQL',
-            render: (h: any, params: { row: { SQL: string } }) => {
-                let text = params.row.SQL.substring(0, 80)
-                if (text.length > 80) {
-                    text += '...';
-                }
-                return h('span', text)
-            }
 
-        },
-    ];
-    rollData = [] as any;
+    results = [];
 
-    rollback() {
-        axios.get(`${this.$config.url}/fetch/roll?workid=${this.$route.query.workid}`)
-            .then(res => {
-                if (res.data.sql === []) {
-                    this.$config.err_notice(this,"无sql回滚语句");
-                    return
-                }
-                this.reload_sql = true;
-                this.formItem = res.data.order;
-                this.rollData = res.data.sql;
-                this.formItem.Delay = 'none';
+    switch_args = {
+        reload_sql: false,
+        is_more: '10'
+    }
+
+    get sqls() {
+        return module_init_args.order_sql
+    }
+
+    set sqls(vl) {
+        module_init_args.fetch_order_sql(vl)
+    }
+
+    get order() {
+        return module_init_args.order_item
+    }
+
+    collapse = ['results', 'sql']
+
+    fetch_post_sql(vl: string = '10') {
+        let spin: any = this.$Spin;
+        spin.show()
+        this.$http.get(`${this.$config.url}/fetch/sql?work_id=${this.order.work_id}&limit=${vl}`)
+            .then((res: { data: string; }) => {
+                module_init_args.fetch_order_sql(res.data)
             })
-            .catch(err => {
-                this.$config.err_notice(this, err)
+            .catch((err: any) => this.$config.err_notice(this, err))
+            .finally(() => {
+                spin.hide()
             })
     }
 
-    repairOrder() {
-        axios.get(`${this.$config.url}/fetch/roll?workid=${this.$route.query.workid}`)
-            .then(res => {
-                this.formItem = res.data.order;
-                this.formItem.Delay = 'none';
-            })
-            .catch(error => {
-                this.$config.err_notice(this, error)
-            });
-        this.reload_sql = true
+    open_form() {
+        this.is_open = true
     }
 
-    referOrder() {
-        if (this.$route.query.status === '1') {
-            let sql = '';
-            this.rollData.forEach((item: { SQL: string; }) => {
-                sql += item.SQL
-            });
-            this.formItem.SQL = sql;
-        }
-        // delete this.formItem.ID;
-        axios.post(`${this.$config.url}/fetch/rollorder`, {
-            'data': this.formItem
-        })
-            .then(() => {
-                this.$config.notice('工单已提交成功')
+    delOrder(work_id: string) {
+        this.$http.get(`${this.$config.url}/fetch/undo?work_id=${work_id}`)
+            .then((res: { data: string; }) => {
+                this.$config.notice(res.data);
+                this.$router.go(-1)
             })
-            .catch(error => {
+            .catch((error: any) => {
                 this.$config.err_notice(this, error)
             })
     }
 
     current_page(vl = 1) {
-        axios.get(`${this.$config.url}/fetch/detail?workid=${this.$route.query.workid}&status=${this.$route.query.status}&page=${vl}`)
-            .then(res => {
-                this.TableDataNew = res.data.record;
+        this.$http.get(`${this.$config.url}/fetch/detail?workid=${this.order.work_id}&status=${this.order.status}&page=${vl}`)
+            .then((res: { data: { record: never[]; count: number; }; }) => {
+                this.results = res.data.record;
                 this.page_number = res.data.count;
             })
-            .catch(error => {
+            .catch((error: any) => {
                 this.$config.err_notice(this, error)
             })
-    }
-
-    mounted() {
-        this.current_page()
     }
 }
 

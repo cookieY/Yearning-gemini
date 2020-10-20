@@ -1,13 +1,11 @@
-// import env from '../../config/env';
 // @ts-ignore
 import Notice from 'view-design/src/components/notice'
-import {appRouter} from '../router'
-import axios from 'axios'
+import {CreateElement} from "vue";
+import module_general from "@/store/modules/general";
 
 let libs: any = {};
 libs.title = function (title: string) {
-    title = title || 'Yearning SQL审核平台';
-    window.document.title = title
+    window.document.title = `Yearning || ${title}`
 };
 
 libs.random = function (lower: number, upper: number) {
@@ -35,7 +33,6 @@ libs.mode = function (obj: any) {
 };
 
 libs.err_notice = function (vm: any, err: { response: { status: number, statusText: string } }) {
-
     let text: string = err.response.statusText;
     if (err.response.status === 401) {
         text = 'Token过期！请重新登录!';
@@ -45,7 +42,7 @@ libs.err_notice = function (vm: any, err: { response: { status: number, statusTe
             cancelText: '退出',
             okText: '登录',
             closable: true,
-            render: (h: any) => {
+            render: (h: CreateElement) => {
                 return h('div', [
                     h('br'),
                     h('Input', {
@@ -65,14 +62,14 @@ libs.err_notice = function (vm: any, err: { response: { status: number, statusTe
                     h('br'),
                     h('Checkbox', {
                         props: {
-                            value: vm.$store.state.openReLogin,
+                            value: module_general.openReLogin,
                         },
                         style: {
                             marginLeft: '40%'
                         },
                         on: {
                             checkbox: (val: boolean) => {
-                                vm.$store.state.openReLogin = val
+                                module_general.changed_openReLogin_status(val)
                             }
                         }
                     }, 'ldap登录')
@@ -80,42 +77,38 @@ libs.err_notice = function (vm: any, err: { response: { status: number, statusTe
             },
             onOk: () => {
                 let url = vm.$config.auth;
-                if (vm.$store.state.openReLogin) {
+                if (module_general.openReLogin) {
                     url = `${vm.$config.gen}/ldap`
                 }
-                axios.post(url, {
+                vm.$http.post(url, {
                     'username': sessionStorage.getItem('user'),
                     'password': vm.$store.state.password
                 })
-                    .then(res => {
-                        axios.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
+                    .then((res: { data: { token: string } }) => {
+                        vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
                         sessionStorage.setItem('jwt', `Bearer ${res.data.token}`);
                         vm.$Message.success("已重新登录!");
                         vm.$store.state.password = '';
-                        vm.$store.state.openReLogin = false
+                        module_general.changed_openReLogin_status(false)
                     })
-                    .catch(err => {
+                    .catch((err: object) => {
                         vm.$config.auth_notice(err);
-                        vm.$router.push({
-                            name: 'login'
-                        })
+                        vm.$router.push({name: 'login'})
                     })
             },
             onCancel: () => {
-                vm.$router.push({
-                    name: 'login'
-                })
+                vm.$router.push({name: 'login'})
             }
         })
     } else {
-        Notice.error({
+        vm.$Message.error({
             title: '错误',
-            desc: text
+            content: text
         })
     }
 };
 
-libs.auth_notice = function (err: { response: { status: number, statusText: string } }) {
+libs.auth_notice = function (err: { response: { status?: number, statusText: string } }) {
     let text: string;
     if (err.response.status === 401) {
         text = '账号密码错误,请重新输入!'
@@ -151,67 +144,23 @@ if (process.env.NODE_ENV == 'development') {
 
 libs.openPage = function (vm: any, name: string) {
     vm.$router.push({name: name});
-    vm.$store.commit('breadcrumb_set', name);
-    vm.$store.state.currentPageName = name;
-    libs.tag_list(vm, name)
-};
-
-libs.tag_list = function (vm: any, name: string): void {
-    vm.$store.state.pageOpenedList.forEach((vl: any, index: number) => {
-        if (vl.name === name && name !== 'home_index') {
-            vm.$store.state.pageOpenedList.splice(index, 1)
-        }
-    });
-    appRouter.forEach((val) => {
-        for (let i of val.children) {
-            if (i.name === name && name !== 'home_index') {
-                vm.$store.state.pageOpenedList.push({'title': i.title, 'name': i.name})
-            }
-        }
-    });
-    localStorage.setItem('pageOpenedList', JSON.stringify(vm.$store.state.pageOpenedList))
-};
-
-libs.clearObj = function (obj: any) {
-    for (let i in obj) {
-        if (typeof obj[i] === 'object') {
-            obj[i] = []
-        } else if (typeof obj[i] === 'string') {
-            obj[i] = ''
-        } else if (typeof obj[i] === 'number') {
-            obj[i] = 0
-        } else if (typeof obj[i] === 'boolean') {
-            obj[i] = false
-        } else {
-            obj[i] = false
-        }
-    }
-    return obj
+    module_general.breadcrumb_set(name);
+    module_general.changed_currentPageName(name)
+    module_general.tag_list(name)
 };
 
 libs.clearOption = function (obj: any) {
     for (let i in obj) {
-        if (typeof obj[i] === 'object') {
-            obj[i] = []
-        } else if (typeof obj[i] === 'string') {
-            obj[i] = '0'
-        } else if (typeof obj[i] === 'number') {
-            obj[i] = 0
-        } else {
-            obj[i] = false
-        }
-    }
-    return obj
-};
-
-libs.clearPicker = function (obj: any) {
-    for (let i in obj) {
-        if (typeof obj[i] === 'object') {
-            obj[i] = ['', '']
-        } else if (typeof obj[i] === 'string') {
-            obj[i] = ''
-        } else {
-            obj[i] = false
+        if (obj.hasOwnProperty(i)) {
+            if (typeof obj[i] === 'object') {
+                obj[i] = []
+            } else if (typeof obj[i] === 'string') {
+                obj[i] = '0'
+            } else if (typeof obj[i] === 'number') {
+                obj[i] = 0
+            } else {
+                obj[i] = false
+            }
         }
     }
     return obj

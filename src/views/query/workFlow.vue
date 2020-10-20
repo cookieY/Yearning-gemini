@@ -1,17 +1,17 @@
 <template>
-  <div>
-    <Row>
-      <Card>
-        <div class="step-header-con">
-          <h3>{{ stepData.title }}</h3>
-          <h5>{{ stepData.describe }}</h5>
-        </div>
-        <p class="step-content"></p>
+    <div>
         <Row>
-          <i-col span="8">
-            <Alert type="warning" show-icon>
-              注意事项:
-              <span slot="desc">
+            <Card>
+                <div class="step-header-con">
+                    <h3>{{ stepData.title }}</h3>
+                    <h5>{{ stepData.describe }}</h5>
+                </div>
+                <p class="step-content"></p>
+                <Row>
+                    <i-col span="8">
+                        <Alert type="warning" show-icon>
+                            注意事项:
+                            <span slot="desc">
               1.必须填写查询说明
               <br>
               2.根据查询条件预估所需的查询时间
@@ -22,55 +22,54 @@
               <br>
               5.已限制最大limit数，如自己输入的limit数大于平台配置的最大limit数则以平台配置的Limit数为准
             </span>
-            </Alert>
-          </i-col>
-          <i-col span="12">
-            <Form ref="formItem" :model="formItem" :rules="stepRules" :label-width="150">
-              <FormItem label="环境:" prop="idc">
-                <Select v-model="formItem.idc" @on-change="fetchSource">
-                  <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
-                </Select>
-              </FormItem>
+                        </Alert>
+                    </i-col>
+                    <i-col span="12">
+                        <Form ref="formItem" :model="formItem" :rules="stepRules" :label-width="150">
+                            <FormItem label="环境:" prop="idc">
+                                <Select v-model="formItem.idc" @on-change="fetchDiffSource">
+                                    <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
+                                </Select>
+                            </FormItem>
 
-              <FormItem label="审核人:" prop="assigned">
-                <Select v-model="formItem.assigned" filterable>
-                  <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
-                </Select>
-              </FormItem>
+                            <FormItem label="审核人:" prop="assigned">
+                                <Select v-model="formItem.assigned" filterable>
+                                    <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
+                                </Select>
+                            </FormItem>
 
-              <FormItem label="是否需要导出数据:" prop="export" v-if="export_list">
-                <RadioGroup v-model="formItem.export">
-                  <Radio :label=1>是</Radio>
-                  <Radio :label=0>否</Radio>
-                </RadioGroup>
-              </FormItem>
+                            <FormItem label="是否需要导出数据:" prop="export" v-if="export_list">
+                                <RadioGroup v-model="formItem.export">
+                                    <Radio :label=1>是</Radio>
+                                    <Radio :label=0>否</Radio>
+                                </RadioGroup>
+                            </FormItem>
 
-              <FormItem label="查询说明：" prop="text">
-                <Input v-model="formItem.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}"
-                       placeholder="请填写查询说明"/>
-              </FormItem>
-              <FormItem label="">
-                <Button @click="handleSubmit" style="width:100px;" type="primary">提交</Button>
-              </FormItem>
-            </Form>
-          </i-col>
+                            <FormItem label="查询说明：" prop="text">
+                                <Input v-model="formItem.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}"
+                                       placeholder="请填写查询说明"/>
+                            </FormItem>
+                            <FormItem label="">
+                                <Button @click="handleSubmit" style="width:100px;" type="primary">提交</Button>
+                            </FormItem>
+                        </Form>
+                    </i-col>
+                </Row>
+                <Steps>
+                    <Step v-for="item in stepList1" :title="item.title" :content="item.describe"
+                          :key="item.title"></Step>
+                </Steps>
+            </Card>
         </Row>
-        <Steps>
-          <Step v-for="item in stepList1" :title="item.title" :content="item.describe" :key="item.title"></Step>
-        </Steps>
-      </Card>
-    </Row>
-  </div>
+    </div>
 </template>
 
 <script lang="ts">
-    import axios from 'axios'
     import fetch_mixins from "@/mixins/fetch_mixin";
-    import {Component,Mixins} from "vue-property-decorator";
+    import {Component, Mixins} from "vue-property-decorator";
 
     @Component({components: {}})
     export default class work_flow extends Mixins(fetch_mixins) {
-        $config: any;
         export_list = false;
         stepData = {
             title: 'Yearning SQL查询系统',
@@ -111,35 +110,17 @@
             }]
         };
         item = {};
-        formItem:any = {
-            text: '',
-            idc: '',
-            export: 0,
-            assigned: '',
-            source:''
-        };
 
-        fetchSource(idc: string) {
-            if (idc) {
-                axios.get(`${this.$config.url}/fetch/source/${idc}/query`)
-                    .then(res => {
-                        if (res.data.x === 'query') {
-                            this.fetchData.assigned = res.data.assigned
-                        } else {
-                            this.$config.notice('非法劫持参数！')
-                        }
-                    })
-                    .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
-            }
+        fetchDiffSource(idc: string) {
+            this.fetchSource(idc, 'query')
         }
 
+
         handleSubmit() {
-            let is_validate:any = this.$refs['formItem'];
+            let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    axios.post(`${this.$config.url}/query/refer`, {
+                    this.$http.post(`${this.$config.url}/query/refer`, {
                         'idc': this.formItem.idc,
                         'source': this.formItem.source,
                         'export': this.formItem.export,
@@ -151,16 +132,16 @@
                                 name: 'query_apply'
                             })
                         })
-                        .catch(err => {
-                        this.$config.err_notice(this,err)
-                    })
+                        .catch((err: any) => {
+                            this.$config.err_notice(this, err)
+                        })
                 }
             })
         }
 
         fetchQueryStatus() {
-            axios.put(`${this.$config.url}/query/status`)
-                .then(res => {
+            this.$http.put(`${this.$config.url}/query/status`)
+                .then((res: { data: { status: number; export: boolean; }; }) => {
                     if (res.data.status === 1) {
                         this.$router.push({
                             name: 'query_page'
@@ -180,33 +161,37 @@
             this.fetchQueryStatus();
         }
 
+        beforeDestroy() {
+            this.resetFields('formItem')
+        }
+
     }
 </script>
 
 <style lang="less">
-  .step {
-    &-header-con {
-      text-align: center;
+    .step {
+        &-header-con {
+            text-align: center;
 
-      h3 {
-        margin: 10px 0;
-      }
+            h3 {
+                margin: 10px 0;
+            }
 
-      h5 {
-        margin: 0 0 5px;
-      }
+            h5 {
+                margin: 0 0 5px;
+            }
+        }
+
+        &-content {
+            padding: 5px 20px 26px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dbdddf;
+        }
+
+        &-form {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dbdddf;
+            margin-bottom: 20px;
+        }
     }
-
-    &-content {
-      padding: 5px 20px 26px;
-      margin-bottom: 20px;
-      border-bottom: 1px solid #dbdddf;
-    }
-
-    &-form {
-      padding-bottom: 10px;
-      border-bottom: 1px solid #dbdddf;
-      margin-bottom: 20px;
-    }
-  }
 </style>

@@ -1,39 +1,32 @@
-import {Component, Vue} from "vue-property-decorator";
+import {Component, Mixins} from "vue-property-decorator";
+import {Permission, Permissions_check_all, Connection_list} from "@/interface";
+import att_mixins from "@/mixins/basic";
 
 @Component({components: {}})
-export default class choose_mixins extends Vue {
+export default class choose_mixins extends Mixins(att_mixins) {
 
-    connectionList = {
-        connection: [],
-        person: [],
-        query: []
-    } as any;
 
-    indeterminate = {
+
+    indeterminate: Permissions_check_all = {
         ddl_source: true,
         dml_source: true,
         query_source: true,
         auditor: true
-    } as any;
+    };
 
-    checkAll = {
+    checkAll: Permissions_check_all = {
         ddl_source: false,
         dml_source: false,
         query_source: false,
         auditor: false
-    } as any;
+    };
 
-    permission = {
-        ddl: '0',
+    permission: Permission = {
         ddl_source: [],
-        dml: '0',
         dml_source: [],
-        query: '0',
         query_source: [],
-        user: '0',
-        base: '0',
         auditor: []
-    } as any;
+    };
 
     checkAllWithDDL(data: string | any[]) {
         if (data.length === this.connectionList.connection.length) {
@@ -96,9 +89,9 @@ export default class choose_mixins extends Vue {
         this.indeterminate[args] = false;
         if (this.checkAll[args]) {
             if (ty === 'person') {
-                this.permission[args] = this.connectionList[ty].map((vl: { Username: string; }) => vl.Username);
+                this.permission[args] = this.connectionList[ty].map((vl: { username: string; }) => vl.username);
             } else {
-                this.permission[args] = this.connectionList[ty].map((vl: { Source: string; }) => vl.Source)
+                this.permission[args] = this.connectionList[ty].map((vl: { source: string; }) => vl.source)
             }
         } else {
             this.permission[args] = []

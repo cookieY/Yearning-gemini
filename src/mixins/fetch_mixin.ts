@@ -1,11 +1,14 @@
 import {Component, Mixins} from "vue-property-decorator";
-import att_mixins from "@/mixins/att";
+import att from "@/mixins/basic";
+import {Fetch_data, High_light} from "@/interface";
 import axios from "axios";
-import att from "@/mixins/att";
+import sqlFormatter from "sql-formatter";
+import modules_order from "@/store/modules/order";
 
 @Component({components: {}})
 export default class fetch_mixins extends Mixins(att) {
-    fetchData:any = {
+
+    fetchData: Fetch_data = {
         idc: [],
         source: [],
         base: [],
@@ -13,58 +16,60 @@ export default class fetch_mixins extends Mixins(att) {
         assigned: []
     };
 
-
-    fetchSource(idc: string) {
+    fetchSource(idc: string, tp: string) {
         if (idc) {
-            axios.get(`${this.$config.url}/fetch/source/${idc}/dml`)
-                .then(res => {
-                    if (res.data.x === 'dml') {
+            this.$http.get(`${this.$config.url}/fetch/source?idc=${idc}&xxx=${tp}`)
+                .then((res: { data: { x: string; source: string[]; assigned: string[]; }; }) => {
+                    if (res.data.x === tp) {
                         this.fetchData.source = res.data.source;
                         this.fetchData.assigned = res.data.assigned
                     } else {
                         this.$config.notice('非法劫持参数！')
                     }
                 })
-                .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
+                .catch((error: any) => {
+                    this.$config.err_notice(this, error)
+                })
         }
     }
 
     fetchBase(source: string) {
         if (source) {
-            axios.get(`${this.$config.url}/fetch/base/${source}`)
-                .then(res => {
-                    this.fetchData.base = res.data;
+            this.$http.get(`${this.$config.url}/fetch/base?source=${source}`)
+                .then((res: { data: { results: string[]; admin: string[]; highlight: never[] }; }) => {
+                    this.fetchData.base = res.data.results;
+                    this.fetchData.assigned = res.data.admin
+                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
                 })
-                .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
+                .catch((error: any) => {
+                    this.$config.err_notice(this, error)
+                })
+        }
+    }
+
+    fetchTable() {
+        if (this.formItem.data_base) {
+            this.$http.put(`${this.$config.url}/fetch/table`, {
+                'source': this.formItem.source,
+                'base': this.formItem.data_base
+            })
+                .then((res: { data: { table: string[]; highlight: {} }; }) => {
+                    this.fetchData.table = res.data.table;
+                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
+                }).catch((error: any) => {
+                this.$config.err_notice(this, error)
+            })
         }
     }
 
     fetchIDC() {
-        axios.get(`${this.$config.url}/fetch/idc`)
-            .then(res => {
+        this.$http.get(`${this.$config.url}/fetch/idc`)
+            .then((res: { data: string[]; }) => {
                 this.fetchData.idc = res.data;
             })
-            .catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
+            .catch((error: any) => {
+                this.$config.err_notice(this, error)
+            })
     }
 
-    fetchTable() {
-        if (this.formItem.database) {
-            axios.put(`${this.$config.url}/fetch/table`, {
-                'source': this.formItem.source,
-                'base': this.formItem.database
-            })
-                .then(res => {
-                    this.fetchData.table = res.data.table;
-                    this.wordList = this.$config.concat(this.wordList, res.data.highlight);
-                }).catch(error => {
-                        this.$config.err_notice(this,error)
-                    })
-        }
-    }
 }

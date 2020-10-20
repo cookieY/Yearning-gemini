@@ -1,126 +1,120 @@
 <style lang="less" scoped>
-  @import "styles/main.less";
+    @import "styles/main.less";
 </style>
 <template>
-  <div id="main" class="main" :class="{'main-hide-text': hideMenuText}">
+    <div id="main" class="main">
 
-    <div
-            class="sidebar-menu-con"
-            style="width:200px; background:#ffffff;z-index: 1"
-            v-if="!hideMenuText"
-    >
-      <sidebar-menu :menuList="menuList" :iconSize="18"/>
-    </div>
-    <div class="main-header-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
-      <div class="main-header">
-        <div class="main-breadcrumb">
-          <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
+        <div
+                class="sidebar-menu-con"
+                style="width:200px; background:#ffffff;z-index: 1"
+        >
+            <sidebar-menu :menuList="menuList" :iconSize="18"/>
         </div>
-        <div class="header-avator-con">
-          <a href="https://guide.yearning.io/" target="_Blank">{{$t('banner.guide')}}</a>
-<!--          <div @click="handleFullScreen" v-if="showFullScreenBtn" class="full-screen-btn-con">-->
-<!--            <Tooltip :content="isFullScreen ? '退出全屏' : '全屏'" placement="bottom">-->
-<!--              <Icon :type="isFullScreen ? 'md-contract' : 'md-expand'" :size="23"></Icon>-->
-<!--            </Tooltip>-->
-<!--          </div>-->
-          <div @click="lockScreen" class="lock-screen-btn-con">
-            <Tooltip :content="$t('dash.lock')" placement="bottom">
-              <Icon type="md-lock" :size="20"></Icon>
-            </Tooltip>
-          </div>
-          <div class="user-dropdown-menu-con">
-            <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
-              <Dropdown trigger="click" @on-click="handleClickUserDropdown">
-                <a href="javascript:void(0)">
-                  <Avatar :style="{background: color}">{{ userName }}</Avatar>
-                  <Icon type="md-arrow-dropdown"/>
-                </a>
-                <DropdownMenu slot="list">
-                  <DropdownItem name="loginout">{{$t('banner.login_out')}}</DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </Row>
-          </div>
+        <div class="main-header-con">
+            <div class="main-header">
+                <div class="main-breadcrumb">
+                    <breadcrumb-nav></breadcrumb-nav>
+                </div>
+                <div class="header-avator-con">
+                    <a href="https://guide.yearning.io/" target="_Blank">{{$t('banner.guide')}}</a>
+                    <div @click="lockScreen" class="lock-screen-btn-con">
+                        <Tooltip :content="$t('dash.lock')" placement="bottom">
+                            <Icon type="md-lock" :size="20"></Icon>
+                        </Tooltip>
+                    </div>
+                    <div class="user-dropdown-menu-con">
+                        <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
+                            <Dropdown trigger="click" @on-click="handleClickUserDropdown">
+                                <a href="javascript:void(0)">
+                                    <Avatar :style="{background: color}">{{ userName }}</Avatar>
+                                    <Icon type="md-arrow-dropdown"/>
+                                </a>
+                                <DropdownMenu slot="list">
+                                    <DropdownItem name="loginout">{{$t('banner.login_out')}}</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        </Row>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
+        <div class="single-page-con" style="padding-left:200px">
+            <div class="single-page">
+                <transition name="fade" mode="out-in" appear>
+                    <router-view>
+                    </router-view>
+                </transition>
+            </div>
+        </div>
+        <Modal
+                v-model="stmt"
+                :title="$t('banner.statement.banner')"
+                width="600"
+                :mask-closable="false"
+                :closable="false"
+                :styles="{top: '20%'}"
+                :ok-text="$t('general.agreed')"
+                @on-ok="agreement"
+        >
+            <h3>{{$t('banner.statement.title')}}</h3>
+            <br>
+            <p>{{$t('banner.statement.title_text')}}</p>
+            <br>
+            <H3>{{$t('banner.statement.notes')}}</H3>
+            <br>
+            <p> {{$t('banner.statement.text')}}</p>
+            <br>
+            <p>{{$t('banner.statement.text_1')}}</p>
+            <br>
+            <p>{{$t('banner.statement.text_2')}}</p>
+            <br>
+            <p>{{$t('banner.statement.text_3')}}</p>
+            <br>
+            <p>{{$t('banner.statement.text_4')}}</p>
+            <br>
+            <p>{{$t('banner.statement.text_5')}}</p>
+            <h3>{{$t('banner.statement.text_6')}}</h3>
+            <br>
+            <p>{{$t('banner.statement.text_7')}}</p>
+            <br>
+            <h3>{{$t('banner.statement.text_8')}}</h3>
+            <br>
+            <p>{{$t('banner.statement.text_9')}}</p>
+        </Modal>
     </div>
-    <div class="single-page-con" :style="{paddingLeft: hideMenuText?'60px':'200px'}">
-      <div class="single-page">
-        <keep-alive>
-          <router-view v-if="$route.meta.keepAlive">
-          </router-view>
-        </keep-alive>
-        <router-view v-if="!$route.meta.keepAlive">
-        </router-view>
-      </div>
-    </div>
-    <Modal
-            v-model="stmt"
-            :title="$t('banner.statement.banner')"
-            width="600"
-            :mask-closable="false"
-            :closable="false"
-            :styles="{top: '20%'}"
-            :ok-text="$t('general.agreed')"
-            @on-ok="agreement"
-    >
-      <h3>{{$t('banner.statement.title')}}</h3>
-      <br>
-      <p>{{$t('banner.statement.title_text')}}</p>
-      <br>
-      <H3>{{$t('banner.statement.notes')}}</H3>
-      <br>
-      <p> {{$t('banner.statement.text')}}</p>
-      <br>
-      <p>{{$t('banner.statement.text_1')}}</p>
-      <br>
-      <p>{{$t('banner.statement.text_2')}}</p>
-      <br>
-      <p>{{$t('banner.statement.text_3')}}</p>
-      <br>
-      <p>{{$t('banner.statement.text_4')}}</p>
-      <br>
-      <p>{{$t('banner.statement.text_5')}}</p>
-      <h3>{{$t('banner.statement.text_6')}}</h3>
-      <br>
-      <p>{{$t('banner.statement.text_7')}}</p>
-      <br>
-      <h3>{{$t('banner.statement.text_8')}}</h3>
-      <br>
-      <p>{{$t('banner.statement.text_9')}}</p>
-    </Modal>
-  </div>
 </template>
 <script lang="ts">
     import sidebarMenu from './components/sidebarMenu.vue'
-    import breadcrumbNav from './components/breadcrumbNav.vue'
+    import breadcrumbNav from '@/components/breadcrumbNav.vue'
     import axios from 'axios'
     import {Component, Vue} from "vue-property-decorator";
-    import {State} from "vuex-class";
+    import module_general from "@/store/modules/general";
+    import module_init_args from "@/store/modules/init_args";
 
     @Component({components: {sidebarMenu, breadcrumbNav}})
     export default class main_farm extends Vue {
         $config: any;
-        currentPageName = '';
         userName = sessionStorage.getItem('user');
-        showFullScreenBtn = window.navigator.userAgent.indexOf('MSIE') < 0;
         isFullScreen = false;
         lockScreenSize = 0;
         colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
         color = '';
 
         get stmt() {
-            return this.$store.state.stmt
+            return module_general.stmt
         }
 
         set stmt(val) {
-            this.$store.state.stmt = val
+            module_general.changed_stmt_status(val)
         }
 
-        @State hideMenuText: boolean | undefined;
-        @State pageOpenedList: any;
-        @State currentPath: any;
-        @State menuList: any;
+        get menuList() {
+            return module_general.menuList
+        }
+
+        set menuList(vl) {
+            module_general.changed_menuList(vl)
+        }
 
         handleClickUserDropdown() {
             localStorage.clear();
@@ -133,33 +127,6 @@
         handleChange() {
             let i = this.$config.random(0, 3);
             this.color = this.colorList[i]
-        }
-
-        // 全屏
-        handleFullScreen() {
-            let doc: any = document;
-            let main: any = document.getElementById('main')
-            if (this.isFullScreen) {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen()
-                } else if (doc.mozCancelFullScreen) {
-                    doc.mozCancelFullScreen()
-                } else if (doc.webkitCancelFullScreen) {
-                    doc.webkitCancelFullScreen()
-                } else if (doc.msExitFullscreen) {
-                    doc.msExitFullscreen()
-                }
-            } else {
-                if (main.requestFullscreen) {
-                    main.requestFullscreen()
-                } else if (main.mozRequestFullScreen) {
-                    main.mozRequestFullScreen()
-                } else if (main.webkitRequestFullScreen) {
-                    main.webkitRequestFullScreen()
-                } else if (main.msRequestFullscreen) {
-                    main.msRequestFullscreen()
-                }
-            }
         }
 
         // 锁屏
@@ -276,32 +243,31 @@
         }
 
         beforeunloadFn() {
-            this.$store.commit('snippetTagToJson')
+            module_general.snippetTagToJson()
+            let root = {
+                order_item: module_init_args.order_item,
+            }
+            sessionStorage.setItem("root", JSON.stringify(root));
         }
 
         mounted() {
             this.handleChange();
-            this.$store.commit('breadcrumb_set', this.$route.matched[1].name);
-            this.$store.state.currentPageName = this.$route.matched[1].name;
-            if (localStorage.getItem('pageOpenedList')) {
-                let pageOpenedList: any = localStorage.getItem('pageOpenedList');
-                this.$store.state.pageOpenedList = JSON.parse(pageOpenedList)
-            } else {
-                this.$store.state.pageOpenedList = [{
-                    title: '首页',
-                    path: '',
-                    name: 'home_index'
-                }]
-            }
+            module_general.breadcrumb_set(this.$route.matched[1].name)
+            module_general.changed_currentPageName(this.$route.matched[1].name)
+            module_general.check_page_open()
             this.init();
         }
 
         created() {
             // 权限菜单过滤相关
-            this.$store.commit('sidebar_filter');
-            this.$store.commit('snippetTagFromJson');
+            module_general.sidebar_filter()
+            module_general.snippetTagFromJson()
             axios.defaults.headers.common['Authorization'] = sessionStorage.getItem('jwt');
             window.addEventListener('beforeunload', () => this.beforeunloadFn())
+            if (sessionStorage.getItem("root") !== null) {
+                let root = JSON.parse(sessionStorage.getItem("root") as string)
+                module_init_args.fetch_order_item(root.order_item)
+            }
         }
 
         destroyed() {

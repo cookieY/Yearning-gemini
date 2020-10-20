@@ -13,7 +13,8 @@
                                 <p slot="title">消息推送</p>
                                 <Form :label-width="120">
                                     <FormItem label="webhook地址:">
-                                        <Input placeholder="支持钉钉/企业微信(赞助版本) webhook机器人" v-model="message.web_hook"></Input>
+                                        <Input placeholder="支持钉钉/企业微信(赞助版本) webhook机器人"
+                                               v-model="message.web_hook"></Input>
                                     </FormItem>
                                     <FormItem label="邮件SMTP服务地址:">
                                         <Input placeholder="STMP服务 地址" v-model="message.host"></Input>
@@ -45,8 +46,8 @@
                                             <span slot="close">关</span>
                                         </i-switch>
                                     </Form-item>
-                                    <Button type="primary" @click="dingding_test()">hook测试</Button>
-                                    <Button type="warning" @click="mail_test()" style="margin-left: 5%">邮件测试</Button>
+                                    <Button type="primary" @click="message_test('ding')">hook测试</Button>
+                                    <Button type="warning" @click="message_test('mail')" style="margin-left: 5%">邮件测试</Button>
                                 </Form>
                             </Card>
                         </Col>
@@ -152,14 +153,6 @@
                                     </FormItem>
                                     <Row>
                                         <Col span="6">
-                                            <Form-item label="多级审核:">
-                                                <i-switch size="large" v-model="other.multi">
-                                                    <span slot="open">开</span>
-                                                    <span slot="close">关</span>
-                                                </i-switch>
-                                            </Form-item>
-                                        </Col>
-                                        <Col span="6">
                                             <Form-item label="查询审核:">
                                                 <i-switch size="large" v-model="other.query">
                                                     <span slot="open">开</span>
@@ -168,21 +161,15 @@
                                             </Form-item>
                                         </Col>
                                         <Col span="6">
-                                            <Form-item label="查询超时时间:">
-                                                <InputNumber :max="600" :min="1" v-model="other.query_timeout"
-                                                             :formatter="value => `${value}秒`"></InputNumber>
-                                            </Form-item>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span="6">
-                                            <Form-item label="注册:">
+                                            <Form-item label="允许注册:">
                                                 <i-switch size="large" v-model="other.register">
                                                     <span slot="open">开</span>
                                                     <span slot="close">关</span>
                                                 </i-switch>
                                             </Form-item>
                                         </Col>
+                                    </Row>
+                                    <Row>
                                         <Col span="6">
                                             <Form-item label="查询导出:">
                                                 <i-switch size="large" v-model="other.export">
@@ -238,11 +225,9 @@
                                 <template slot="desc">
                                     1.设置最大Limit数后，所有的查询语句的查询结果都不会超过这个数值。
                                     <br>
-                                    2.开启多级审核开关后,用户组将新增执行人角色，只有执行人角色的用户才能最终执行工单。关闭后执行人角色用户将全部更改为使用者
+                                    2.查询审核开关开启后，所有的查询都必须通过管理员同意才能进行。关闭则可自主查询
                                     <br>
-                                    3.查询审核开关开启后，所有的查询都必须通过管理员同意才能进行。关闭则可自主查询
-                                    <br>
-                                    4.设置脱敏字段后，查询时如匹配到对应字段则该字段将只会以******显示
+                                    3.设置脱敏字段后，查询时如匹配到对应字段则该字段将只会以******显示
                                 </template>
                             </Alert>
                             <Button style="margin-left: 5%;width: 95%" type="primary" @click="save_upload">保存</Button>
@@ -256,40 +241,16 @@
 
 <script lang="ts">
 
-    import axios from 'axios'
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "../../mixins/att";
-
-
-    interface other_modal {
-        overdue: string,
-        query_expire: string,
-        limit: number,
-        per_order: number,
-        idc: any,
-        foce: string,
-        insulate_word_list: any,
-        exclude_db_list: any,
-        exclued_db: string,
-        sensitive: string,
-        multi: boolean,
-        register: boolean,
-        export: boolean,
-        query: boolean,
-    }
-
-    interface message_modal {
-        ding: boolean,
-        mail: boolean,
-        port: number,
-        push_type: boolean,
-    }
+    // eslint-disable-next-line no-unused-vars
+    import {other_modal, message_modal} from "@/interface";
+    import att_mixins from "../../mixins/basic";
 
     @Component
     export default class setting extends Mixins(att_mixins) {
         ldap = {};
         message = {
-          push_type: false
+            push_type: false,
         } as message_modal;
         other = {
             limit: 0,
@@ -297,19 +258,19 @@
         } as other_modal;
 
         del_order() {
-            axios.post(`${this.$config.url}/group/setting/del/order`, {
+            this.$http.post(`${this.$config.url}/group/setting/del/order`, {
                 date: this.other.overdue
             })
-                .then(res => this.$config.notice(res.data))
-                .catch(err => this.$config.err_notice(this, err))
+                .then((res: { data: string; }) => this.$config.notice(res.data))
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         del_query() {
-            axios.post(`${this.$config.url}/group/setting/del/query`, {
+            this.$http.post(`${this.$config.url}/group/setting/del/query`, {
                 date: this.other.query_expire
             })
-                .then(res => this.$config.notice(res.data))
-                .catch(err => this.$config.err_notice(this, err))
+                .then((res: { data: string; }) => this.$config.notice(res.data))
+                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         handleAdd() {
@@ -362,63 +323,51 @@
         }
 
         ldap_test() {
-            axios.put(`${this.$config.url}/group/setting/test/ldap`, {
+            this.$http.put(`${this.$config.url}/group/setting/test/ldap`, {
                 'ldap': this.ldap
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
-        dingding_test() {
-            axios.put(`${this.$config.url}/group/setting/test/ding`, {
+        message_test(ty: string) {
+            this.$http.put(`${this.$config.url}/group/setting/test/${ty}`, {
                 'mail': this.message
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
-                    this.$config.err_notice(this, error)
-                })
-        }
-
-        mail_test() {
-            axios.put(`${this.$config.url}/group/setting/test/mail`, {
-                'mail': this.message
-            })
-                .then(res => {
-                    this.$config.notice(res.data)
-                })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         save_upload() {
-            axios.post(`${this.$config.url}/group/setting/add`, {
+            this.$http.post(`${this.$config.url}/group/setting/add`, {
                 'ldap': this.ldap,
                 'message': this.message,
                 'other': this.other
             })
-                .then(res => {
+                .then((res: { data: string; }) => {
                     this.$config.notice(res.data)
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
 
         mounted() {
-            axios.get(`${this.$config.url}/group/setting`)
-                .then(res => {
+            this.$http.get(`${this.$config.url}/group/setting`)
+                .then((res: { data: { Message: message_modal; Other: other_modal; Ldap: {}; }; }) => {
                     this.message = res.data.Message;
                     this.other = res.data.Other;
                     this.ldap = res.data.Ldap;
                 })
-                .catch(error => {
+                .catch((error: any) => {
                     this.$config.err_notice(this, error)
                 })
         }
