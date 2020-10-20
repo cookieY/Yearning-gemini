@@ -48,7 +48,7 @@
 
         <Drawer title="DML语句快速提交" v-model="drawer.open" width="700">
             <Form :rules="ruleValidate" ref="formItem" :model="formItem">
-                <FormItem label="连接名:">
+                <FormItem label="环境:">
                     <span>{{ formItem.idc }}</span>
                 </FormItem>
                 <FormItem label="连接名:">
