@@ -340,6 +340,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
             .then((res: { data: string }) => this.$config.notice(res.data))
             .catch((err: any) => this.$config.err_notice(this, err))
             .finally(() => {
+                modules_order.clear_order()
                 this.$router.push({ name: 'query' });
                 this.resetFields('formItem');
             });
