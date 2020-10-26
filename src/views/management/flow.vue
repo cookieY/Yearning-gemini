@@ -184,6 +184,7 @@ export default class FlowTemplate extends Mixins(att_mixins) {
 
     open_order(vl: string) {
         // 如果回传为null 则使用初始化数据
+        this.tpl = {} as TplOrder
         this.$http.put(`${this.$config.url}/tpl`, {
             source: vl
         })
