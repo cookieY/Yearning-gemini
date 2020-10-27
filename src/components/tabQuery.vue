@@ -4,7 +4,7 @@
 
 <template>
     <div>
-        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
+        <editor v-model="sqls" @init="editorInit" @setCompletions="setCompletions"></editor>
         <br>
         <span>当前选择的库: {{dataBase}}</span> <span class="margin-left-10">查询耗时: {{queryTime}} ms</span>
         <br>
@@ -150,6 +150,7 @@
         queryRes = []
         allQueryData = []
         total = 0
+        private sqls = ''
         fieldColumns = [
             {
                 title: '字段名',
@@ -188,7 +189,7 @@
         }
 
         copySnippet(vl: { text: any; }) {
-            this.sql = vl.text
+            this.sqls = vl.text
         }
 
         openSnippet() {
@@ -231,7 +232,7 @@
         }
 
         clearObj() {
-            this.sql = ''
+            this.sqls = ''
             this.queryRes = [];
             this.columnsName = [];
             this.current = 1;
@@ -265,7 +266,7 @@
                 }
             });
             this.$http.post(`${this.$config.url}/query/results`, {
-                'sql': this.sql,
+                'sql': this.sqls,
                 'basename': this.dataBase,
                 'source': this.source
             })
