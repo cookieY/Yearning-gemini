@@ -130,7 +130,7 @@
                     <Icon type="md-map"></Icon>
                     {{$t('dash.axis.trend')}}
                   </p>
-                  <div class="data-source-row">
+                  <div style="height: 360px;">
                     <dataSourceAxis></dataSourceAxis>
                   </div>
                 </Card>

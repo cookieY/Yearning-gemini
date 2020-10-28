@@ -64,7 +64,6 @@ export default class postForm extends Mixins(detail_mixins) {
 
     @Watch('value')
     get_visible(vl: boolean) {
-        console.log(this.order)
         if (vl && this.order.backup === 1) {
             this.rollback()
         }
