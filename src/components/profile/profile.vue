@@ -5,7 +5,7 @@
                 <Row>
                     <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
                     <Col span="5" offset="14">
-                        <Button type="warning" v-if="order.status === 1" @click.native="open_form()">
+                        <Button type="warning" v-if="order.status === 1 " @click.native="open_form()">
                             查看回滚语句
                         </Button>
                         <Button type="primary"

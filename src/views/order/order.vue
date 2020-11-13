@@ -15,11 +15,5 @@
 
     @Component({components: {editor, orderFormContainer}})
     export default class dml_order extends Mixins(att_mixins) {
-
-        mounted() {
-            for (let i of this.$config.highlight.split('|')) {
-                this.wordList.push({'vl': i, 'meta': '关键字'})
-            }
-        }
     }
 </script>

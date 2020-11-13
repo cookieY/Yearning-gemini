@@ -70,27 +70,27 @@
         field_columns = [
             {
                 title: '字段名',
-                key: 'Field'
+                key: 'field'
             },
             {
                 title: '字段类型',
-                key: 'Type',
+                key: 'type',
                 editable: true
             },
             {
                 title: '字段是否为空',
-                key: 'Null',
+                key: 'null',
                 editable: true,
                 option: true
             },
             {
                 title: '默认值',
-                key: 'Default',
+                key: 'default',
                 editable: true
             },
             {
                 title: '备注',
-                key: 'Comment'
+                key: 'comment'
             }
         ];
         field_data = [];
@@ -188,6 +188,12 @@
             modules_order.changed_always({one: true, two: false, three: false})
             modules_order.clear_order()
             modules_order.changed_is_dml(this.formItem.tp === 1)
+        }
+
+        mounted() {
+            for (let i of this.$config.highlight.split('|')) {
+                this.wordList.push({'vl': i, 'meta': '关键字'})
+            }
         }
     }
 </script>
