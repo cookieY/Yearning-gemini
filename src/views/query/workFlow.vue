@@ -67,6 +67,7 @@
 <script lang="ts">
     import fetch_mixins from "@/mixins/fetch_mixin";
     import {Component, Mixins} from "vue-property-decorator";
+    import modules_order from "@/store/modules/order";
 
     @Component({components: {}})
     export default class work_flow extends Mixins(fetch_mixins) {
@@ -161,8 +162,8 @@
             this.fetchQueryStatus();
         }
 
-        beforeDestroy() {
-            this.resetFields('formItem')
+        destroyed() {
+            modules_order.clear_order()
         }
 
     }
