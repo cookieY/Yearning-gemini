@@ -133,12 +133,6 @@ const rule: Rule[] = [
         tp: 0
     },
     {
-        name: 'DDLEnableForeignKey',
-        desc: '允许使用外键',
-        type: 'DDL',
-        tp: 0
-    },
-    {
         name: 'SupportCollation',
         desc: 'create/alter 表或字段时允许的Collate范围。多个请使用逗号进行分割',
         type: 'DDL',
@@ -147,12 +141,6 @@ const rule: Rule[] = [
     {
         name: 'SupportCharset',
         desc: 'create/alter 表或字段时允许的Charset范围。多个请使用逗号进行分割',
-        type: 'DDL',
-        tp: 2
-    },
-    {
-        name: 'DDLTablePrefix',
-        desc: '指定表名前缀,多个请用逗号分隔',
         type: 'DDL',
         tp: 2
     },
