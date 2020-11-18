@@ -5,6 +5,7 @@
                 <Row>
                     <Col span="12"><img src="../assets/logo_s.png" width="90%"></Col>
                     <Col span="12" style="font-weight: bold;font-size: 20px;padding-top: 20px;">Yearning</Col>
+                    <a style="text-align: center">v2.3.1 社区版</a>
                 </Row>
             </MenuItem>
             <MenuItem name="home_index">
@@ -18,6 +19,10 @@
             <MenuItem name="order">
                 <Icon type="md-code" :size="iconSize"></Icon>
                 <span class="layout-text">工单提交</span>
+            </MenuItem>
+            <MenuItem name="query">
+                <Icon type="md-search" :size="iconSize"></Icon>
+                <span class="layout-text">SQL查询</span>
             </MenuItem>
             <template v-for="item in menuList">
                 <Submenu v-if="item.children.length>=1 && item.name !== 'main'" :name="item.name" :key="item.path">

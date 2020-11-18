@@ -52,6 +52,16 @@ const main_child = [
         component: () => import('./views/order/myOrder.vue')
     },
     {
+        path: 'query',
+        name: 'query',
+        meta: {
+            title: 'SQL查询',
+            icon: 'md-search'
+        },
+        icon: 'ios-podium',
+        component: () => import('./views/query/workFlow.vue')
+    },
+    {
         path: 'order',
         name: 'order',
         meta: {
@@ -98,27 +108,6 @@ export const appRouter = [
         redirect: '/home',
         children: [
             ...main_child
-        ]
-    },
-    {
-        path: '/view',
-        icon: 'md-search',
-        name: 'view',
-        meta: {
-            title: '查询'
-        },
-        component: Index,
-        access: 0,
-        children: [
-            {
-                path: 'query',
-                name: 'query',
-                meta: {
-                    title: 'SQL查询'
-                },
-                icon: 'ios-podium',
-                component: () => import('./views/query/workFlow.vue')
-            }
         ]
     },
     {
