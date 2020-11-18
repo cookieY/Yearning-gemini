@@ -124,7 +124,7 @@
         }
 
         stop_query(vl: { work_id: string }) {
-            this.$http.post(`${this.$config.url}/audit/query/handle/undo`, {'work_id': vl.work_id})
+            this.$http.post(`${this.$config.url}/audit/query/handle/stop`, {'work_id': vl.work_id})
                 .then((res: { data: any; }) => {
                     this.$config.notice(res.data)
                 })
