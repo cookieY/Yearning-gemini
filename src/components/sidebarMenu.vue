@@ -76,6 +76,7 @@
                     this.$router.push({
                         name: 'login'
                     })
+                    window.location.reload()
                 } else {
                     libs.openPage(this, val)
                 }

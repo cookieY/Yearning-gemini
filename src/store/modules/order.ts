@@ -18,6 +18,9 @@ class order_local extends VuexModule {
     steps: number = 0
     is_dml: boolean = false
     sql: string = ''
+    sql_order: order = {
+        export: 0,
+    }
     order: order = {
         tp: 0,
         idc: '',

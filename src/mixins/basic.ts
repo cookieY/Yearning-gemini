@@ -28,12 +28,16 @@ export default class att_mixins extends Vue {
         return modules_order.wordList
     }
 
-    get sql () {
+    get order_text () {
         return modules_order.sql
     }
 
-    set sql (vl) {
+    set order_text (vl) {
         modules_order.save_sql(vl)
+    }
+
+    get sql_order () {
+        return modules_order.sql_order
     }
 
     // 通用
