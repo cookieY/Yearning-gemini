@@ -198,6 +198,7 @@ export default class FlowTemplate extends Mixins(att_mixins) {
             .finally(() => {
                 this.is_open = !this.is_open
                 this.source = vl
+                this.tpl = {} as TplOrder
             })
 
     }
