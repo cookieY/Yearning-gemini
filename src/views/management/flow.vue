@@ -20,7 +20,7 @@
             </div>
         </Card>
 
-        <Modal v-model="is_open" title="编辑流程模板" width="1000" @on-ok="post_tpl">
+        <Modal v-model="is_open" title="编辑流程模板" width="1000">
             <Steps :current="0" size="small">
                 <Step v-for="(i,idx) in tmp_steps" :key="idx" :title="i.desc">
                     <div slot="content">
@@ -47,13 +47,13 @@
                                 <Form>
                                     <FormItem label="步骤类型">
                                         <Select v-model="tpl.type" transfer>
-                                        <Option label="审核" :value="0"></Option>
+                                            <Option label="审核" :value="0"></Option>
                                             <Option label="执行" :value="1"></Option>
                                         </Select>
                                     </FormItem>
                                     <FormItem label="相关人员">
                                         <Select v-model="tpl.auditor" multiple transfer filterable>
-                                        <Option v-for="i in multi_list" :key="i.username" :value="i.username"
+                                            <Option v-for="i in multi_list" :key="i.username" :value="i.username"
                                                     :label="i.username"></Option>
                                         </Select>
                                     </FormItem>
@@ -103,6 +103,10 @@
                     </Col>
                 </Row>
             </div>
+            <template slot="footer">
+                <Button type="warning" @click="is_open=false">取消</Button>
+                <Button type="primary" @click="post_tpl">确定</Button>
+            </template>
         </Modal>
     </Row>
 </template>
@@ -174,12 +178,17 @@ export default class FlowTemplate extends Mixins(att_mixins) {
             this.$Message.error({content: "最后步骤必须为执行类型！保存失败!", duration: 5})
             return
         }
+        if (this.is_tpl_edit) {
+            this.$Message.error({content: "请先保存被编辑的步骤信息!", duration: 5})
+            return
+        }
         this.$http.post(`${this.$config.url}/tpl`, {
             steps: this.tmp_steps,
             source: this.source
         })
             .then((res: { data: string; }) => this.$config.notice(res.data))
             .catch((err: any) => this.$config.err_notice(this, err))
+            .finally(() => this.is_open = !this.is_open)
     }
 
     open_order(vl: string) {

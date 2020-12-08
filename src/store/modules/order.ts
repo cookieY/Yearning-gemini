@@ -44,6 +44,11 @@ class order_local extends VuexModule {
     order_sql: SQLTest[] = []
 
     @Mutation
+    clear_sql_order() {
+        return this.sql_order = {export: 0} as order
+    }
+
+    @Mutation
     fetch_order_sql(vm: object[]) {
         return this.order_sql = vm
     }

@@ -112,8 +112,7 @@ export default class orderSQLs extends Mixins(order_mixin) {
     idx_data = [];
 
     fetchStruct() {
-        let spin: any = this.$Spin;
-        spin.show();
+        this.$Spin.show();
         this.$http.put(`${this.$config.url}/fetch/table_info`, {
             'source': this.formItem.source,
             'base': this.formItem.data_base,
@@ -127,12 +126,11 @@ export default class orderSQLs extends Mixins(order_mixin) {
             .catch((err: any) => {
                 this.$config.err_notice(this, err)
             })
-        spin.hide()
+            .finally(() => this.$Spin.hide())
     }
 
     check_sql() {
-        let spin: any = this.$Spin
-        spin.show()
+        this.$Spin.show()
         this.$http.put(`${this.$config.url}/fetch/test`, {
             'source': this.formItem.source,
             'data_base': this.formItem.data_base,
@@ -152,7 +150,7 @@ export default class orderSQLs extends Mixins(order_mixin) {
             .catch((err: any) => {
                 this.$config.err_notice(this, err)
             })
-        spin.hide()
+            .finally(() => this.$Spin.hide())
     }
 
     commitOrder() {

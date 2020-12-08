@@ -53,15 +53,14 @@ export default class detail_mixins extends Mixins(att) {
     collapse = ['results', 'sql']
 
     fetch_post_sql(vl: string = '10') {
-        let spin: any = this.$Spin;
-        spin.show()
+        this.$Spin.show()
         this.$http.get(`${this.$config.url}/fetch/sql?work_id=${this.order.work_id}&limit=${vl}`)
             .then((res: { data: string; }) => {
                 module_init_args.fetch_order_sql(res.data)
             })
             .catch((err: any) => this.$config.err_notice(this, err))
             .finally(() => {
-                spin.hide()
+                this.$Spin.hide()
             })
     }
 

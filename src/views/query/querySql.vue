@@ -18,7 +18,8 @@
                                     class="tree"
                                 ></Tree>
                                 <Button type="info" icon="md-brush" @click="openDrawer" ghost
-                                    >快速提交</Button
+                                >快速提交
+                                </Button
                                 >
                                 <Button
                                     type="error"
@@ -26,7 +27,7 @@
                                     @click="deferReply"
                                     ghost
                                     class="margin-left-percent-5"
-                                    >结束会话
+                                >结束会话
                                 </Button>
                             </div>
                         </div>
@@ -36,10 +37,11 @@
             <Col :span="slider2" class="padding-left-10">
                 <Card dis-hover>
                     <Button type="primary" icon="ios-skip-forward" @click="countAdd"
-                        >隐藏数据列</Button
+                    >隐藏数据列
+                    </Button
                     >
-                    <br />
-                    <br />
+                    <br/>
+                    <br/>
                     <Tabs type="card" :value="currentTab" @on-click="cur" name="base">
                         <TabPane
                             v-for="tab in tabs"
@@ -63,7 +65,8 @@
                             size="small"
                             slot="extra"
                             class="margin-left-10"
-                            >减少窗口</Button
+                        >减少窗口
+                        </Button
                         >
                     </Tabs>
                 </Card>
@@ -139,13 +142,13 @@
 
             <Form :label-width="30">
                 <FormItem>
-                    <Button type="error" icon="md-trash" @click.native="clearForm()">清除 </Button>
+                    <Button type="error" icon="md-trash" @click.native="clearForm()">清除</Button>
                     <Button
                         type="primary"
                         icon="md-search"
                         @click.native="testSql()"
                         class="margin-left-10"
-                        >检测
+                    >检测
                     </Button>
                     <Button type="warning" @click="beauty" class="margin-left-10">美化</Button>
                     <Button
@@ -154,7 +157,7 @@
                         @click.native="commitOrder()"
                         :disabled="this.validate_gen"
                         class="margin-left-10"
-                        >提交
+                    >提交
                     </Button>
                 </FormItem>
 
@@ -166,12 +169,12 @@
 <script lang="ts">
 import tabQuery from '@/components/tabQuery.vue';
 import editor from '@/components/editor.vue';
-import { Component, Mixins, Prop } from 'vue-property-decorator';
+import {Component, Mixins, Prop} from 'vue-property-decorator';
 import fetch_mixin from '@/mixins/fetch_mixin';
 import order_mixin from '@/mixins/order_mixin';
 import modules_order from '@/store/modules/order';
 
-@Component({ components: { editor, tabQuery } })
+@Component({components: {editor, tabQuery}})
 export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
     slider2 = 19;
     currentTab = '查询1';
@@ -243,8 +246,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
     }
 
     testSql() {
-        let spin: any = this.$Spin;
-        spin.show();
+        this.$Spin.show();
         let is_validate: any = this.$refs['formItem'];
         is_validate.validate((valid: boolean) => {
             if (valid) {
@@ -269,7 +271,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
                         this.$config.err_notice(this, err);
                     })
                     .finally(() => {
-                        spin.hide();
+                        this.$Spin.hide();
                     });
             } else {
                 this.$Message.error('请填写具体地址或sql语句后再测试!');
@@ -291,7 +293,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
                     .post(`${this.$config.url}/sql/refer`, order)
                     .then((res: { data: any }) => {
                         this.validate_gen = true;
-                        this.$Notice.success({ title: '成功', desc: res.data });
+                        this.$Notice.success({title: '成功', desc: res.data});
                     })
                     .catch((error: any) => {
                         this.validate_gen = true;
@@ -311,16 +313,15 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
     }
 
     choseName(vl: any) {
-        let spin: any = this.$Spin;
         this.put_info.base = vl.title;
         if (vl.expand === true) {
-            spin.show();
+            this.$Spin.show();
             this.$http
                 .get(`${this.$config.url}/query/fetch_table?t=${vl.title}&source=${this.source}`)
                 .then((res: { data: any }) => {
                     if (res.data === 0) {
                         this.$config.notice('已到查询时限上限,请重新申请查询！');
-                        this.$router.push({ name: 'query' });
+                        this.$router.push({name: 'query'});
                         return;
                     }
                     modules_order.changed_wordList(this.wordList.concat(res.data.highlight));
@@ -330,7 +331,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
                         }
                     }
                 })
-                .finally(() => spin.hide());
+                .finally(() => this.$Spin.hide());
         }
     }
 
@@ -341,7 +342,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
             .catch((err: any) => this.$config.err_notice(this, err))
             .finally(() => {
                 modules_order.clear_order()
-                this.$router.push({ name: 'query' });
+                this.$router.push({name: 'query'});
                 this.resetFields('formItem');
             });
     }
@@ -362,7 +363,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
                     this.formItem.idc = res.data.idc;
                     let tWord = this.$config.highlight.split('|');
                     for (let i of tWord) {
-                        this.wordList.push({ vl: i, meta: '关键字' });
+                        this.wordList.push({vl: i, meta: '关键字'});
                     }
                     modules_order.changed_wordList(this.wordList.concat(res.data.highlight));
                     res.data['status'] === 1

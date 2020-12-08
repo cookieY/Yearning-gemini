@@ -11,7 +11,7 @@
     "core-js": "^2.6.5",
     "countup": "^1.8.2",
     "mavon-editor": "^2.7.7",
-    "view-design": "^4.3.2",
+    "view-design": "^4.4.0",
     "vue": "^2.6.10",
     "vuex-class": "^0.3.2"
   },

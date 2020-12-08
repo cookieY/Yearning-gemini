@@ -6,7 +6,7 @@
     <div>
         <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
         <br>
-        <span>当前选择的库: {{dataBase}}</span> <span class="margin-left-10">查询耗时: {{queryTime}} ms</span>
+        <span>当前选择的库: {{ dataBase }}</span> <span class="margin-left-10">查询耗时: {{ queryTime }} ms</span>
         <br>
         <br>
         <Button type="error" icon="md-trash" @click.native="clearObj()">清除</Button>
@@ -43,7 +43,7 @@
             <Card style="height:150px" v-for="i in snippetList" :key="i.title" dis-hover>
                 <p slot="title">
                     <Icon type="md-copy"></Icon>
-                    {{i.title}}
+                    {{ i.title }}
                 </p>
                 <a href="#" slot="extra" @click.prevent="copySnippet(i)">
                     <Icon type="ios-loop-strong"></Icon>
@@ -63,10 +63,10 @@
 
                 <template v-if="i.text.length > 59">
                     <Tooltip max-width="200" :content="i.text">
-                        {{i.text.substring(0,60)}}.....
+                        {{ i.text.substring(0, 60) }}.....
                     </Tooltip>
                 </template>
-                <template v-else>{{i.text}}</template>
+                <template v-else>{{ i.text }}</template>
             </Card>
         </Drawer>
 
@@ -143,6 +143,7 @@ export default class tabQuery extends Mixins(att_mixins) {
     get snippetList() {
         return module_general.snippet
     }
+
     private sql = ''
     openDrawer = false
     expireInfo = false
@@ -205,7 +206,7 @@ export default class tabQuery extends Mixins(att_mixins) {
             .then((res: { data: never[]; }) => {
                 this.columnsName = this.fieldColumns;
                 this.queryRes = res.data
-                this.$Message.success({content:"已获取表结构!"})
+                this.$Message.success({content: "已获取表结构!"})
             })
             .catch((err: any) => {
                 this.$config.err_notice(this, err)
@@ -248,8 +249,7 @@ export default class tabQuery extends Mixins(att_mixins) {
     querySQL() {
         this.columnsName = [];
         this.queryRes = [];
-        let spin: any = this.$Spin
-        spin.show({
+        this.$Spin.show({
             render: (h: CreateElement) => {
                 return h('div', [
                     h('Icon', {
@@ -271,7 +271,7 @@ export default class tabQuery extends Mixins(att_mixins) {
             .then((res: { data: any }) => {
                 if (res.data.status) {
                     this.expireInfo = true;
-                    spin.hide()
+                    this.$Spin.hide()
                     return
                 }
                 if (res.data.data === null) {
@@ -295,7 +295,7 @@ export default class tabQuery extends Mixins(att_mixins) {
             .catch((err: any) => {
                 this.$config.err_notice(this, err);
             })
-            .finally(spin.hide())
+            .finally(() => this.$Spin.hide())
     }
 }
 </script>

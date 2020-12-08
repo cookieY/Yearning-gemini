@@ -105,17 +105,11 @@ export default class order_form extends Mixins(fetch_mixin) {
 
     changedTp(vl: number) {
         modules_order.changed_is_dml(vl === 1)
-        this.resetFields('formItem')
     }
 
     mounted() {
+        modules_order.clear_order()
         this.fetchIDC();
-    }
-
-    destroyed() {
-        if (modules_order.steps === 0) {
-            modules_order.clear_order()
-        }
     }
 }
 </script>

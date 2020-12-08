@@ -7,7 +7,9 @@ import modules_search from "@/store/modules/search";
 export default class att_mixins extends Vue {
     public $config: any;
     public $http: any;
+    public $Spin: any;
     public url = ''
+
     get steps() {
         return modules_order.steps
     }
@@ -28,15 +30,15 @@ export default class att_mixins extends Vue {
         return modules_order.wordList
     }
 
-    get order_text () {
+    get order_text() {
         return modules_order.sql
     }
 
-    set order_text (vl) {
+    set order_text(vl) {
         modules_order.save_sql(vl)
     }
 
-    get sql_order () {
+    get sql_order() {
         return modules_order.sql_order
     }
 
@@ -218,7 +220,7 @@ export default class att_mixins extends Vue {
             .catch((err: any) => this.$config.err_notice(this, err))
     }
 
-    getDate (vl:string) {
+    getDate(vl: string) {
         this.formItem.delay = vl
     }
 
