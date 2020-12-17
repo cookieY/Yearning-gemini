@@ -104,7 +104,7 @@ export default class orderSQLs extends Mixins(order_mixin) {
             key: 'IndexName'
         },
         {
-            title: '是否唯一索引',
+            title: '是否非唯一',
             key: 'NonUnique'
         },
         {
