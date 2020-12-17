@@ -18,7 +18,7 @@
                                 </Poptip>
                             </FormItem>
                         </Form>
-                        <search text="提交账号" @refresh="current_page" is_order></search>
+                        <search text="工单说明" @refresh="current_page" is_order></search>
                         <Table border :columns="columns" :data="table_data" stripe>
                             <template slot-scope="{ row }" slot="action">
                                 <div>
