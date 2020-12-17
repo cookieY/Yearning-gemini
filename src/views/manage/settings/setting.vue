@@ -47,7 +47,8 @@
                                         </i-switch>
                                     </Form-item>
                                     <Button type="primary" @click="message_test('ding')">hook测试</Button>
-                                    <Button type="warning" @click="message_test('mail')" style="margin-left: 5%">邮件测试</Button>
+                                    <Button type="warning" @click="message_test('mail')" style="margin-left: 5%">邮件测试
+                                    </Button>
                                 </Form>
                             </Card>
                         </Col>
@@ -198,9 +199,9 @@
                                                         v-model="other.overdue" @on-change="other.overdue=$event"
                                                         :editable="false"></DatePicker>
                                             <Poptip
-                                                    confirm
-                                                    title="确定要删除工单记录吗?"
-                                                    @on-ok="del_order">
+                                                confirm
+                                                title="确定要删除工单记录吗?"
+                                                @on-ok="del_order">
                                                 <Button style="margin-left: 10%" type="primary">删除</Button>
                                             </Poptip>
                                         </FormItem>
@@ -210,9 +211,9 @@
                                                         @on-change="other.query_expire=$event"
                                                         :editable="false"></DatePicker>
                                             <Poptip
-                                                    confirm
-                                                    title="确定要删除查询记录吗?"
-                                                    @on-ok="del_query">
+                                                confirm
+                                                title="确定要删除查询记录吗?"
+                                                @on-ok="del_query">
                                                 <Button style="margin-left: 10%" type="primary">删除</Button>
                                             </Poptip>
                                         </FormItem>
@@ -241,141 +242,116 @@
 
 <script lang="ts">
 
-    import {Component, Mixins} from "vue-property-decorator";
-    // eslint-disable-next-line no-unused-vars
-    import {other_modal, message_modal} from "@/interface";
-    import att_mixins from "../../mixins/basic";
+import {Component, Mixins} from "vue-property-decorator";
+// eslint-disable-next-line no-unused-vars
+import {other_modal, message_modal, Res} from "@/interface";
+import att_mixins from "../../../mixins/basic";
+import {
+    SettingCreateOrEditApi,
+    SettingDeleteTestApi,
+    SettingFetchApi,
+    SettingLDAPTestApi,
+    SettingMessageTestApi
+} from "@/apis/settingApis";
+import {AxiosResponse} from "axios";
 
-    @Component
-    export default class setting extends Mixins(att_mixins) {
-        ldap = {};
-        message = {
-            push_type: false,
-        } as message_modal;
-        other = {
-            limit: 0,
-            per_order: 0
-        } as other_modal;
+@Component
+export default class setting extends Mixins(att_mixins) {
+    ldap = {};
+    message = {
+        push_type: false,
+    } as message_modal;
+    other = {
+        limit: 0,
+        per_order: 0
+    } as other_modal;
 
-        del_order() {
-            this.$http.post(`${this.$config.url}/group/setting/del/order`, {
-                date: this.other.overdue
-            })
-                .then((res: { data: string; }) => this.$config.notice(res.data))
-                .catch((err: any) => this.$config.err_notice(this, err))
-        }
-
-        del_query() {
-            this.$http.post(`${this.$config.url}/group/setting/del/query`, {
-                date: this.other.query_expire
-            })
-                .then((res: { data: string; }) => this.$config.notice(res.data))
-                .catch((err: any) => this.$config.err_notice(this, err))
-        }
-
-        handleAdd() {
-            for (let i of this.other.idc) {
-                if (i === this.other.foce) {
-                    this.$Message.error("请勿添加相同环境！");
-                    return
-                }
-            }
-            this.other.idc.push(this.other.foce);
-            this.other.foce = ''
-        }
-
-        handleAdd1() {
-            for (let i of this.other.insulate_word_list) {
-                if (i === this.other.sensitive) {
-                    this.$Message.error("请勿添加相同脱敏字段！");
-                    return
-                }
-            }
-
-            this.other.insulate_word_list.push(this.other.sensitive);
-            this.other.sensitive = ''
-        }
-
-        handleAdd_exclued_db() {
-            for (let i of this.other.exclude_db_list) {
-                if (i === this.other.exclued_db) {
-                    this.$Message.error("请勿添加相同数据库！");
-                    return
-                }
-            }
-            this.other.exclude_db_list.push(this.other.exclued_db);
-            this.other.exclued_db = ''
-        }
-
-        handleClose2(event: any, name: string) {
-            const index = this.other.idc.indexOf(name);
-            this.other.idc.splice(index, 1)
-        }
-
-        handleClose3(event: any, name: string) {
-            const index = this.other.insulate_word_list.indexOf(name);
-            this.other.insulate_word_list.splice(index, 1)
-        }
-
-        handleClose_exclued_db(event: any, name: string) {
-            const index = this.other.exclude_db_list.indexOf(name);
-            this.other.exclude_db_list.splice(index, 1)
-        }
-
-        ldap_test() {
-            this.$http.put(`${this.$config.url}/group/setting/test/ldap`, {
-                'ldap': this.ldap
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-        }
-
-        message_test(ty: string) {
-            this.$http.put(`${this.$config.url}/group/setting/test/${ty}`, {
-                'mail': this.message
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-        }
-
-        save_upload() {
-            this.$http.post(`${this.$config.url}/group/setting/add`, {
-                'ldap': this.ldap,
-                'message': this.message,
-                'other': this.other
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-        }
-
-        mounted() {
-            this.$http.get(`${this.$config.url}/group/setting`)
-                .then((res: { data: { Message: message_modal; Other: other_modal; Ldap: {}; }; }) => {
-                    this.message = res.data.Message;
-                    this.other = res.data.Other;
-                    this.ldap = res.data.Ldap;
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-        }
+    del_order() {
+        SettingDeleteTestApi({date: this.other.overdue, tp: false})
     }
+
+    del_query() {
+        SettingDeleteTestApi({date: this.other.query_expire, tp: true})
+    }
+
+    handleAdd() {
+        for (let i of this.other.idc) {
+            if (i === this.other.foce) {
+                this.$Message.error("请勿添加相同环境！");
+                return
+            }
+        }
+        this.other.idc.push(this.other.foce);
+        this.other.foce = ''
+    }
+
+    handleAdd1() {
+        for (let i of this.other.insulate_word_list) {
+            if (i === this.other.sensitive) {
+                this.$Message.error("请勿添加相同脱敏字段！");
+                return
+            }
+        }
+
+        this.other.insulate_word_list.push(this.other.sensitive);
+        this.other.sensitive = ''
+    }
+
+    handleAdd_exclued_db() {
+        for (let i of this.other.exclude_db_list) {
+            if (i === this.other.exclued_db) {
+                this.$Message.error("请勿添加相同数据库！");
+                return
+            }
+        }
+        this.other.exclude_db_list.push(this.other.exclued_db);
+        this.other.exclued_db = ''
+    }
+
+    handleClose2(event: any, name: string) {
+        const index = this.other.idc.indexOf(name);
+        this.other.idc.splice(index, 1)
+    }
+
+    handleClose3(event: any, name: string) {
+        const index = this.other.insulate_word_list.indexOf(name);
+        this.other.insulate_word_list.splice(index, 1)
+    }
+
+    handleClose_exclued_db(event: any, name: string) {
+        const index = this.other.exclude_db_list.indexOf(name);
+        this.other.exclude_db_list.splice(index, 1)
+    }
+
+    ldap_test() {
+        SettingLDAPTestApi(this.ldap)
+    }
+
+    message_test(ty: string) {
+        SettingMessageTestApi(ty, this.message)
+    }
+
+    save_upload() {
+        SettingCreateOrEditApi({
+            ldap: this.ldap,
+            message: this.message,
+            other: this.other
+        })
+    }
+
+    mounted() {
+        SettingFetchApi()
+            .then((res: AxiosResponse<Res>) => {
+                this.message = res.data.payload.Message;
+                this.other = res.data.payload.Other;
+                this.ldap = res.data.payload.Ldap;
+            })
+    }
+}
 </script>
 
 <style>
-    label {
-        font-size: 30px;
-    }
+label {
+    font-size: 30px;
+}
 </style>

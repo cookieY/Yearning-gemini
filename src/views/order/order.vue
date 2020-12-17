@@ -15,5 +15,6 @@
 
     @Component({components: {editor, orderFormContainer}})
     export default class dml_order extends Mixins(att_mixins) {
+
     }
 </script>

@@ -11,19 +11,19 @@
                 </p>
                 <Row>
                     <Col span="24">
-                        <search text="账号名" @refresh="current_page"></search>
-                        <Button type="warning" @click="queryQuickCancel" class="margin-left-10" size="small">全部中止</Button>
+                        <search text="申请人" @refresh="current_page"></search>
+                        <Button type="warning" @click="change_order_state({work_id:''},'cancel')" class="margin-left-10" size="small">全部中止</Button>
                         <br>
                         <br>
                         <Table border :columns="columns" :data="table_data" stripe>
                             <template slot-scope="{ row }" slot="action">
-                                <Button type="error" size="small" @click="stop_query(row)" v-if="row.query_per === 1"
+                                <Button type="error" size="small" @click="change_order_state(row,'stop')" v-if="row.query_per === 1"
                                         ghost>中止查询
                                 </Button>
-                                <Button type="error" @click="reject(row)" v-if="row.query_per === 2" ghost size="small">
+                                <Button type="error" @click="change_order_state(row,'reject')" v-if="row.query_per === 2" ghost size="small">
                                     驳回
                                 </Button>
-                                <Button type="success" @click="post_order(row)" v-if="row.query_per === 2" ghost
+                                <Button type="success" @click="change_order_state(row,'agreed')" v-if="row.query_per === 2" ghost
                                         size="small"
                                         class="margin-left-10">同意
                                 </Button>
@@ -44,6 +44,7 @@
     import att_mixins from "@/mixins/basic";
     import render from "@/interface/render";
     import search from "@/components/search/search.vue";
+    import {ChangeAuditQueryState} from "@/apis/queryApis";
 
     @Component({components: {search}})
     export default class query_audit extends Mixins(att_mixins) {
@@ -86,49 +87,10 @@
                 slot: 'action'
             }
         ]
-        url = `${this.$config.url}/audit/query/fetch`
+        url = `${this.$config.url}/audit/query/list`
 
-        queryQuickCancel() {
-            this.$http.post(`${this.$config.url}/audit/query/handle/cancel`)
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
-                    this.current_page()
-                })
-                .catch((err: any) => this.$config.err_notice(this, err))
-        }
-
-        current_page(vl = 1) {
-            this.fetch_page(vl, this.url)
-        }
-
-        post_order(row: { work_id: string }) {
-            this.$http.post(`${this.$config.url}/audit/query/handle/agreed`, {'work_id': row.work_id})
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-                .finally(() => this.current_page(this.current))
-        }
-
-        reject(row: { work_id: string }) {
-            this.$http.post(`${this.$config.url}/audit/query/handle/disagreed`, {'work_id': row.work_id})
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-                .finally(() => this.current_page(this.current))
-        }
-
-        stop_query(vl: { work_id: string }) {
-            this.$http.post(`${this.$config.url}/audit/query/handle/stop`, {'work_id': vl.work_id})
-                .then((res: { data: any; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((err: any) => this.$config.err_notice(this, err))
+        change_order_state (row: { work_id: string }, tp:string) {
+            ChangeAuditQueryState({work_id:row.work_id,tp:tp})
                 .finally(() => this.current_page(this.current))
         }
 

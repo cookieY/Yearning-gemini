@@ -20,6 +20,9 @@
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
+    import {FetchAuditQueryProfile} from "@/apis/queryApis";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
 
     @Component({components: {}})
     export default class query_profile extends Mixins(att_mixins) {
@@ -57,16 +60,10 @@
         ]
 
         current_page(vl = 1) {
-            this.$http.put(`${this.$config.url}/audit/query/fetch/record/detail`, {
-                'work_id': this.$route.query.workid,
-                'page': vl
-            })
-                .then((res: { data: { data: never[]; count: number; }; }) => {
-                    this.table_data = res.data.data;
-                    this.page_number = res.data.count
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
+            FetchAuditQueryProfile({work_id:this.$route.query.workid as string,page:vl})
+                .then((res: AxiosResponse<Res>) => {
+                    this.table_data = res.data.payload.data;
+                    this.page_number = res.data.payload.page
                 })
         }
 

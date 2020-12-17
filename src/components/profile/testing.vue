@@ -26,16 +26,58 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from "vue-property-decorator";
+import {Component, Mixins, Prop} from "vue-property-decorator";
 import render from "@/interface/render";
 import detail_mixin from "@/mixins/detail_mixin";
 import reject from "@/views/audit/order/reject.vue";
 import module_init_args from "@/store/modules/init_args";
+import {AuditExecuteSQL, AuditStateSQL, AuditTestSQL} from "@/apis/auditApis";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
 
 @Component({components: {reject}})
 export default class Testing extends Mixins(detail_mixin) {
+    @Prop({
+        required: false,
+        type: Boolean,
+        default: false
+    }) mobile !: boolean
     auth = sessionStorage.getItem('auth');
     summit = true;
+    wap_col = [
+        {
+            title: '当前检查的sql',
+            key: 'sql',
+            tooltip: true,
+            width: 120,
+            fixed: 'left',
+
+        },
+        {
+            title: '阶段',
+            key: 'status',
+            tooltip: true,
+            width: 100,
+        },
+        {
+            title: '错误等级',
+            key: 'level',
+            tooltip: true,
+            width: 100,
+        },
+        {
+            title: '错误信息',
+            key: 'error',
+            tooltip: true,
+            width: 100,
+        },
+        {
+            title: '影响行数',
+            key: 'affect_rows',
+            tooltip: true,
+            width: 100,
+        }
+    ]
     sql_columns = [
         {
             type: 'expand',
@@ -103,18 +145,12 @@ export default class Testing extends Mixins(detail_mixin) {
             this.$Message.error({content: '请选择下一级审核人!'})
             return
         }
-        this.$http.post(`${this.$config.url}/audit/agree`, {
-            // 接口需要修改 取消执行人角色
-            'work_id': this.order.work_id,
-            'perform': this.personal,
-            'flag': this.order.current_step
+        AuditStateSQL({
+            work_id: this.order.work_id as string,
+            flag: this.order.current_step as number,
+            perform: this.personal,
+            tp: 'agree'
         })
-            .then((res: { data: string; }) => {
-                this.$config.notice(res.data);
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
-            })
             .finally(() => {
                 this.$router.go(-1)
                 this.summit = !this.summit
@@ -122,15 +158,7 @@ export default class Testing extends Mixins(detail_mixin) {
     }
 
     perform() {
-        this.$http.post(`${this.$config.url}/audit/execute`, {
-            'work_id': this.order.work_id
-        })
-            .then((res: { data: string; }) => {
-                this.$config.notice(res.data);
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
-            })
+        AuditExecuteSQL({work_id: this.order.work_id as string})
             .finally(() => {
                 this.summit = !this.summit
                 this.$router.go(-1)
@@ -139,11 +167,9 @@ export default class Testing extends Mixins(detail_mixin) {
 
     testTo() {
         this.loading = true;
-        this.$http.post(`${this.$config.url}/audit/test`, {
-            work_id: this.order.work_id
-        })
-            .then((res: { data: never[]; }) => {
-                this.testing_sql = res.data;
+        AuditTestSQL({work_id: this.order.work_id as string})
+            .then((res: AxiosResponse<Res> ) => {
+                this.testing_sql = res.data.payload;
                 let gen = 0;
                 this.testing_sql.forEach(vl => {
                     if (vl.level !== 0) {
@@ -152,12 +178,15 @@ export default class Testing extends Mixins(detail_mixin) {
                 });
                 this.summit = gen !== 0;
             })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
-            })
             .finally(() => {
                 this.loading = false
             })
+    }
+
+    mounted() {
+        if (this.mobile) {
+            this.sql_columns = this.wap_col as any
+        }
     }
 }
 </script>

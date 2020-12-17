@@ -1,10 +1,14 @@
 import {Module, VuexModule, Mutation, getModule} from 'vuex-module-decorators'
 import store from "@/store";
 
-interface Finder {
+export interface Finder {
     picker: string[]
     valve: boolean
     text: string
+    explain: string
+    work_id: string
+    type: number,
+    status: number
 }
 
 @Module({namespaced: true, name: 'modules_search', dynamic: true, store})
@@ -13,7 +17,11 @@ class search extends VuexModule {
     find: Finder = {
         picker: [],
         valve: false,
-        text: ''
+        text: '',
+        explain: '',
+        work_id: '',
+        type: 2,
+        status: 7
     }
 
     @Mutation

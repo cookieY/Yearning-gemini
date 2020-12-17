@@ -10,7 +10,7 @@
                     <Icon type="md-person"></Icon>
                     我的工单
                 </p>
-                <search text="工单说明" @refresh="current_page"></search>
+                <search text="工单说明" @refresh="current_page" is_order></search>
                 <Row>
                     <Col span="24">
                         <Table border :columns="columns" :data="table_data" stripe size="small">
@@ -88,7 +88,7 @@
             }
         ];
 
-        url = `${this.$config.url}/user/order`
+        url = `${this.$config.url}/common/list`
 
         current_page(vl = 1) {
             this.fetch_page(vl, this.url)
@@ -98,6 +98,9 @@
             module_init_args.fetch_order_item(row)
             this.$router.push({
                 name: 'profile',
+                query: {
+                    isAdmin: JSON.stringify(false)
+                }
             })
         }
 

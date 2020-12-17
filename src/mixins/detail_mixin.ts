@@ -1,7 +1,9 @@
 import {Component, Mixins} from "vue-property-decorator";
-import expandRow from "@/components/expandTable.vue";
 import att from "@/mixins/basic";
 import module_init_args from "@/store/modules/init_args";
+import {FetchCommonGetApis} from "@/apis/commonApis";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
 
 @Component({components: {}})
 export default class detail_mixins extends Mixins(att) {
@@ -54,11 +56,10 @@ export default class detail_mixins extends Mixins(att) {
 
     fetch_post_sql(vl: string = '10') {
         this.$Spin.show()
-        this.$http.get(`${this.$config.url}/fetch/sql?work_id=${this.order.work_id}&limit=${vl}`)
-            .then((res: { data: string; }) => {
-                module_init_args.fetch_order_sql(res.data)
+        FetchCommonGetApis('sql', {work_id: this.order.work_id, limit: vl})
+            .then((res: AxiosResponse<Res> ) => {
+                module_init_args.fetch_order_sql(res.data.payload.sqls)
             })
-            .catch((err: any) => this.$config.err_notice(this, err))
             .finally(() => {
                 this.$Spin.hide()
             })
@@ -69,24 +70,17 @@ export default class detail_mixins extends Mixins(att) {
     }
 
     delOrder(work_id: string) {
-        this.$http.get(`${this.$config.url}/fetch/undo?work_id=${work_id}`)
-            .then((res: { data: string; }) => {
-                this.$config.notice(res.data);
+        FetchCommonGetApis('undo', {work_id: work_id})
+            .then(() => {
                 this.$router.go(-1)
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
             })
     }
 
     current_page(vl = 1) {
-        this.$http.get(`${this.$config.url}/fetch/detail?workid=${this.order.work_id}&status=${this.order.status}&page=${vl}`)
-            .then((res: { data: { record: never[]; count: number; }; }) => {
-                this.results = res.data.record;
-                this.page_number = res.data.count;
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
+        FetchCommonGetApis('detail', {work_id: this.order.work_id, status: this.order.status, page: vl})
+            .then((res: AxiosResponse<Res>) => {
+                this.results = res.data.payload.record;
+                this.page_number = res.data.payload.count;
             })
     }
 }

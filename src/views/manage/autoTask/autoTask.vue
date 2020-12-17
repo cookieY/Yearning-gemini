@@ -1,6 +1,3 @@
-<style>
-    @import "../../styles/common.less";
-</style>
 <template>
     <div>
         <Row>
@@ -13,9 +10,9 @@
                     <FormItem>
                     </FormItem>
                     <FormItem>
-                        <Button type="warning" @click="toggleShow">新建Task</Button>
+                        <Button type="warning" @click="createTask">新建Task</Button>
                     </FormItem>
-                    <FormItem prop="text">
+                    <FormItem>
                         <Input placeholder="AutoTask名称" v-model="find.text"></Input>
                     </FormItem>
                     <FormItem>
@@ -48,12 +45,12 @@
                     </template>
                 </Table>
                 <br>
-                <Page :total="page_number" show-elevator @on-change="fetchAutoTaskList" :page-size="15"
+                <Page :total="page_number" show-elevator @on-change="current_page" :page-size="15"
                       :current.sync="current"></Page>
             </Card>
         </Row>
 
-        <Modal v-model="showing" :title="diffArgs.title" @on-ok="referAutoTask">
+        <Modal v-model="is_open" title="AutoTask信息" @on-ok="postAutoTask">
             <Form :model="general" ref="general" :rules="ruleValidate">
                 <FormItem label="Task名称" prop="name">
                     <Input v-model="general.name" :disabled="disable"></Input>
@@ -94,11 +91,16 @@
 <script lang="ts">
     import {Mixins, Component} from "vue-property-decorator";
     import fetch_mixins from "@/mixins/fetch_mixin";
-    import order_mixins from "@/mixins/order_mixin";
-    import modules_order from "@/store/modules/order";
+    import {
+        AutoTaskCreateOrEditApi, AutoTaskDeleteApi,
+        AutoTaskFetchApi,
+    } from "@/apis/autoTaskApis";
+    import {FetchCommonGetApis} from "@/apis/commonApis";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
 
     @Component
-    export default class autoTask extends Mixins(fetch_mixins, order_mixins) {
+    export default class autoTask extends Mixins(fetch_mixins) {
         fetchList = {
             source: [],
             tp: [
@@ -132,7 +134,7 @@
             },
             {
                 title: '数据库',
-                key: 'base',
+                key: 'data_base',
             },
             {
                 title: '数据表',
@@ -154,60 +156,46 @@
             },
         ];
         task_data = [] as any;
-        showing = false;
         disable = false;
-        diffArgs = {
-            title: '新建AutoTask',
-            url: 'auto'
-        };
+        resType = ''
 
-        toggleShow() {
-            this.showing = this.showing = true;
+        createTask() {
+            this.is_open = !this.is_open
             this.disable = false;
-            this.diffArgs = {
-                title: '新建AutoTask',
-                url: 'auto'
-            }
+            this.resType = 'create'
         }
 
         fetchDiffSource(idc: string) {
             this.fetchSource(idc, "all")
         }
 
-        referAutoTask() {
+        postAutoTask() {
             let is_validate: any = this.$refs['general'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    this.$http.post(`${this.$config.url}/${this.diffArgs.url}`, {
-                        'Tp': this.general
-                    })
-                        .then((res: { data: string; }) => {
-                            this.$config.notice(res.data);
-                            this.fetchAutoTaskList(this.current);
+                    AutoTaskCreateOrEditApi({tp:this.resType,task:this.general})
+                        .then(() => {
+                            this.current_page(this.current);
                         })
-                        .catch((err: any) => this.$config.err_notice(this, err))
                 } else {
                     this.$Message.error("请填写相关性信息！")
                 }
             })
         }
 
-        fetchAutoTaskList(vl = 1) {
-            this.$http.put(`${this.$config.url}/auto/fetch`, {
-                page: vl,
-                find: this.find
-            })
-                .then((res: { data: { data: any; page_number: number; }; }) => {
-                    this.task_data = res.data.data;
+        current_page(vl = 1) {
+            AutoTaskFetchApi({page:vl,find:this.find})
+                .then((res: AxiosResponse<Res>) => {
+                    this.task_data = res.data.payload.data;
                     this.task_data.forEach((item: { status: number | boolean; }) => {
                         (item.status === 1) ? item.status = true : item.status = false
                     });
-                    this.page_number = res.data.page_number
+                    this.page_number = res.data.payload.page
                 })
         }
 
         openEditModal(vl: { id: string; affect_rows: number; name: string; tp: number; }) {
-            this.showing = true;
+            this.is_open = !this.is_open;
             this.general = {
                 id: vl.id,
                 row: vl.affect_rows,
@@ -215,70 +203,39 @@
                 tp: vl.tp
             } as any;
             this.disable = true;
-            this.diffArgs = {
-                title: '编辑AutoTask',
-                url: 'auto/edit'
-            }
+            this.resType = 'edit'
         }
 
         delAutoTask(vl: { id: number }) {
-            let step: any = this.$refs['general'];
-            if (this.task_data.length === 1) {
-                step = step - 1
-            }
-            this.$http.delete(`${this.$config.url}/auto/${vl.id}`)
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
-                    this.fetchAutoTaskList(step)
+            AutoTaskDeleteApi(vl.id)
+                .finally(() =>  {
+                    this.current_page(this.task_data.length === 1? this.current -= 1:this.current)
                 })
-                .catch((err: any) => this.$config.err_notice(this, err))
-        }
-
-        queryData() {
-            this.find.valve = true;
-            this.fetchAutoTaskList();
-        }
-
-        queryCancel() {
-            this.resetFields('queryForm')
-            this.fetchAutoTaskList();
         }
 
         activityStatus(vl: { status: boolean; id: number; }) {
-            let s = 0;
-            if (vl.status) {
-                s = 1
-            }
-
-            this.$http.post(`${this.$config.url}/auto/active`, {
-                'Tp': {'id': vl.id, 'status': s}
-            })
-                .then((res: { data: string; }) => this.$config.notice(res.data))
-                .catch((err: any) => this.$config.err_notice(this, err))
+            AutoTaskCreateOrEditApi({tp:'active',task:{id:vl.id,status:vl.status?1:0}})
         }
 
         fetchTable() {
             if (this.general.data_base) {
-                this.$http.put(`${this.$config.url}/fetch/table`, {
-                    'source': this.general.source,
-                    'base': this.general.data_base
+                FetchCommonGetApis('table',{
+                    source: this.general.source,
+                    data_base: this.general.data_base
                 })
-                    .then((res: { data: { table: string[]; highlight: {} }; }) => {
-                        this.fetchData.table = res.data.table;
-                    }).catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
+                    .then((res: AxiosResponse<Res> ) => {
+                        this.fetchData.table = res.data.payload.table;
+                    })
             }
         }
 
         mounted() {
-            this.fetchAutoTaskList();
+            this.current_page();
             this.fetchIDC()
-            modules_order.changed_is_dml(false)
         }
     }
 </script>
 
-<style scoped>
-
+<style>
+@import "../../../styles/common.less";
 </style>

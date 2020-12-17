@@ -1,7 +1,3 @@
-<style scoped>
-@import "../styles/common.less";
-</style>
-
 <template>
     <div>
         <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
@@ -25,7 +21,7 @@
         <br>
         <br>
         <p>查询结果:</p>
-        <Table :columns="columnsName" :data="queryRes" highlight-row ref="table"></Table>
+        <Table :columns="columnsName" :data="queryRes" highlight-row ref="table" border></Table>
         <br>
         <Page :total="total" show-total @on-change="splice_arr" ref="total" show-sizer
               @on-page-size-change="ex_arr" :current.sync="current"></Page>
@@ -79,9 +75,11 @@ import ExportCsv from 'view-design/src/components/table/export-csv'
 import editor from "@/components/editor.vue";
 import {Component, Mixins, Prop} from "vue-property-decorator";
 import att_mixins from "@/mixins/basic";
-// eslint-disable-next-line no-unused-vars
-import {CreateElement} from "vue";
 import module_general from "@/store/modules/general";
+import {CommonGetApis, CommonPostApis} from "@/apis/queryApis";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
+import sqlFormatter from "sql-formatter";
 
 const export_csv = function exportCsv(this: any, params: any) {
     if (params.filename) {
@@ -184,6 +182,7 @@ export default class tabQuery extends Mixins(att_mixins) {
         }
     ]
     queryTime = ''
+    spin: any = {}
 
     delSnippet(vl: any) {
         module_general.snippetRemoveTag(vl)
@@ -197,19 +196,20 @@ export default class tabQuery extends Mixins(att_mixins) {
         this.openDrawer = true
     }
 
+    beauty () {
+        this.sql = sqlFormatter.format(this.sql)
+    }
+
     fetchTableField() {
         if (this.dataBase === '' || this.table === '') {
             this.$Message.error("请选中对应库/表");
             return
         }
-        this.$http.get(`${this.$config.url}/query/table_info?base=${this.dataBase}&table=${this.table}&source=${this.source}`)
-            .then((res: { data: never[]; }) => {
+        CommonGetApis('table_info', {data_base: this.dataBase, table: this.table, source: this.source})
+            .then((res: AxiosResponse<Res>) => {
                 this.columnsName = this.fieldColumns;
-                this.queryRes = res.data
+                this.queryRes = res.data.payload
                 this.$Message.success({content: "已获取表结构!"})
-            })
-            .catch((err: any) => {
-                this.$config.err_notice(this, err)
             })
 
     }
@@ -247,60 +247,47 @@ export default class tabQuery extends Mixins(att_mixins) {
     }
 
     querySQL() {
+        this.$Spin.show();
         this.columnsName = [];
         this.queryRes = [];
-        this.$Spin.show({
-            render: (h: CreateElement) => {
-                return h('div', [
-                    h('Icon', {
-                        'class': 'demo-spin-icon-load',
-                        props: {
-                            type: 'ios-loading',
-                            size: 18
-                        }
-                    }),
-                    h('div', 'Loading')
-                ])
-            }
-        });
-        this.$http.post(`${this.$config.url}/query/results`, {
-            'sql': this.sql,
-            'basename': this.dataBase,
-            'source': this.source
+        CommonPostApis('results', {
+            sql: this.sql,
+            data_base: this.dataBase,
+            source: this.source
         })
-            .then((res: { data: any }) => {
-                if (res.data.status) {
+            .then((res: AxiosResponse<Res>) => {
+                if (res.data.payload.status) {
                     this.expireInfo = true;
                     this.$Spin.hide()
                     return
                 }
-                if (res.data.data === null) {
-                    this.columnsName = res.data.title;
+                if (res.data.payload.data === null) {
+                    this.columnsName = res.data.payload.title;
                     this.allQueryData = [];
-                } else if (!res.data.data) {
+                } else if (!res.data.payload.data) {
                     this.$Message.error({
-                        content: res.data,
+                        content: res.data.payload,
                         duration: 4,
                         top: 50
                     })
                 } else {
-                    this.queryTime = res.data.time;
-                    this.columnsName = res.data.title;
-                    this.allQueryData = res.data.data;
+                    this.queryTime = res.data.payload.time;
+                    this.columnsName = res.data.payload.title;
+                    this.allQueryData = res.data.payload.data;
                     this.queryRes = this.allQueryData.slice(0, this.page_size);
-                    this.total = res.data.data.length
+                    this.total = res.data.payload.data.length
                 }
 
             })
-            .catch((err: any) => {
-                this.$config.err_notice(this, err);
-            })
             .finally(() => this.$Spin.hide())
+
     }
 }
 </script>
 
 <style scoped>
+@import "../styles/common.less";
+
 .demo-spin-icon-load {
     animation: ani-demo-spin 1s linear infinite;
 }

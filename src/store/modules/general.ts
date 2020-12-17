@@ -15,6 +15,7 @@ interface Path {
 class general extends VuexModule {
     stmt: boolean = false
     openReLogin: boolean = false
+    password: string = ""
     menuList: object[] = []
     currentPageName?: string | undefined = 'home_index'
     currentPath: Path[] = [
@@ -71,6 +72,11 @@ class general extends VuexModule {
     @Mutation
     changed_stmt_status(vm: boolean) {
         this.stmt = vm
+    }
+
+    @Mutation
+    changed_ReLogin_password(vm: string) {
+        this.password = vm
     }
 
     @Mutation

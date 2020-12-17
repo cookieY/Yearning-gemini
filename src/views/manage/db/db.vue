@@ -1,6 +1,6 @@
 <style lang="less">
-    @import '../../styles/common.less';
-    @import '../../styles/table.less';
+    @import '../../../styles/common.less';
+    @import '../../../styles/table.less';
 </style>
 <template>
     <div>
@@ -24,7 +24,7 @@
                             <Input v-model="general.ip" placeholder="请输入"></Input>
                         </Form-item>
                         <Form-item label="端口:" prop="port">
-                            <Input v-model="general.port" placeholder="请输入"></Input>
+                            <InputNumber :min="0" v-model="general.port"></InputNumber>
                         </Form-item>
                         <Form-item label="用户名:" prop="username">
                             <Input v-model="general.username" placeholder="请输入"></Input>
@@ -39,9 +39,9 @@
                                 <Radio :label="0">写</Radio>
                             </RadioGroup>
                         </Form-item>
-                        <Button type="info" @click="testConnection()">测试连接</Button>
-                        <Button type="success" @click="addConnection()" style="margin-left: 5%">确定</Button>
-                        <Button type="warning" @click="resetForm()" style="margin-left: 5%">重置</Button>
+                        <Button type="info" @click="test_db()">测试连接</Button>
+                        <Button type="success" @click="add_db()" style="margin-left: 5%">确定</Button>
+                        <Button type="warning" @click="resetFields('formValidate')" style="margin-left: 5%">重置</Button>
                     </Form>
                 </div>
             </Card>
@@ -52,8 +52,8 @@
                     <Icon type="md-apps"/>
                     数据库详情表
                 </p>
-                <Input v-model="query.source" placeholder="请填写连接名" style="width: 15%" clearable></Input>
-                <Select v-model="query.idc" placeholder="请填写环境" style="width: 15%" class="margin-left-10">
+                <Input v-model="find.source" placeholder="请填写连接名" style="width: 15%" clearable></Input>
+                <Select v-model="find.idc" placeholder="请填写环境" style="width: 15%" class="margin-left-10">
                     <Option v-for="list in comList" :value="list" :key="list">{{ list }}</Option>
                 </Select>
                 <Button @click="queryData" type="primary" class="margin-left-10">查询</Button>
@@ -72,7 +72,7 @@
                             <Poptip
                                     confirm
                                     title="删除数据源将会删除对应的所有工单信息,确定要删除吗？"
-                                    @on-ok="delConnection(row)"
+                                    @on-ok="delete_db(row)"
                                     transfer
                             >
                                 <Button type="warning" size="small">删除</Button>
@@ -81,7 +81,7 @@
                     </Table>
                 </div>
                 <br>
-                <Page :total="page_number" show-elevator @on-change="getPageInfo" :page-size="10"
+                <Page :total="page_number" show-elevator @on-change="current_page" :page-size="10"
                       :current.sync="current"></Page>
             </Card>
         </Col>
@@ -99,7 +99,7 @@
                     <Input v-model="edit_base_info.ip"></Input>
                 </FormItem>
                 <FormItem label="端口:">
-                    <Input v-model="edit_base_info.port"></Input>
+                    <InputNumber :min="0" v-model="edit_base_info.port"></InputNumber>
                 </FormItem>
                 <FormItem label="用户名:">
                     <Input v-model="edit_base_info.username"></Input>
@@ -114,16 +114,10 @@
 </template>
 <script lang="ts">
     import {Mixins, Component} from "vue-property-decorator";
-    import att_mixins from "../../mixins/basic";
-
-    interface edit_modal {
-        idc: string,
-        source: string,
-        ip: string,
-        port: string,
-        username: string,
-        password: string,
-    }
+    import att_mixins from "../../../mixins/basic";
+    import {DB, DBCreateOrEditApi, DBDeleteApi, DBFetchApi} from "@/apis/dbApis";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
 
     const regExp_Name = (rule: any, value: any, callback: any) => {
         let pPattern = new RegExp("[`~!@#$^&*()={}':;',\\[\\]<>/?~！@#￥……&*（）——{}【】‘；：”“'。，、？]");
@@ -209,7 +203,8 @@
                 {
                     required: true,
                     message: '请填写端口',
-                    trigger: 'blur'
+                    trigger: 'blur',
+                    type:'number'
                 }
             ],
             password: [
@@ -225,115 +220,55 @@
             ]
         };
         comList = [];
-        edit_base_info = {} as edit_modal;
+        edit_base_info = {};
 
-        resetForm() {
-            this.resetFields('formValidate')
+        test_db() {
+            DBCreateOrEditApi({tp:'test',db:this.general})
         }
 
-        testConnection() {
-            this.$http.put(`${this.$config.url}/management_db/test`, {
-                'ip': this.general.ip,
-                'username': this.general.username,
-                'password': this.general.password,
-                'port': parseInt(this.general.port)
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-        }
-
-        addConnection() {
+        add_db() {
             let is_validate: any = this.$refs['formValidate'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    this.$http.post(`${this.$config.url}/management_db`, {
-                        'source': this.general.source,
-                        'idc': this.general.idc,
-                        'ip': this.general.ip,
-                        'username': this.general.username,
-                        'password': this.general.password,
-                        'port': parseInt(this.general.port),
-                        'is_query': this.general.is_query,
-                    })
-                        .then((res: { data: string; }) => {
-                            this.$config.notice(res.data);
-                        })
-                        .catch((error: any) => {
-                            this.$config.err_notice(this, error)
-                        })
+                    DBCreateOrEditApi({tp:'create',db:this.general})
                         .finally(() => {
                             is_validate.resetFields()
-                            this.getPageInfo(this.current);
+                            this.current_page(this.current);
                         })
                 }
             })
         }
 
-        viewConnectionModal(row: edit_modal) {
+        viewConnectionModal(row: DB) {
             this.is_open = true;
             this.edit_base_info = Object.assign({}, row)
         }
 
-        delConnection(vl: { source: string; }) {
-            let step = this.current;
-            if (this.table_data.length === 1) {
-                step = step - 1
-            }
-            this.$http.delete(`${this.$config.url}/management_db?source=${vl.source}`)
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
-                .finally(() => this.getPageInfo(step))
+        delete_db(vl: { source: string; }) {
+            DBDeleteApi(vl.source)
+                .finally(() => this.current_page(this.table_data.length === 1?this.current -1:this.current))
         }
 
-        getPageInfo(vl = 1) {
-            this.$http.get(`${this.$config.url}/management_db?page=${vl}&con=${JSON.stringify(this.query)}`)
-                .then((res: { data: { data: never[]; page: string; custom: never[]; admin: never[]; }; }) => {
-                    this.table_data = res.data.data;
-                    this.page_number = parseInt(res.data.page);
-                    this.comList = res.data.custom;
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
+        current_page(vl = 1) {
+            DBFetchApi({page:vl,find:this.find})
+                .then((res: AxiosResponse<Res>) => {
+                    this.table_data = res.data.payload.data;
+                    this.page_number = res.data.payload.page;
+                    this.comList = res.data.payload.idc;
                 })
         }
 
         modifyBase() {
             let x = Object.assign({} as any, this.edit_base_info)
-            x.port = parseInt(x.port);
-            this.$http.put(`${this.$config.url}/management_db`, {
-                'data': x
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((err: any) => this.$config.err_notice(this, err))
-                .finally(() => this.getPageInfo(this.current))
-        }
-
-        queryData() {
-            this.query.valve = true;
-            this.getPageInfo()
-        }
-
-        queryCancel() {
-            this.query.valve = false;
-            this.getPageInfo()
+            DBCreateOrEditApi({tp:'edit',db:x}).finally(() => this.current_page(this.current))
         }
 
         mounted() {
-            this.getPageInfo()
+            this.current_page()
         }
     }
 </script>
 
 <style>
-    @import '../../styles/tablesmargintop.css';
+    @import '../../../styles/tablesmargintop.css';
 </style>

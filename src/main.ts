@@ -27,7 +27,15 @@ const RouterConfig = {
     routes: MainRoute
 };
 
-const router = new VueRouter(RouterConfig);
+export const router = new VueRouter(RouterConfig);
+
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location: import("vue-router").RawLocation) {
+    // @ts-ignore
+    return originalPush.call(this as any, location).catch((err: any) => err)
+}
+
+
 
 router.beforeEach((to, from, next) => {
     LoadingBar.start();

@@ -1,6 +1,5 @@
 // @ts-ignore
 import Notice from 'view-design/src/components/notice'
-import {CreateElement} from "vue";
 import module_general from "@/store/modules/general";
 
 let libs: any = {};
@@ -30,95 +29,6 @@ libs.mode = function (obj: any) {
         }
     });
     return oc
-};
-
-libs.err_notice = function (vm: any, err: { response: { status: number, statusText: string } }) {
-    let text: string = err.response.statusText;
-    if (err.response.status === 401) {
-        text = 'Token过期！请重新登录!';
-        vm.$Message.warning(text);
-        vm.$Modal.confirm({
-            title: '重新登录',
-            cancelText: '退出',
-            okText: '登录',
-            closable: true,
-            render: (h: CreateElement) => {
-                return h('div', [
-                    h('br'),
-                    h('Input', {
-                        props: {
-                            value: vm.$store.state.password,
-                            type: 'password',
-                            autofocus: true,
-                            placeholder: '请输入密码'
-                        },
-                        on: {
-                            input: (val: string) => {
-                                vm.$store.state.password = val;
-                            }
-                        }
-                    }),
-                    h('br'),
-                    h('br'),
-                    h('Checkbox', {
-                        props: {
-                            value: module_general.openReLogin,
-                        },
-                        style: {
-                            marginLeft: '40%'
-                        },
-                        on: {
-                            checkbox: (val: boolean) => {
-                                module_general.changed_openReLogin_status(val)
-                            }
-                        }
-                    }, 'ldap登录')
-                ])
-            },
-            onOk: () => {
-                let url = vm.$config.auth;
-                if (module_general.openReLogin) {
-                    url = `${vm.$config.gen}/ldap`
-                }
-                vm.$http.post(url, {
-                    'username': sessionStorage.getItem('user'),
-                    'password': vm.$store.state.password
-                })
-                    .then((res: { data: { token: string } }) => {
-                        vm.$http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
-                        sessionStorage.setItem('jwt', `Bearer ${res.data.token}`);
-                        vm.$Message.success("已重新登录!");
-                        vm.$store.state.password = '';
-                        module_general.changed_openReLogin_status(false)
-                    })
-                    .catch((err: object) => {
-                        vm.$config.auth_notice(err);
-                        vm.$router.push({name: 'login'})
-                    })
-            },
-            onCancel: () => {
-                vm.$router.push({name: 'login'})
-            }
-        })
-    } else {
-        vm.$Message.error({
-            title: '错误',
-            content: text
-        })
-    }
-};
-
-libs.auth_notice = function (err: { response: { status?: number, statusText: string } }) {
-    let text: string;
-    if (err.response.status === 401) {
-        text = '账号密码错误,请重新输入!'
-    } else {
-        text = err.response.statusText
-    }
-    Notice.error({
-        title: '错误',
-        desc: text,
-    })
 };
 
 libs.notice = function (vl: string) {
@@ -180,5 +90,8 @@ libs.concat = function (arr1: Array<string>, arr2: Array<string>) {
     }
     return arr;
 };
+
+
+libs.version = "Community"
 
 export default libs

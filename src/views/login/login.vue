@@ -1,6 +1,6 @@
 <style lang="css" scoped>
-@import 'styles/bootstrap.min.css';
-@import 'styles/login.css';
+@import "../../styles/bootstrap.min.css";
+@import "../../styles/login.css";
 
 .div-relative {
     position: relative;
@@ -20,11 +20,11 @@ li {
 }
 
 a:link {
-    color: #ffffff;
+    color: #FFFFFF;
 }
 
 a:visited {
-    color: #ffffff;
+    color: #FFFFFF;
 }
 </style>
 
@@ -33,7 +33,7 @@ a:visited {
         <nav class="navbar  bg-primary fixed-top navbar-transparent " color-on-scroll="400">
             <div class="container">
                 <div>
-                    <a class="navbar-brand"> {{ $t('version') }}: v2.3.1 Interstellar GA </a>
+                    <a class="navbar-brand"> {{ $t('version') }}: v2.3.2 Interstellar GA </a>
                     <Button v-if="switchCode" type="default" ghost @click="register = true">
                         {{ $t('sign') }}</Button
                     >
@@ -42,8 +42,8 @@ a:visited {
                     <ul>
                         <li>
                             <Button type="default" @click="sponsorship = true" ghost>{{
-                                $t('sponsor')
-                            }}</Button>
+                                    $t('sponsor')
+                                }}</Button>
                         </li>
                         <li>
                             <div style="margin-left: 50%">
@@ -63,7 +63,7 @@ a:visited {
                 <div class="content-center">
                     <div class="card">
                         <form style="width: 45%;margin-left: 25%">
-                            <img src="./assets/logo.png" width="80%" />
+                            <img src="../../assets/logo.png" width="80%" />
                             <div class="input-group form-group-no-border input-lg">
                                 <span class="input-group-addon">
                                     <Icon type="md-person" />
@@ -197,35 +197,39 @@ a:visited {
             {{ $t('sponsor_7') }}
             <br />
             <br />
-            <img height="300" width="300" src="./assets/alipay.jpg" />
-            <img height="300" width="300" src="./assets/wechat.jpg" />
+            <img height="300" width="300" src="../../assets/alipay.jpg" />
+            <img height="300" width="300" src="../../assets/wechat.jpg" />
         </Modal>
     </div>
 </template>
 <script lang="ts">
-import SIdentify from '@/components/identify.vue';
-import { Mixins, Component } from 'vue-property-decorator';
-import i18n from '@/language/index';
-import att_mixins from '@/mixins/basic';
+import SIdentify from '@/components/identify.vue'
+import {Mixins, Component} from "vue-property-decorator";
+import i18n from '@/language';
+import att_mixins from "@/mixins/basic";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
+import {request} from "@/libs/requests";
+import {LoginApi} from "@/apis/loginApis";
 
-@Component({ components: { SIdentify } })
+@Component({components: {SIdentify}})
 export default class login extends Mixins(att_mixins) {
+
     valideuserinfoPassword = (rule: any, value: string, callback: any) => {
         if (value !== this.userinfo.password) {
-            callback(new Error(i18n.t('sign_up_validate.twice') as any));
+            callback(new Error(i18n.t('sign_up_validate.twice') as any))
         } else {
-            callback();
+            callback()
         }
     };
     regExp_password = (rule: any, value: string, callback: any) => {
         let pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
         if (!pPattern.test(value)) {
-            callback(new Error(i18n.t('sign_up_validate.regexp') as any));
+            callback(new Error(i18n.t('sign_up_validate.regexp') as any))
         } else {
-            callback();
+            callback()
         }
     };
-    replace = false;
     single = false;
     switchCode = false;
     sponsorship = false;
@@ -236,97 +240,91 @@ export default class login extends Mixins(att_mixins) {
         confirm_password: '',
         mail: '',
         real_name: '',
-        department: '',
+        department: ''
     };
     userInfoValidate = {
         username: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.username'),
-                trigger: 'blur',
-            },
+                trigger: 'blur'
+            }
         ],
         password: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.password'),
-                trigger: 'blur',
+                trigger: 'blur'
             },
             {
                 min: 6,
                 message: i18n.t('sign_up_validate.min'),
-                trigger: 'blur',
+                trigger: 'blur'
             },
             {
                 max: 32,
                 message: i18n.t('sign_up_validate.max'),
-                trigger: 'blur',
+                trigger: 'blur'
             },
             {
                 validator: this.regExp_password,
-                trigger: 'blur',
-            },
+                trigger: 'blur'
+            }
         ],
         confirmpassword: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.confirm'),
-                trigger: 'blur',
+                trigger: 'blur'
             },
             {
                 validator: this.valideuserinfoPassword,
-                trigger: 'blur',
-            },
+                trigger: 'blur'
+            }
         ],
         realname: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.real'),
-                trigger: 'blur',
-            },
+                trigger: 'blur'
+            }
         ],
         department: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.department'),
-                trigger: 'blur',
-            },
+                trigger: 'blur'
+            }
         ],
         mail: [
-            { required: true, message: i18n.t('sign_up_validate.mail'), trigger: 'blur' },
-            { type: 'email', message: i18n.t('sign_up_validate.mail_format'), trigger: 'blur' },
-        ],
+            {required: true, message: i18n.t('sign_up_validate.mail'), trigger: 'blur'},
+            {type: 'email', message: i18n.t('sign_up_validate.mail_format'), trigger: 'blur'}
+        ]
     };
     formInline = {
         user: '',
         password: '',
-        code: '',
+        code: ''
     };
     check_code = '';
+    replace = false;
 
     checkCode(vl: string) {
-        this.check_code = vl.toLowerCase();
+        this.check_code = vl.toLowerCase()
     }
 
     LoginRegister() {
         let is_validate: any = this.$refs['user_reg'];
         is_validate.validate((valid: boolean) => {
             if (valid) {
-                this.$http
-                    .post(this.$config.register, {
-                        user_info: this.userinfo,
-                    })
-                    .then((res: { data: string }) => {
-                        this.$config.notice(res.data);
-                    })
-                    .catch((error: any) => {
-                        this.$config.err_notice(this, error);
-                    })
-                    .finally(() => this.resetFields('user_reg'));
+                request.post(this.$config.register, {
+                    'user_info': this.userinfo
+                })
+                    .finally(() => this.resetFields('user_reg'))
             } else {
-                this.$config.notice(i18n.t('sign_up_validate.sign_fail') as string);
+                this.$config.notice(i18n.t('sign_up_validate.sign_fail') as string)
             }
-        });
+        })
     }
 
     signIn() {
@@ -337,50 +335,38 @@ export default class login extends Mixins(att_mixins) {
             this.replace = !this.replace;
             return;
         }
-        let url = this.$config.auth;
-        if (this.single) {
-            url = `${this.$config.gen}/ldap`;
-        }
-        this.$http
-            .post(url, {
-                username: this.formInline.user,
-                password: this.formInline.password,
-            })
-            .then((res: { data: { [x: string]: any; token: string } }) => {
-                this.$http.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.token;
-                sessionStorage.setItem('user', this.formInline.user);
-                sessionStorage.setItem('jwt', `Bearer ${res.data.token}`);
-                sessionStorage.setItem('auth', res.data['permissions']);
-                sessionStorage.setItem('real_name', res.data['real_name']);
-                let auth = res.data['permissions'];
-                if (auth === 'guest') {
-                    sessionStorage.setItem('access', '1');
-                } else if (auth === 'admin' || auth === 'perform') {
-                    sessionStorage.setItem('access', '2');
-                } else if (auth === 'super') {
-                    sessionStorage.setItem('access', '3');
+        LoginApi(this.single, {
+            username: this.formInline.user,
+            password: this.formInline.password
+        })
+            .then((res: AxiosResponse<Res>) => {
+                if (res.data.payload.code === 1301) {
+                    return
                 }
-                this.$router.push({
-                    name: 'home_index',
-                });
+                request.defaults.headers.common['Authorization'] = 'Bearer ' + res.data.payload.token;
+                sessionStorage.setItem('jwt', 'Bearer ' + res.data.payload.token)
+                sessionStorage.setItem('user', this.formInline.user);
+                sessionStorage.setItem('auth', res.data.payload.permissions);
+                sessionStorage.setItem('real_name', res.data.payload.real_name);
+                let auth = res.data.payload.permissions
+                if (auth === 'guest') {
+                    sessionStorage.setItem('access', '1')
+                } else if (auth === 'admin' || auth === 'perform') {
+                    sessionStorage.setItem('access', '2')
+                } else if (auth === 'super') {
+                    sessionStorage.setItem('access', '3')
+                }
+                this.$router.push({name: 'home_index'})
             })
-            .catch((err: any) => {
-                this.replace = !this.replace;
-                this.$config.auth_notice(err);
-            });
     }
 
     mounted() {
         let windows: any = window;
         windows.particlesJS.load('band', `${process.env.BASE_URL}particlesjs-config.json`);
-        this.$http
-            .get(`${this.$config.gen}/fetch`)
-            .then((res: { data: { reg: number } }) => {
-                if (res.data.reg === 1) {
-                    this.switchCode = true;
-                }
+        request.get(`${this.$config.gen}/fetch`)
+            .then((res: AxiosResponse<Res>) => {
+                this.switchCode = res.data.payload.reg;
             })
-            .catch((err: any) => this.$config.err_notice(this, err));
     }
 }
 </script>

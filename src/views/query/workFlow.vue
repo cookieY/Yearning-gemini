@@ -65,131 +65,106 @@
 </template>
 
 <script lang="ts">
-import fetch_mixins from "@/mixins/fetch_mixin";
-import {Component, Mixins} from "vue-property-decorator";
-import modules_order from '@/store/modules/order';
+    import {Component, Mixins} from "vue-property-decorator";
+    import modules_order from "@/store/modules/order";
+    import query_mixin from "@/mixins/query_mixin";
+    import {CommonPostApis, CommonPutApis} from "@/apis/queryApis";
 
-@Component({components: {}})
-export default class work_flow extends Mixins(fetch_mixins) {
-    export_list = false;
-    stepData = {
-        title: 'Yearning SQL查询系统',
-        describe: `欢迎你！ ${sessionStorage.getItem('user')}`
-    };
-    stepList1 = [
-        {
-            title: '提交',
-            describe: '提交查询申请'
-        },
-        {
-            title: '审核',
-            describe: '等待审核结果'
-        },
-        {
-            title: '查询',
-            describe: '审核完毕，进入查询页面'
-        }
-    ];
-    stepRules = {
-        text: [
-            {required: true, message: '请填写查询说明', trigger: 'blur'}
-        ],
-        idc: [{
-            required: true,
-            message: '环境地址不得为空',
-            trigger: 'change'
-        }],
-        source: [{
-            required: true,
-            message: '连接名不得为空',
-            trigger: 'change'
-        }],
-        assigned: [{
-            required: true,
-            message: '审核人不得为空',
-            trigger: 'change'
-        }]
-    };
-    item = {};
-
-    fetchDiffSource(idc: string) {
-        this.fetchSource(idc, 'query')
-    }
-
-
-    handleSubmit() {
-        let is_validate: any = this.$refs['formItem'];
-        is_validate.validate((valid: boolean) => {
-            if (valid) {
-                this.$http.post(`${this.$config.url}/query/refer`, {
-                    'idc': this.sql_order.idc,
-                    'source': this.sql_order.source,
-                    'export': this.sql_order.export,
-                    'assigned': this.sql_order.assigned,
-                    'text': this.sql_order.text
-                })
-                    .then(() => {
-                        this.$router.push({
-                            name: 'query_apply'
-                        })
-                    })
-                    .catch((err: any) => {
-                        this.$config.err_notice(this, err)
-                    })
+    @Component({components: {}})
+    export default class work_flow extends Mixins(query_mixin) {
+        stepData = {
+            title: 'Yearning SQL查询系统',
+            describe: `欢迎你！ ${sessionStorage.getItem('user')}`
+        };
+        stepList1 = [
+            {
+                title: '提交',
+                describe: '提交查询申请'
+            },
+            {
+                title: '审核',
+                describe: '等待审核结果'
+            },
+            {
+                title: '查询',
+                describe: '审核完毕，进入查询页面'
             }
-        })
-    }
+        ];
+        stepRules = {
+            text: [
+                {required: true, message: '请填写查询说明', trigger: 'blur'}
+            ],
+            idc: [{
+                required: true,
+                message: '环境地址不得为空',
+                trigger: 'change'
+            }],
+            source: [{
+                required: true,
+                message: '连接名不得为空',
+                trigger: 'change'
+            }],
+            assigned: [{
+                required: true,
+                message: '审核人不得为空',
+                trigger: 'change'
+            }]
+        };
+        item = {};
 
-    fetchQueryStatus() {
-        this.$http.put(`${this.$config.url}/query/status`)
-            .then((res: { data: { status: number; export: boolean; }; }) => {
-                if (res.data.status === 1) {
-                    this.$router.push({
-                        name: 'query_page'
+        fetchDiffSource(idc: string) {
+            this.fetchSource(idc, 'query')
+        }
+
+
+        handleSubmit() {
+            let is_validate: any = this.$refs['formItem'];
+            is_validate.validate((valid: boolean) => {
+                if (valid) {
+                    CommonPostApis('refer',{
+                        idc: this.sql_order.idc,
+                        source: this.sql_order.source,
+                        export: this.sql_order.export,
+                        assigned: this.sql_order.assigned,
+                        text: this.sql_order.text
                     })
-                } else if (res.data.status === 2) {
-                    this.$router.push({
-                        name: 'query_apply'
-                    })
-                } else {
-                    this.fetchIDC();
-                    this.export_list = res.data.export;
+                        .then(() => {this.$router.push({name: 'query_apply'})})
                 }
             })
-    }
+        }
 
-    mounted() {
-        modules_order.clear_sql_order()
-        this.fetchQueryStatus();
-    }
+        mounted() {
+            modules_order.clear_sql_order()
+            this.query_state();
+        }
 
-}
+    }
 </script>
 
 <style lang="less">
-.step {
-    &-header-con {
-        text-align: center;
+    .step {
+        &-header-con {
+            text-align: center;
 
-        h3 {
-            margin: 10px 0;
+            h3 {
+                margin: 10px 0;
+            }
+
+            h5 {
+                margin: 0 0 5px;
+            }
         }
 
-        h5 {
-            margin: 0 0 5px;
+        &-content {
+            padding: 5px 20px 26px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dbdddf;
+        }
+
+        &-form {
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dbdddf;
+            margin-bottom: 20px;
         }
     }
-
-    &-content {
-        padding: 5px 20px 26px;
-        margin-bottom: 20px;
-        border-bottom: 1px solid #dbdddf;
-    }
-
-    &-form {
-        padding-bottom: 10px;
-        border-bottom: 1px solid #dbdddf;
-        margin-bottom: 20px;
-    }
-}
 </style>

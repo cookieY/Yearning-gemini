@@ -79,14 +79,6 @@ export default class order_form extends Mixins(fetch_mixin) {
 
     jwt = sessionStorage.getItem('jwt')
 
-    fetchDiffSource(idc: string) {
-        if (this.is_dml) {
-            this.fetchSource(idc, "dml")
-        } else {
-            this.fetchSource(idc, "ddl")
-        }
-    }
-
     clearForm() {
         modules_order.clear_order()
     }

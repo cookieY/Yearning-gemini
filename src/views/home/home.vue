@@ -130,7 +130,7 @@
                     <Icon type="md-map"></Icon>
                     {{$t('dash.axis.trend')}}
                   </p>
-                  <div style="height: 360px;">
+                  <div class="data-source-row">
                     <dataSourceAxis></dataSourceAxis>
                   </div>
                 </Card>
@@ -147,6 +147,9 @@
     import {Component, Mixins} from 'vue-property-decorator'
     import i18n from "@/language";
     import att_mixins from "@/mixins/basic";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
+    import {DashGetApi} from "@/apis/dashApis";
 
     @Component({components: {dataSourcePie, info_card, dataSourceAxis, myself}})
     export default class home extends Mixins(att_mixins) {
@@ -178,14 +181,11 @@
             this.time = date.getFullYear() + '/' + month + '/' + date.getDate() + '  ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
         }
         mounted() {
-            this.$http.get(`${this.$config.url}/dash/count`)
-                .then((res: { data: { dataTop5: never[]; createUser: number; order: number; source: number; query: number; ddl: number; dml: number } }) => {
-                    this.count = res.data;
+            DashGetApi('count')
+                .then((res: AxiosResponse<Res>) => {
+                    this.count = res.data.payload;
                 })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                });
-            this.formatDate()
+            .finally(() =>  this.formatDate())
         }
     }
 </script>

@@ -1,9 +1,9 @@
 <template>
     <Form inline ref="queryForm" :model="find">
-        <FormItem prop="text">
-            <Input :placeholder="text" v-model="find.text" @on-keyup.enter="queryData"></Input>
-        </FormItem>
-        <FormItem prop="picker">
+            <FormItem prop="text">
+                <Input :placeholder="text" v-model="find.text" @on-keyup.enter="queryData"></Input>
+            </FormItem>
+        <FormItem prop="picker" v-if="!is_group">
             <DatePicker format="yyyy-MM-dd HH:mm" type="datetimerange" placeholder="请选择查询的时间范围"
                         v-model="find.picker" @on-change="find.picker=$event" style="width: 250px"
                         :editable="false"></DatePicker>
@@ -24,20 +24,32 @@ import modules_search from "@/store/modules/search";
 @Component({components: {}})
 export default class search extends Mixins(att_mixins) {
     @Prop({
+        type: Boolean,
+        required: false,
+        default: false
+    }) public is_group !: boolean
+
+    @Prop({
         type: String,
         required: true,
         default: ''
     }) public text !: string
+
     queryData() {
         this.find.valve = true;
         modules_search.post_search_args(this.find)
         this.$emit("refresh")
     }
+
     queryCancel() {
+        this.find.valve = false;
         this.resetFields('queryForm')
+        this.find.type = 2
+        modules_search.post_search_args(this.find)
         this.current = 1;
         this.$emit("refresh")
     }
+
     beforeDestroy() {
         this.resetFields('queryForm')
     }

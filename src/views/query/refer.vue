@@ -9,7 +9,7 @@
           <br>
           <br>
           <Button @click="back">返回</Button>
-          <Button @click="del" class="margin-left-10">撤销</Button>
+          <Button @click="deferReply" class="margin-left-10">撤销</Button>
         </div>
         <div class="step-content" style="height: 150px">
         </div>
@@ -23,10 +23,13 @@
 
 <script lang="ts">
   import {Component, Mixins} from "vue-property-decorator";
-  import att_mixins from "@/mixins/basic";
+  import {CommonPutApis} from "@/apis/queryApis";
+  import {AxiosResponse} from "axios";
+  import {Res} from "@/interface";
+  import query_mixin from "@/mixins/query_mixin";
 
     @Component({components: {}})
-    export default class put_ready extends Mixins(att_mixins) {
+    export default class put_ready extends Mixins(query_mixin) {
         stepData = {
             title: 'Yearning SQL查询系统',
             describe: `欢迎你！ ${sessionStorage.getItem('user')}`,
@@ -53,19 +56,10 @@
             })
         }
 
-        del() {
-            this.$http.delete(`${this.$config.url}/query/undo`)
-                .then(() => {
-                    this.$router.push({
-                        name: 'query'
-                    })
-                })
-        }
-
         mounted() {
-            this.$http.put(`${this.$config.url}/query/status`)
-                .then((res: { data: { status: number; }; }) => {
-                    if (res.data.status === 1) {
+            CommonPutApis('status',null)
+                .then((res: AxiosResponse<Res>) => {
+                    if (res.data.payload.status === 1) {
                         this.$router.push({
                             name: 'query_page'
                         })

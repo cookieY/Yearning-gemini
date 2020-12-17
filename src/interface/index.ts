@@ -1,3 +1,5 @@
+import {Finder} from "@/store/modules/search";
+
 interface order {
     tp?: number
     work_id?: string
@@ -19,6 +21,7 @@ interface order {
     current_step?: number
     uuid?: string
     relevant?: string[]
+    sql?: string;
 }
 
 interface other_modal {
@@ -101,6 +104,24 @@ interface StepOrder {
     type: number  // 0 audit 1 executor
 }
 
+interface CommonFinder {
+    page: number;
+    find: Finder
+}
+
+interface Res {
+    code: number;
+    text: string;
+    payload: any;
+}
+
+interface TplOrder {
+    auditor: string[]
+    type: number
+    desc: string
+    source?: string
+}
+
 export {
     order,
     other_modal,
@@ -111,5 +132,8 @@ export {
     Connection_list,
     Fetch_data,
     High_light,
-    StepOrder
+    StepOrder,
+    CommonFinder,
+    Res,
+    TplOrder
 }

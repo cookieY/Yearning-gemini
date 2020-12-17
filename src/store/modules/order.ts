@@ -45,7 +45,7 @@ class order_local extends VuexModule {
 
     @Mutation
     clear_sql_order() {
-        return this.sql_order = {export: 0} as order
+        return this.sql_order = { export: 0} as order
     }
 
     @Mutation

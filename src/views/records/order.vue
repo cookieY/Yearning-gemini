@@ -92,7 +92,7 @@
         }
       ];
 
-      url = `${this.$config.url}/audit/record`
+      url = `${this.$config.url}/audit/order/record`
 
       currentPage(vl = 1) {
         this.fetch_page(vl,this.url)

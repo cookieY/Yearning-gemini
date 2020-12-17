@@ -31,6 +31,9 @@
     import {Component, Prop, Mixins, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
     import modules_order from "@/store/modules/order";
+    import {request} from "@/libs/requests";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
 
     @Component({components: {}})
     export default class osc extends Mixins(att_mixins) {
@@ -65,23 +68,16 @@
         }
 
         oscKill() {
-            this.$http.delete(`${this.$config.url}/audit/fetch_osc/${this.work_id}`)
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
-                })
-                .catch((err: any) => {
-                    this.$config.err_notice(this, err);
-                })
+            request.delete(`${this.$config.url}/audit/osc/${this.work_id}`)
                 .finally(() => this.oscClose())
         }
 
         openOSC() {
-            this.$http.get(`${this.$config.url}/audit/fetch_osc/${this.work_id}`)
-                .then((res: { data: { p: number; s: number; }; }) => {
-                    this.osc.percent = res.data.p;
-                    this.osc.current = res.data.s;
+            request.get(`${this.$config.url}/audit/osc/${this.work_id}`)
+                .then((res: AxiosResponse<Res>) => {
+                    this.osc.percent = res.data.payload.p;
+                    this.osc.current = res.data.payload.s;
                 })
-                .catch((err: any) => this.$config.err_notice(this, err))
         }
 
         interval() {

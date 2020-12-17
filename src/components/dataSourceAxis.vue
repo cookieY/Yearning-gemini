@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import {DashGetApi} from "@/apis/dashApis";
 
 const echarts = require('echarts');
 export default {
@@ -11,7 +11,7 @@ export default {
     mounted() {
         this.$nextTick(() => {
             let dataSourcePie = echarts.init(document.getElementById('data_source_axis'));
-            axios.get(`${this.$config.url}/dash/axis`)
+            DashGetApi('axis')
                 .then(res => {
                     const option = {
                         tooltip: {
@@ -33,7 +33,7 @@ export default {
                             {
                                 type: 'category',
                                 boundaryGap: false,
-                                data: res.data.c
+                                data: res.data.payload.c
                             }
                         ],
                         yAxis: [
@@ -41,7 +41,8 @@ export default {
                                 type: 'value'
                             }
                         ],
-                        dataZoom: [{
+                        dataZoom: [
+                            {
                             type: 'inside',
                             start: 80,
                             end: 100
@@ -62,7 +63,7 @@ export default {
                             {
                                 name: '工单数',
                                 type: 'line',
-                                data: res.data.o,
+                                data: res.data.payload.o,
                                 areaStyle: {normal: {}},
                                 stack: '总量'
                             }

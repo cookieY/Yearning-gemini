@@ -5,7 +5,7 @@
                 <Row>
                     <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
                     <Col span="5" offset="14">
-                        <Button type="warning" v-if="order.status === 1 " @click.native="open_form()">
+                        <Button type="warning" v-if="order.status === 1" @click.native="open_form()">
                             查看回滚语句
                         </Button>
                         <Button type="primary"
@@ -17,7 +17,8 @@
                             title="确定要撤销工单吗？"
                             @on-ok="delOrder(order.work_id)"
                             transfer>
-                            <Button type="primary" v-if="order.status === 2 " ghost>工单撤销
+                            <Button type="primary" v-if="order.status === 2 && !JSON.parse($route.query.isAdmin) "
+                                    ghost>工单撤销
                             </Button>
                         </Poptip>
                         <Button type="info" @click.native="$router.go(-1)" style="margin-left: 2%">返回</Button>
@@ -46,7 +47,7 @@
                     <h3>SQL审核</h3>
                     <collapse></collapse>
                     <br>
-                    <template v-if="order.assigned ===user">
+                    <template v-if="order.assigned === user && JSON.parse($route.query.isAdmin)">
                         <Testing></Testing>
                     </template>
                 </Card>
@@ -55,9 +56,7 @@
         <BackTop :height="100" :bottom="200">
             <div class="top">返回顶端</div>
         </BackTop>
-
         <post-form v-model="is_open"></post-form>
-
     </div>
 </template>
 
@@ -71,6 +70,9 @@ import Testing from "@/components/profile/testing.vue";
 import reject from "@/views/audit/order/reject.vue";
 import module_init_args from "@/store/modules/init_args";
 import StepDetail from "@/components/profile/stepDetail.vue";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
+import {TplFetchProfile} from "@/apis/tplApis";
 
 @Component({components: {collapse, basic, postForm, Testing, reject, StepDetail}})
 export default class profile extends Mixins(detail_mixins) {
@@ -82,9 +84,9 @@ export default class profile extends Mixins(detail_mixins) {
     user = sessionStorage.getItem('user')
 
     created() {
-        this.$http.put(`${this.$config.url}/tpl`, {source: this.order.source})
-            .then((res: { data: any; }) => {
-                module_init_args.fetch_order_step(res.data.steps)
+        TplFetchProfile(this.order.source as string)
+            .then((res: AxiosResponse<Res>) => {
+                module_init_args.fetch_order_step(res.data.payload.steps)
             })
     }
 

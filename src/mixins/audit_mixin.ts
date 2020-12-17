@@ -2,8 +2,8 @@ import {Component, Mixins} from "vue-property-decorator";
 import att_mixins from "@/mixins/basic";
 import render from "@/interface/render";
 import module_init_args from "@/store/modules/init_args";
-import {order} from "@/interface";
 import modules_order from "@/store/modules/order";
+import {AuditKillOrder} from "@/apis/auditApis";
 
 @Component({components: {}})
 export default class audit_mixins extends Mixins(att_mixins) {
@@ -75,15 +75,13 @@ export default class audit_mixins extends Mixins(att_mixins) {
     reboot = 0;
     valve = true;
     is_osc = false;
-    url = `${this.$config.url}/audit`
+    url = `${this.$config.url}/audit/order/list`
 
     delayKill(vl: { work_id: string }) {
-        this.$http.get(`${this.$config.url}/audit/kill/${vl.work_id}`)
-            .then((res: { data: string; }) => {
-                this.$config.notice(res.data);
+        AuditKillOrder({work_id: vl.work_id})
+            .then(() => {
                 this.current_page()
             })
-            .catch((err: any) => this.$config.err_notice(this, err))
     }
 
     timerOsc(vl: { work_id: string }) {
@@ -94,7 +92,10 @@ export default class audit_mixins extends Mixins(att_mixins) {
     orderDetail(row: any) {
         module_init_args.fetch_order_item(row)
         this.$router.push({
-            name: 'profile'
+            name: 'profile',
+            query: {
+                isAdmin: JSON.stringify(true)
+            }
         })
     }
 

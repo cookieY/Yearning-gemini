@@ -34,6 +34,7 @@
     import att_mixins from "@/mixins/basic";
     import search from "@/components/search/search.vue";
     import render from "@/interface/render";
+    import {DeleteEmptyAuditQuery} from "@/apis/queryApis";
 
     @Component({components: {search}})
     export default class query_record extends Mixins(att_mixins) {
@@ -72,7 +73,7 @@
                 slot: 'action'
             }
         ];
-        url = `${this.$config.url}/audit/query/fetch/record`
+        url = `${this.$config.url}/audit/query/record`
 
         open_detail(row: { work_id: string, username: string }) {
             this.$router.push({
@@ -85,16 +86,10 @@
         }
 
         query_empty() {
-            this.$http.delete(`${this.$config.url}/audit/query/empty`)
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
+            DeleteEmptyAuditQuery()
+                .then(() => {
                     this.current_page()
                 })
-                .catch((err: any) => this.$config.err_notice(this, err))
-        }
-
-        current_page(vl = 1) {
-            this.fetch_page(vl, this.url)
         }
 
         mounted() {

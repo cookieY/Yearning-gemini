@@ -65,6 +65,9 @@ import {Component, Mixins} from "vue-property-decorator";
 import editor from "@/components/editor.vue";
 import orderConfirm from "@/components/order/orderConfirm.vue";
 import modules_order from "@/store/modules/order";
+import {CommonFetch, FetchCommonGetApis, FetchCommonPutApis, PostOrder} from "@/apis/commonApis";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
 
 @Component({components: {editor, orderConfirm}})
 export default class orderSQLs extends Mixins(order_mixin) {
@@ -113,32 +116,25 @@ export default class orderSQLs extends Mixins(order_mixin) {
 
     fetchStruct() {
         this.$Spin.show();
-        this.$http.put(`${this.$config.url}/fetch/table_info`, {
-            'source': this.formItem.source,
-            'base': this.formItem.data_base,
-            'table': this.formItem.table
-        })
-            .then((res: { data: { f: never[]; i: never[]; }; }) => {
-                this.field_data = res.data.f;
-                this.idx_data = res.data.i;
+        FetchCommonGetApis('fields', this.formItem as CommonFetch)
+            .then((res: AxiosResponse<Res>) => {
+                this.field_data = res.data.payload.rows;
+                this.idx_data = res.data.payload.idx;
                 this.$Message.success({content: "已获取表结构!"})
-            })
-            .catch((err: any) => {
-                this.$config.err_notice(this, err)
             })
             .finally(() => this.$Spin.hide())
     }
 
     check_sql() {
         this.$Spin.show()
-        this.$http.put(`${this.$config.url}/fetch/test`, {
-            'source': this.formItem.source,
-            'data_base': this.formItem.data_base,
-            'sql': this.order_text,
-            'is_dml': this.is_dml
+        FetchCommonPutApis('test', {
+            source: this.formItem.source,
+            data_base: this.formItem.data_base,
+            sql: this.order_text,
+            is_dml: this.is_dml
         })
-            .then((res: { data: import("@/interface").test_results[]; }) => {
-                this.testResults = res.data;
+            .then((res: AxiosResponse<Res>) => {
+                this.testResults = res.data.payload;
                 let gen = 0;
                 this.testResults.forEach((vl: { level: number; }) => {
                     if (vl.level !== 0) {
@@ -147,9 +143,6 @@ export default class orderSQLs extends Mixins(order_mixin) {
                 });
                 this.validate_gen = gen !== 0;
             })
-            .catch((err: any) => {
-                this.$config.err_notice(this, err)
-            })
             .finally(() => this.$Spin.hide())
     }
 
@@ -157,29 +150,20 @@ export default class orderSQLs extends Mixins(order_mixin) {
         let ty = this.is_dml ? 1 : 0
         let order = {sql: this.order_text, type: ty, real_name: sessionStorage.getItem("real_name")}
         Object.assign(order, this.formItem)
-        this.$http.post(`${this.$config.url}/sql/refer`, order)
-            .then((res: { data: string; }) => {
-                this.$Message.success(res.data)
+        PostOrder(order)
+            .then(() => {
                 modules_order.changed_step(3)
                 modules_order.changed_always({one: false, two: false, three: true})
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
             })
     }
 
     merge() {
-        this.$http.put(`${this.$config.url}/query/merge`, {
-            'sql': this.order_text
-        })
-            .then((res: any) => {
-                if (!res.data.e) {
-                    this.order_text = res.data.sols
-                } else {
-                    this.$config.notice(res.data.err_code)
+        FetchCommonPutApis('merge',{sql:this.order_text})
+            .then((res: AxiosResponse<Res>) => {
+                if (res.data.code === 1200) {
+                    this.order_text = res.data.payload.sols
                 }
             })
-            .catch((error: any) => this.$config.err_notice(this, error))
     }
 
     previous() {

@@ -1,4 +1,5 @@
 import Index from './main.vue'
+import WapDash from "@/views/wap/dash.vue";
 
 const main_child = [
     {
@@ -11,7 +12,7 @@ const main_child = [
 
     },
     {
-        path: 'query_apply',
+        path: 'query/results',
         meta: {
             title: '查询申请进度'
         },
@@ -19,7 +20,7 @@ const main_child = [
         component: () => import('./views/query/refer.vue'),
     },
     {
-        path: 'query_page',
+        path: 'query/tab',
         meta: {
             title: '查询'
         },
@@ -27,7 +28,7 @@ const main_child = [
         component: () => import('./views/query/multiSource.vue'),
     },
     {
-        path: 'query_review',
+        path: 'record/profile',
         meta: {
             title: '查询记录详情'
         },
@@ -35,7 +36,7 @@ const main_child = [
         component: () => import('./components/profile/query_profile.vue'),
     },
     {
-        path: 'profile',
+        path: '/order/profile',
         meta: {
             title: '工单详情'
         },
@@ -43,23 +44,13 @@ const main_child = [
         component: () => import('./components/profile/profile.vue'),
     },
     {
-        path: 'my_order',
+        path: 'personal',
         name: 'my_order',
         meta: {
             title: '我的工单'
         },
         icon: 'person',
         component: () => import('./views/order/myOrder.vue')
-    },
-    {
-        path: 'query',
-        name: 'query',
-        meta: {
-            title: 'SQL查询',
-            icon: 'md-search'
-        },
-        icon: 'ios-podium',
-        component: () => import('./views/query/workFlow.vue')
     },
     {
         path: 'order',
@@ -87,7 +78,7 @@ export const loginRouter = {
     meta: {
         title: 'Login - 登录'
     },
-    component: () => import('./login.vue')
+    component: () => import('./views/login/login.vue')
 };
 
 export const locking = {
@@ -111,6 +102,27 @@ export const appRouter = [
         ]
     },
     {
+        path: '/query',
+        icon: 'md-search',
+        name: 'view',
+        meta: {
+            title: '查询'
+        },
+        component: Index,
+        access: 0,
+        children: [
+            {
+                path: '/query/order',
+                name: 'query',
+                meta: {
+                    title: 'SQL查询'
+                },
+                icon: 'ios-podium',
+                component: () => import('./views/query/workFlow.vue')
+            }
+        ]
+    },
+    {
         path: '/audit',
         icon: 'md-open',
         name: 'audit',
@@ -119,17 +131,18 @@ export const appRouter = [
         },
         component: Index,
         access: 1,
-        children: [{
-            path: 'audit-order',
-            name: 'audit-audit',
-            meta: {
-                title: '工单'
-            },
-            icon: 'md-create',
-            component: () => import('./views/audit/order/audit.vue')
-        },
+        children: [
             {
-                path: 'query-audit',
+                path: '/audit/order',
+                name: 'audit-audit',
+                meta: {
+                    title: '工单'
+                },
+                icon: 'md-create',
+                component: () => import('./views/audit/order/audit.vue')
+            },
+            {
+                path: '/audit/query',
                 name: 'query-audit',
                 meta: {
                     title: '查询'
@@ -150,7 +163,7 @@ export const appRouter = [
         access: 1,
         children: [
             {
-                path: 'audit-record',
+                path: '/record/order',
                 name: 'audit-record',
                 meta: {
                     title: '工单记录'
@@ -159,7 +172,7 @@ export const appRouter = [
                 component: () => import('./views/records/order.vue')
             },
             {
-                path: 'query-review',
+                path: '/record/query',
                 name: 'query-review',
                 meta: {
                     title: '查询记录'
@@ -171,7 +184,7 @@ export const appRouter = [
         ]
     },
     {
-        path: '/management',
+        path: '/manage',
         icon: 'logo-buffer',
         name: 'management',
         meta: {
@@ -181,67 +194,67 @@ export const appRouter = [
         component: Index,
         children: [
             {
-                path: 'management-user',
-                name: 'management-user',
+                path: '/manage/user',
+                name: 'manage-user',
                 meta: {
                     title: '用户'
                 },
                 icon: 'md-people',
-                component: () => import('./views/management/user/user.vue')
+                component: () => import('./views/manage/user/user.vue')
             },
             {
-                path: 'management-database',
-                name: 'management-database',
+                path: '/manage/db',
+                name: 'manage-database',
                 meta: {
                     title: '数据库',
                 },
                 icon: 'md-medal',
-                component: () => import('./views/management/db.vue')
+                component: () => import('./views/manage/db/db.vue')
             },
             {
-                path: 'roleGroup',
+                path: '/manage/group',
                 name: 'roleGroup',
                 meta: {
                     title: '权限组'
                 },
                 icon: 'logo-google',
-                component: () => import('./views/management/roleGroup.vue')
+                component: () => import('./views/manage/group/roleGroup.vue')
             },
             {
-                path: 'setting',
+                path: '/manage/setting',
                 name: 'setting',
                 meta: {
                     title: '设置'
                 },
                 icon: 'md-settings',
-                component: () => import('./views/management/setting.vue')
+                component: () => import('./views/manage/settings/setting.vue')
             },
             {
-                path: 'flow',
+                path: '/manage/flow',
                 name: 'flow',
                 meta: {
                     title: '流程模板'
                 },
                 icon: 'md-trophy',
-                component: () => import('./views/management/flow.vue')
+                component: () => import('./views/manage/flow/flow.vue')
             },
             {
-                path: 'roles',
+                path: '/manage/roles',
                 name: 'roles',
                 meta: {
                     title: '审核规则'
                 },
                 icon: 'md-aperture',
-                component: () => import('./views/management/role.vue')
+                component: () => import('./views/manage/role/role.vue')
             },
             {
-                path: 'task',
+                path: '/manage/task',
                 name: 'task',
                 meta: {
                     title: '自动任务'
                 },
                 icon: 'md-sync',
-                component: () => import('./views/management/autoTask.vue')
+                component: () => import('./views/manage/autoTask/autoTask.vue')
             }
         ]
     }

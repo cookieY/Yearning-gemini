@@ -36,8 +36,11 @@
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
     // eslint-disable-next-line no-unused-vars
-    import {rule, Rule} from "@/views/management/role/role_args";
+    import {rule, Rule} from "@/views/manage/role/role_args";
     import att_mixins from "@/mixins/basic";
+    import {RolesCreateOrEditApi, RolesFetchApi} from "@/apis/rolesApis";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
 
     @Component({components: {}})
     export default class Role extends Mixins(att_mixins) {
@@ -78,29 +81,15 @@
         }
 
         referRoles() {
-            this.$http.post(`${this.$config.url}/group/setting/roles`, {
-                'juno': this.juno
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data)
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
+            RolesCreateOrEditApi(this.juno)
         }
 
         mounted() {
-            this.$http.get(`${this.$config.url}/group/setting`)
-                .then((res: { data: { AuditRole: any; }; }) => {
-                    this.juno = res.data.AuditRole
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
+            RolesFetchApi().then((res: AxiosResponse<Res>) => {this.juno = res.data.payload.AuditRole})
         }
     }
 </script>
 
 <style lang="less" scoped>
-    @import "../../styles/common.less";
+    @import "../../../styles/common.less";
 </style>

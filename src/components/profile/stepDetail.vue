@@ -14,6 +14,9 @@
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
     import detail_mixins from "@/mixins/detail_mixin";
+    import {FetchCommonGetApis} from "@/apis/commonApis";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
 
     @Component({components: {}})
     export default class StepDetail extends Mixins(detail_mixins) {
@@ -38,9 +41,8 @@
         ]
 
         mounted() {
-            this.$http.get(`${this.$config.url}/steps?work_id=${this.order.work_id}`)
-                .then((res: { data: never[]; }) => this.table_data = res.data)
-                .catch((err: any) => this.$config.err_notice(this, err))
+            FetchCommonGetApis('steps',{work_id:this.order.work_id as string})
+                .then((res: AxiosResponse<Res>) => this.table_data = res.data.payload)
         }
     }
 </script>

@@ -40,10 +40,14 @@
     import query_sql from "@/views/query/querySql.vue";
     import {Component, Mixins} from "vue-property-decorator";
     import module_general from "@/store/modules/general";
-    import att_mixins from "@/mixins/basic";
+    import {FetchCommonGetApis} from "@/apis/commonApis";
+    import {AxiosResponse} from "axios";
+    import {Res} from "@/interface";
+    import {CommonPutApis} from "@/apis/queryApis";
+    import query_mixin from "@/mixins/query_mixin";
 
     @Component({components: {query_sql}})
-    export default class multiSource extends Mixins(att_mixins) {
+    export default class multiSource extends Mixins(query_mixin) {
         focus = '';
         addSnippet = {
             title: '',
@@ -52,17 +56,7 @@
         openSnippet = false;
         openSource = false;
         idc = '';
-        fetchData = {
-            source: []
-        };
         sourceList = [] as any;
-
-        deferReply() {
-            this.$http.delete(`${this.$config.url}/query/undo`)
-                .then((res: { data: string; }) => this.$config.notice(res.data))
-                .catch((err: any) => this.$config.err_notice(this, err))
-                .finally(() => this.$router.push({name: 'query'}))
-        }
 
         add_snip() {
             module_general.snippetTag(this.addSnippet)
@@ -96,31 +90,26 @@
         }
 
         fetchSource() {
-            this.$http.get(`${this.$config.url}/fetch/source?idc=${this.idc}&xxx=query`)
-                .then((res: { data: { x: string; source: never[]; }; }) => {
-                    if (res.data.x === 'query') {
-                        this.fetchData.source = res.data.source;
+            FetchCommonGetApis('source',{idc:this.idc,tp:'query'})
+                .then((res: AxiosResponse<Res>) => {
+                    if (res.data.payload.x === 'query') {
+                        this.fetchData.source = res.data.payload.source;
                     } else {
                         this.$config.notice('非法劫持参数！')
                     }
                 })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
         }
 
         mounted() {
-            this.$http.put(`${this.$config.url}/query/status`)
-                .then((res: { data: { status: number; idc: string; }; }) => {
-                    if (res.data.status !== 1) {
+            CommonPutApis('status',null)
+                .then((res: AxiosResponse<Res>) => {
+                    if (res.data.payload.status !== 1) {
                         this.$router.push({name: 'query'});
                     } else {
-                        this.idc = res.data.idc;
+                        this.idc = res.data.payload.idc;
                         this.openModel()
                     }
-
                 })
-                .catch((err: any) => this.$config.err_notice(this, err))
         }
     }
 </script>

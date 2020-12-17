@@ -13,6 +13,7 @@
     import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
     import att_mixins from "@/mixins/basic";
     import module_init_args from "@/store/modules/init_args";
+    import {AuditStateSQL} from "@/apis/auditApis";
 
     @Component({components: {}})
     export default class reject extends Mixins(att_mixins) {
@@ -35,17 +36,11 @@
         }
 
         rejectText() {
-            this.$http.post(`${this.$config.url}/audit/reject`, {
-                'text': this.reject,
-                'work': this.order.work_id
-            })
-                .then((res: { data: string; }) => {
-                    this.$config.notice(res.data);
+            AuditStateSQL({work_id:this.order.work_id as string,text:this.reject,tp:'reject'})
+                .then(() => {
                     this.$router.go(-1)
                 })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
-                })
+
         }
 
         cancel() {

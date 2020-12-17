@@ -1,13 +1,13 @@
 import {Component, Mixins} from "vue-property-decorator";
 import att from "@/mixins/basic";
-import {Fetch_data, High_light} from "@/interface";
-import axios from "axios";
+import {Fetch_data, High_light, Res} from "@/interface";
+import axios, {AxiosResponse} from "axios";
 import sqlFormatter from "sql-formatter";
 import modules_order from "@/store/modules/order";
+import {CommonFetch, FetchCommonGetApis} from "@/apis/commonApis";
 
 @Component({components: {}})
 export default class fetch_mixins extends Mixins(att) {
-
     fetchData: Fetch_data = {
         idc: [],
         source: [],
@@ -16,59 +16,53 @@ export default class fetch_mixins extends Mixins(att) {
         assigned: []
     };
 
+    fetchDiffSource(idc: string) {
+        if (this.is_dml) {
+            this.fetchSource(idc, "dml")
+        } else {
+            this.fetchSource(idc, "ddl")
+        }
+    }
+
     fetchSource(idc: string, tp: string) {
         if (idc) {
-            this.$http.get(`${this.$config.url}/fetch/source?idc=${idc}&xxx=${tp}`)
-                .then((res: { data: { x: string; source: string[]; assigned: string[]; }; }) => {
-                    if (res.data.x === tp) {
-                        this.fetchData.source = res.data.source;
-                        this.fetchData.assigned = res.data.assigned
+            FetchCommonGetApis('source', {idc: idc, tp: tp})
+                .then((res: AxiosResponse<Res>) => {
+                    if (res.data.payload.x === tp) {
+                        this.fetchData.source = res.data.payload.source;
+                        this.fetchData.assigned = res.data.payload.assigned
                     } else {
                         this.$config.notice('非法劫持参数！')
                     }
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
                 })
         }
     }
 
     fetchBase(source: string) {
         if (source) {
-            this.$http.get(`${this.$config.url}/fetch/base?source=${source}`)
-                .then((res: { data: { results: string[]; admin: string[]; highlight: never[] }; }) => {
-                    this.fetchData.base = res.data.results;
-                    this.fetchData.assigned = res.data.admin
-                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
-                })
-                .catch((error: any) => {
-                    this.$config.err_notice(this, error)
+            FetchCommonGetApis('base', {source: source})
+                .then((res: AxiosResponse<Res>) => {
+                    this.fetchData.base = res.data.payload.results;
+                    this.fetchData.assigned = res.data.payload.admin
+                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.payload.highlight))
                 })
         }
     }
 
     fetchTable() {
         if (this.formItem.data_base) {
-            this.$http.put(`${this.$config.url}/fetch/table`, {
-                'source': this.formItem.source,
-                'base': this.formItem.data_base
-            })
-                .then((res: { data: { table: string[]; highlight: {} }; }) => {
-                    this.fetchData.table = res.data.table;
-                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.highlight))
-                }).catch((error: any) => {
-                this.$config.err_notice(this, error)
-            })
+            FetchCommonGetApis('table', this.formItem as CommonFetch)
+                .then((res: AxiosResponse<Res>) => {
+                    this.fetchData.table = res.data.payload.table;
+                    modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.payload.highlight))
+                })
         }
     }
 
     fetchIDC() {
-        this.$http.get(`${this.$config.url}/fetch/idc`)
-            .then((res: { data: string[]; }) => {
-                this.fetchData.idc = res.data;
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
+        FetchCommonGetApis('idc', {})
+            .then((res: AxiosResponse<Res>) => {
+                this.fetchData.idc = res.data.payload;
             })
     }
 

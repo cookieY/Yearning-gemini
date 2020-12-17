@@ -114,17 +114,13 @@
 <script lang="ts">
 import {Component, Mixins} from "vue-property-decorator";
 import att_mixins from "@/mixins/basic";
-
-interface TplOrder {
-    auditor: string[]
-    type: number
-    desc: string
-    source?: string
-}
+import {Res, TplOrder} from '@/interface';
+import {TplAllSourceFetchApi, TplCreateOrEditApi, TplFetchProfile} from "@/apis/tplApis";
+import {AxiosResponse} from "axios";
 
 @Component({})
 export default class FlowTemplate extends Mixins(att_mixins) {
-    tpl_logo = require("../../assets/tpl.svg")
+    tpl_logo = require("../../../assets/tpl.svg")
     tpl_list: any = []
     tpl = {} as TplOrder
     is_tpl_edit = false
@@ -178,32 +174,20 @@ export default class FlowTemplate extends Mixins(att_mixins) {
             this.$Message.error({content: "最后步骤必须为执行类型！保存失败!", duration: 5})
             return
         }
+
         if (this.is_tpl_edit) {
             this.$Message.error({content: "请先保存被编辑的步骤信息!", duration: 5})
             return
         }
-        this.$http.post(`${this.$config.url}/tpl`, {
-            steps: this.tmp_steps,
-            source: this.source
-        })
-            .then((res: { data: string; }) => this.$config.notice(res.data))
-            .catch((err: any) => this.$config.err_notice(this, err))
+        TplCreateOrEditApi({steps: this.tmp_steps, source: this.source})
             .finally(() => this.is_open = !this.is_open)
     }
 
     open_order(vl: string) {
-        // 如果回传为null 则使用初始化数据
-        this.$http.put(`${this.$config.url}/tpl`, {
-            source: vl
-        })
-            .then((res: { data: any; }) => {
-                if (res.data.steps === null) {
-                    this.tmp_steps = this.tpl_step
-                } else {
-                    this.tmp_steps = res.data.steps
-                }
+        TplFetchProfile(vl)
+            .then((res: AxiosResponse<Res>) => {
+                res.data.payload.steps === null ? this.tmp_steps = this.tpl_step : this.tmp_steps = res.data.payload.steps
             })
-            .catch((err: any) => this.$config.err_notice(this, err))
             .finally(() => {
                 this.is_open = !this.is_open
                 this.source = vl
@@ -213,13 +197,12 @@ export default class FlowTemplate extends Mixins(att_mixins) {
     }
 
     fetch_all_sources() {
-        this.$http.get(`${this.$config.url}/tpl`)
-            .then((res: { data: any; }) => {
-                for (let i of res.data) {
+        TplAllSourceFetchApi()
+            .then((res: AxiosResponse<Res>) => {
+                for (let i of res.data.payload) {
                     this.tpl_list.push({title: i.source, desc: `${i.source}数据源审核流程`})
                 }
             })
-            .catch((err: any) => this.$config.err_notice(this, err))
     }
 
     add_step() {
@@ -248,5 +231,5 @@ export default class FlowTemplate extends Mixins(att_mixins) {
 </script>
 
 <style lang="less">
-@import "../../styles/common.less";
+@import "../../../styles/common.less";
 </style>

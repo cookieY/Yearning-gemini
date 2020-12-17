@@ -51,7 +51,9 @@
 <script lang="ts">
 import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
 import detail_mixins from "../../mixins/detail_mixin";
-import render from "@/interface/render";
+import {AxiosResponse} from "axios";
+import {Res} from "@/interface";
+import {FetchCommonGetApis, FetchCommonPostApis} from "@/apis/commonApis";
 
 @Component({components: {}})
 export default class postForm extends Mixins(detail_mixins) {
@@ -73,15 +75,16 @@ export default class postForm extends Mixins(detail_mixins) {
     roll_data: { sql: string }[] = [];
 
     roll_column = [
-        {
-            type: 'expand',
-            width: 50,
-            render: render.expand
-        },
+        // {
+        //     type: 'expand',
+        //     width: 50,
+        //     render: render.expand
+        // },
         {
             title: '当前检查的sql',
             key: 'sql',
-            render: render.sub_sql
+            // render: render.sub_sql
+            tooltip: true
 
         },
     ];
@@ -94,29 +97,21 @@ export default class postForm extends Mixins(detail_mixins) {
 
     referOrder() {
         let order = Object.assign({} as any, this.order)
-        order.assigned = order.relevant[0]
-        this.$http.post(`${this.$config.url}/fetch/roll_order`, {
-            'data': order,
-            'sqls': this.sqls,
-            'tp': this.order.status
+        FetchCommonPostApis("roll_order", {
+            data: order,
+            sqls: this.sqls,
+            tp: this.order.status
         })
             .then(() => {
                 this.$router.go(-1)
-                this.$config.notice('工单已提交成功')
-            })
-            .catch((error: any) => {
-                this.$config.err_notice(this, error)
             })
     }
 
     rollback(vl = 1) {
-        this.$http.get(`${this.$config.url}/fetch/roll?workid=${this.order.work_id}&page=${vl}`)
-            .then((res: { data: { sql: { sql: string; }[]; count: number; }; }) => {
-                this.roll_data = res.data.sql;
-                this.page_number = res.data.count
-            })
-            .catch((err: any) => {
-                this.$config.err_notice(this, err)
+        FetchCommonGetApis('roll', {work_id: this.order.work_id, page: vl})
+            .then((res: AxiosResponse<Res>) => {
+                this.roll_data = res.data.payload.sql;
+                this.page_number = res.data.payload.count
             })
     }
 }
