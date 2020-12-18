@@ -1,6 +1,7 @@
 <template>
     <div>
-        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions" @currentSelection="selectionWord"></editor>
+        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"
+                @currentSelection="selectionWord"></editor>
         <br>
         <span>当前选择的库: {{ dataBase }}</span> <span class="margin-left-10">查询耗时: {{ results.time }} ms</span>
         <br>
@@ -191,7 +192,7 @@ export default class tabQuery extends Mixins(att_mixins) {
         total: 0
     }
 
-    selectionWord(vl:string) {
+    selectionWord(vl: string) {
         if (vl.length > 5) {
             this.sql = vl
         }
@@ -261,16 +262,18 @@ export default class tabQuery extends Mixins(att_mixins) {
             source: this.source
         })
             .then((res: AxiosResponse<Res>) => {
-                if (res.data.code !== 5555) {
+                if (res.data.payload !== null) {
                     if (res.data.payload.status) {
                         this.loading = true;
                         return
                     }
-                    this.results = res.data.payload
+                    if (res.data.payload.data === null) {
+                        this.results = {} as Results
+                        this.queryRes = []
+                        return;
+                    }
+                    this.results = this.results = res.data.payload
                     this.queryRes = this.results.data.slice(0, this.page_size);
-                } else {
-                    this.results = {} as Results
-                    this.queryRes = []
                 }
             })
             .finally(() => this.$Spin.hide())

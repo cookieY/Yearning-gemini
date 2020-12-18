@@ -265,7 +265,6 @@ export default class main_farm extends Mixins(att_mixins) {
             this.handleChange();
             module_general.breadcrumb_set(this.$route.matched[1].name)
             module_general.changed_currentPageName(this.$route.matched[1].name)
-            module_general.check_page_open()
             this.init();
         }
 

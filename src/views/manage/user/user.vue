@@ -109,6 +109,7 @@ import {DependUser} from "@/views/manage/user/types";
 import {UserCreateOrEditApi, UserDeleteApi, UserDependGetApi} from "@/apis/userApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
+import i18n from "@/language";
 
 @Component({components: {edit_password, edit_rule, edit_info}})
 export default class user_info extends Mixins(att_mixins) {
@@ -265,16 +266,8 @@ export default class user_info extends Mixins(att_mixins) {
                 message: '请输入工作邮箱',
                 trigger: 'blur'
             },
-            {
-                min: 2,
-                message: '请至少输入2个字符',
-                trigger: 'blur'
-            },
-            {
-                max: 32,
-                message: '最多输入32个字符',
-                trigger: 'blur'
-            }]
+            {type: 'email', message: i18n.t('sign_up_validate.mail_format'), trigger: 'blur'}
+        ]
     };
 
     // 用户名
@@ -286,7 +279,7 @@ export default class user_info extends Mixins(att_mixins) {
 
     depend_list = {} as DependUser
 
-    url  = `${this.$config.url}/manage/user`
+    url = `${this.$config.url}/manage/user`
 
     edit_code(row: { username: string }) {
         this.edit_password = true;
@@ -314,7 +307,7 @@ export default class user_info extends Mixins(att_mixins) {
         is_validate.validate((valid: boolean) => {
             if (valid) {
                 this.loading = true;
-                UserCreateOrEditApi({tp:'create',user:this.userinfo})
+                UserCreateOrEditApi({tp: 'create', user: this.userinfo})
                     .finally(() => {
                         this.current_page(this.current);
                         is_validate.resetFields()
@@ -329,7 +322,7 @@ export default class user_info extends Mixins(att_mixins) {
         this.del_disabled = true
         this.username = row.username
         UserDependGetApi({tp: 'depend', user: row.username})
-            .then((res:AxiosResponse<Res>) => {
+            .then((res: AxiosResponse<Res>) => {
                 this.depend_list = res.data.payload
             })
             .finally(() => {

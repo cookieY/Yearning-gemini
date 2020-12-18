@@ -35,7 +35,8 @@ a:visited {
                 <div>
                     <a class="navbar-brand"> {{ $t('version') }}: v2.3.2 Interstellar GA </a>
                     <Button v-if="switchCode" type="default" ghost @click="register = true">
-                        {{ $t('sign') }}</Button
+                        {{ $t('sign') }}
+                    </Button
                     >
                 </div>
                 <div>
@@ -43,12 +44,13 @@ a:visited {
                         <li>
                             <Button type="default" @click="sponsorship = true" ghost>{{
                                     $t('sponsor')
-                                }}</Button>
+                                }}
+                            </Button>
                         </li>
                         <li>
                             <div style="margin-left: 50%">
                                 <a href="https://github.com/cookieY/Yearning" target="_blank">
-                                    <Icon type="logo-github" size="30" />
+                                    <Icon type="logo-github" size="30"/>
                                 </a>
                             </div>
                         </li>
@@ -63,10 +65,10 @@ a:visited {
                 <div class="content-center">
                     <div class="card">
                         <form style="width: 45%;margin-left: 25%">
-                            <img src="../../assets/logo.png" width="80%" />
+                            <img src="../../assets/logo.png" width="80%"/>
                             <div class="input-group form-group-no-border input-lg">
                                 <span class="input-group-addon">
-                                    <Icon type="md-person" />
+                                    <Icon type="md-person"/>
                                 </span>
                                 <input
                                     type="text"
@@ -77,7 +79,7 @@ a:visited {
                             </div>
                             <div class="input-group form-group-no-border input-lg">
                                 <span class="input-group-addon">
-                                    <Icon type="md-key" />
+                                    <Icon type="md-key"/>
                                 </span>
                                 <input
                                     type="password"
@@ -88,7 +90,7 @@ a:visited {
                             </div>
                             <div class="input-group form-group-no-border input-lg">
                                 <span class="input-group-addon">
-                                    <Icon type="md-key" />
+                                    <Icon type="md-key"/>
                                 </span>
                                 <input
                                     :placeholder="$t('pin')"
@@ -185,20 +187,20 @@ a:visited {
         <Modal v-model="sponsorship" :title="$t('sponsor_title')" width="640">
             <h3>{{ $t('sponsor_1') }}</h3>
             {{ $t('sponsor_2') }}
-            <br />
-            <br />
+            <br/>
+            <br/>
             <h3>{{ $t('sponsor_3') }}</h3>
             {{ $t('sponsor_4') }}
-            <br />
-            <br />
+            <br/>
+            <br/>
             <h3>{{ $t('sponsor_5') }}</h3>
             {{ $t('sponsor_6') }}
-            <br />
+            <br/>
             {{ $t('sponsor_7') }}
-            <br />
-            <br />
-            <img height="300" width="300" src="../../assets/alipay.jpg" />
-            <img height="300" width="300" src="../../assets/wechat.jpg" />
+            <br/>
+            <br/>
+            <img height="300" width="300" src="../../assets/alipay.jpg"/>
+            <img height="300" width="300" src="../../assets/wechat.jpg"/>
         </Modal>
     </div>
 </template>
@@ -270,7 +272,7 @@ export default class login extends Mixins(att_mixins) {
                 trigger: 'blur'
             }
         ],
-        confirmpassword: [
+        confirm_password: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.confirm'),
@@ -281,7 +283,7 @@ export default class login extends Mixins(att_mixins) {
                 trigger: 'blur'
             }
         ],
-        realname: [
+        real_name: [
             {
                 required: true,
                 message: i18n.t('sign_up_validate.real'),
@@ -316,9 +318,7 @@ export default class login extends Mixins(att_mixins) {
         let is_validate: any = this.$refs['user_reg'];
         is_validate.validate((valid: boolean) => {
             if (valid) {
-                request.post(this.$config.register, {
-                    'user_info': this.userinfo
-                })
+                request.post("/register", this.userinfo)
                     .finally(() => this.resetFields('user_reg'))
             } else {
                 this.$config.notice(i18n.t('sign_up_validate.sign_fail') as string)
@@ -328,7 +328,7 @@ export default class login extends Mixins(att_mixins) {
 
     signIn() {
         if (this.check_code !== this.formInline.code.toLowerCase()) {
-            this.$config.message('warning',i18n.t('sign_up_validate.pin') as string)
+            this.$config.message('warning', i18n.t('sign_up_validate.pin') as string)
             this.replace = !this.replace;
             return;
         }
@@ -360,7 +360,7 @@ export default class login extends Mixins(att_mixins) {
     mounted() {
         let windows: any = window;
         windows.particlesJS.load('band', `${process.env.BASE_URL}particlesjs-config.json`);
-        request.get(`${this.$config.gen}/fetch`)
+        request.get(`/fetch`)
             .then((res: AxiosResponse<Res>) => {
                 this.switchCode = res.data.payload.reg;
             })

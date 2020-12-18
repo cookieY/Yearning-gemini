@@ -25,13 +25,6 @@ class general extends VuexModule {
             name: 'home_index'
         }
     ]
-    pageOpenedList: Path[] = [
-        {
-            title: '首页',
-            path: '',
-            name: 'home_index'
-        }
-    ]
     snippet: Path[] = []
 
     @Mutation
@@ -130,8 +123,7 @@ class general extends VuexModule {
     sidebar_filter() {
         let accessCode = parseInt(<string>sessionStorage.getItem('access')); // 0
         let menuList: any = [];
-        appRouter.forEach((item) => {
-            // @ts-ignore
+        appRouter.forEach((item: any) => {
             if (item.access < accessCode) {
                 let i = menuList.push(item);
                 menuList[i - 1].children = item.children
@@ -139,34 +131,6 @@ class general extends VuexModule {
         });
         this.menuList = menuList
     }
-
-    @Mutation
-    tag_list(name: string) {
-        this.pageOpenedList.forEach((vl: any, index: number) => {
-            if (vl.name === name && name !== 'home_index') {
-                this.pageOpenedList.splice(index, 1)
-            }
-        });
-        appRouter.forEach((val: any) => {
-            for (let i of val.children) {
-                if (i.name === name && name !== 'home_index') {
-                    this.pageOpenedList.push({'title': i.meta.title, 'name': i.name})
-                }
-            }
-        });
-        localStorage.setItem('pageOpenedList', JSON.stringify(this.pageOpenedList))
-    }
-
-    @Mutation
-    check_page_open() {
-        if (localStorage.getItem('pageOpenedList')) {
-            let pageOpenedList: any = localStorage.getItem('pageOpenedList');
-            this.pageOpenedList = JSON.parse(pageOpenedList)
-        } else {
-            this.pageOpenedList = [{title: '首页', path: '', name: 'home_index'}]
-        }
-    }
-
 }
 
 const module_general = getModule(general)

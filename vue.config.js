@@ -10,6 +10,10 @@ module.exports = {
         }
     },
     runtimeCompiler: true,
+    productionSourceMap:false,
+    devServer: {
+        proxy: 'http://localhost:8000'
+    }
     // chainWebpack: config => {
     //     config.module.rule('images')
     //         .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)

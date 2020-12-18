@@ -1,10 +1,9 @@
-import libs from "@/libs/libs";
 import {request} from "@/libs/requests";
 
 
 const LoginCommonPath = {
-    basic: libs.auth,
-    ldap: `${libs.gen}/ldap`
+    basic: '/login',
+    ldap: '/ldap'
 }
 
 

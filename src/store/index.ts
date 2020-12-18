@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import createVuexAlong from "vuex-along";
-import module_init_args from "@/store/modules/init_args";
 
 Vue.use(Vuex);
 

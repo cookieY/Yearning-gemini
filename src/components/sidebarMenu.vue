@@ -46,7 +46,6 @@
     </div>
 </template>
 <script>
-import libs from '../libs/libs'
 import module_general from "@/store/modules/general";
 
 export default {
@@ -66,14 +65,13 @@ export default {
     methods: {
         currentPageTab(val) {
             if (val === 'login') {
-                localStorage.removeItem('pageOpenedList');
                 sessionStorage.clear();
                 this.$router.push({
                     name: 'login'
                 })
                 window.location.reload()
             } else {
-                libs.openPage(this, val)
+                this.$config.openPage(this, val)
             }
         }
     }
