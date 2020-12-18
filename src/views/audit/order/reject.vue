@@ -18,7 +18,7 @@
     @Component({components: {}})
     export default class reject extends Mixins(att_mixins) {
 
-        reject = '';
+        private reject = '';
 
         @Prop({
             type: Boolean,

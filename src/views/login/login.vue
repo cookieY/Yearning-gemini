@@ -103,7 +103,7 @@ a:visited {
                                 ></SIdentify>
                             </div>
                             <div class="footer text-center">
-                                <Checkbox v-model="single"> {{ $t('ldap') }}</Checkbox>
+                                <Checkbox v-model="is_open"> {{ $t('ldap') }}</Checkbox>
                                 <a
                                     class="btn btn-primary btn-round btn-lg btn-block"
                                     @click="signIn()"
@@ -215,7 +215,7 @@ import {LoginApi} from "@/apis/loginApis";
 @Component({components: {SIdentify}})
 export default class login extends Mixins(att_mixins) {
 
-    valideuserinfoPassword = (rule: any, value: string, callback: any) => {
+    valid_password = (rule: any, value: string, callback: any) => {
         if (value !== this.userinfo.password) {
             callback(new Error(i18n.t('sign_up_validate.twice') as any))
         } else {
@@ -230,7 +230,6 @@ export default class login extends Mixins(att_mixins) {
             callback()
         }
     };
-    single = false;
     switchCode = false;
     sponsorship = false;
     register = false;
@@ -278,7 +277,7 @@ export default class login extends Mixins(att_mixins) {
                 trigger: 'blur'
             },
             {
-                validator: this.valideuserinfoPassword,
+                validator: this.valid_password,
                 trigger: 'blur'
             }
         ],
@@ -329,13 +328,11 @@ export default class login extends Mixins(att_mixins) {
 
     signIn() {
         if (this.check_code !== this.formInline.code.toLowerCase()) {
-            this.$Message.warning({
-                content: i18n.t('sign_up_validate.pin') as string,
-            });
+            this.$config.message('warning',i18n.t('sign_up_validate.pin') as string)
             this.replace = !this.replace;
             return;
         }
-        LoginApi(this.single, {
+        LoginApi(this.is_open, {
             username: this.formInline.user,
             password: this.formInline.password
         })

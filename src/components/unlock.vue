@@ -30,8 +30,7 @@
 </template>
 
 <script>
-    // ;
-    import axios from 'axios'
+    import {LoginApi} from "@/apis/loginApis";
 
     export default {
         name: 'Unlock',
@@ -56,14 +55,7 @@
                 this.$refs.inputEle.focus()
             },
             handleUnlock() {
-                let url = this.$config.auth;
-                if (this.single === true) {
-                    url = `${this.$config.gen}/ldap`
-                }
-                axios.post(url, {
-                    'username': sessionStorage.getItem('user'),
-                    'password': this.password
-                })
+                LoginApi(this.single,{username:sessionStorage.getItem('user'),password:this.password})
                     .then(() => {
                         this.avatorLeft = '0px'
                         this.inputLeft = '400px'
@@ -71,7 +63,6 @@
                         this.$store.commit('unlock')
                         this.$emit('on-unlock')
                     })
-                    .catch(err => this.$config.auth_notice(err))
             },
             unlockMousedown() {
                 this.$refs.unlockBtn.className = 'unlock-btn click-unlock-btn'

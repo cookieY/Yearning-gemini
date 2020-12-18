@@ -172,20 +172,11 @@
             ddl: 0,
             dml: 0
         };
-        time = '';
-        username = sessionStorage.getItem('user');
-
-        formatDate() {
-            let date: Date = new Date();
-            let month: number = date.getMonth() + 1;
-            this.time = date.getFullYear() + '/' + month + '/' + date.getDate() + '  ' + date.getHours() + ':' + date.getMinutes() + ':' + date.getSeconds()
-        }
         mounted() {
             DashGetApi('count')
                 .then((res: AxiosResponse<Res>) => {
                     this.count = res.data.payload;
                 })
-            .finally(() =>  this.formatDate())
         }
     }
 </script>

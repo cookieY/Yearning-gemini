@@ -1,7 +1,7 @@
 <template>
     <div>
         <Row>
-            <Col :span="5" v-if="showTableinfo">
+            <Col :span="5" v-if="latch.show">
                 <Card dis-hover>
                     <p slot="title">
                         <Icon type="ios-redo"></Icon>
@@ -14,7 +14,7 @@
                                     :data="tree_data"
                                     @on-toggle-expand="choseName"
                                     @on-select-change="getTable"
-                                    @empty-text="数据加载中"
+                                    empty-text="数据加载中"
                                     class="tree"
                                 ></Tree>
                                 <Button type="info" icon="md-brush" @click="openDrawer" ghost>快速提交</Button>
@@ -34,9 +34,9 @@
                     <Tabs type="card" :value="currentTab" @on-click="cur" name="base">
                         <TabPane v-for="tab in tabs" :key="tab" :label="'查询' + tab" :name="'查询' + tab"
                                  icon="logo-buffer" tab="base">
-                            <tabQuery :word-list="wordList" :export_data="export_data" :dataBase="put_info.base"
+                            <tabQuery :word-list="wordList" :export_data="latch.explore" :dataBase="addr.base"
                                       :source="source"
-                                      :table="tableInfoName"></tabQuery>
+                                      :table="addr.table"></tabQuery>
                         </TabPane>
                         <Button @click="handleTabsAdd" size="small" slot="extra">增加窗口</Button>
                         <Button @click="handleTabRemove" size="small" slot="extra" class="margin-left-10">减少窗口</Button>
@@ -46,7 +46,7 @@
         </Row>
 
 
-        <Drawer title="DML语句快速提交" v-model="drawer.open" width="700">
+        <Drawer title="DML语句快速提交" v-model="latch.drawer" width="700">
             <Form :rules="ruleValidate" ref="formItem" :model="formItem">
                 <FormItem label="环境:">
                     <span>{{ formItem.idc }}</span>
@@ -131,26 +131,21 @@ import {Res} from "@/interface";
 
 @Component({components: {editor, tabQuery}})
 export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
-    slider2 = 19;
-    currentTab = '查询1';
-    tableInfoName = '';
-    testRes = [] as any;
-    drawer = {
-        open: false
+    private slider2 = 19;
+    private currentTab = '查询1';
+    private testRes = [] as any;
+    private latch = {
+        drawer: false,
+        explore: false,
+        show: true
     };
-    tree_data = [
-        {
-            title: ''
-        }
-    ] as any;
-    put_info = {
+    private tree_data = [] as any;
+    private addr = {
         base: '',
-        tablename: ''
+        table: ''
     };
-    export_data = false;
-    tabs = 1;
-    showTableinfo = true;
-    test_sql = '';
+    private tabs = 1;
+    private test_sql = '';
 
     @Prop({
         type: String,
@@ -160,11 +155,11 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
 
 
     countAdd() {
-        if (this.showTableinfo) {
-            this.showTableinfo = false;
+        if (this.latch.show) {
+            this.latch.show = false;
             this.slider2 = 24;
         } else {
-            this.showTableinfo = true;
+            this.latch.show = true;
             this.slider2 = 19
         }
     }
@@ -177,9 +172,9 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
         if (vl.length > 0) {
             if (vl[0].nodeKey > 0) {
                 if (vl[0].children === undefined) {
-                    this.tableInfoName = vl[0].title
+                    this.addr.table = vl[0].title
                 } else {
-                    this.put_info.base = vl[0].title;
+                    this.addr.base = vl[0].title;
                 }
             }
         }
@@ -205,7 +200,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
         let is_validate: any = this.$refs['formItem'];
         is_validate.validate((valid: boolean) => {
             if (valid) {
-                FetchCommonPutApis('test',{
+                FetchCommonPutApis('test', {
                     data_base: this.formItem.data_base,
                     sql: this.test_sql,
                     is_dml: true,
@@ -248,15 +243,14 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
 
     openDrawer() {
         this.fetchBase(this.tree_data[0].title)
-        this.drawer.open = true
+        this.latch.drawer = true
     }
 
     choseName(vl: any) {
-
-        this.put_info.base = vl.title;
+        this.addr.base = vl.title;
         if (vl.expand === true) {
             this.$Spin.show();
-            CommonGetApis('fetch_table',{title:vl.title,source:this.source})
+            CommonGetApis('fetch_table', {title: vl.title, source: this.source})
                 .then((res: AxiosResponse<Res>) => {
                     if (res.data.payload === 0) {
                         this.$config.notice("已到查询时限上限,请重新申请查询！");
@@ -285,7 +279,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
 
     mounted() {
         modules_order.changed_is_dml(false)
-        CommonPutApis('fetch_base',{source:this.source})
+        CommonPutApis('fetch_base', {source: this.source})
             .then((res: AxiosResponse<Res>) => {
                 this.fetchData.assigned = res.data.payload.sign;
                 this.tree_data = res.data.payload.info;
@@ -296,7 +290,7 @@ export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
                     this.wordList.push({'vl': i, 'meta': '关键字'})
                 }
                 modules_order.changed_wordList(this.wordList.concat(res.data.payload.highlight))
-                res.data.payload.status === 1 ? this.export_data = true : this.export_data = false
+                this.latch.explore = Boolean(res.data.payload.status)
             })
     }
 }

@@ -6,7 +6,7 @@
           <Icon type="md-send"></Icon>
           历史工单执行记录
         </p>
-        <search text="工单编号" @refresh="currentPage"></search>
+        <search text="工单编号" @refresh="current_page"></search>
         <Row>
           <Col span="24">
             <Table
@@ -28,7 +28,7 @@
             <Page
                     :total="page_number"
                     show-elevator
-                    @on-change="currentPage"
+                    @on-change="current_page"
                     :page-size="20"
                     :current.sync="current"
             ></Page>
@@ -94,10 +94,6 @@
 
       url = `${this.$config.url}/audit/order/record`
 
-      currentPage(vl = 1) {
-        this.fetch_page(vl,this.url)
-      }
-
       openOrder(row: any) {
         module_init_args.fetch_order_item(row)
         this.$router.push({
@@ -106,7 +102,7 @@
       }
 
       mounted() {
-        this.currentPage()
+        this.current_page()
       }
     }
 </script>

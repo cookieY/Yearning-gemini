@@ -90,22 +90,22 @@
             <h3 slot="header" style="color:#2D8CF0">数据库连接信息</h3>
             <Form :label-width="100" label-position="right">
                 <FormItem label="环境">
-                    <Input v-model="edit_base_info.idc" readonly></Input>
+                    <Input v-model="edit_info.idc" readonly></Input>
                 </FormItem>
                 <FormItem label="连接名称:">
-                    <Input v-model="edit_base_info.source" readonly></Input>
+                    <Input v-model="edit_info.source" readonly></Input>
                 </FormItem>
                 <FormItem label="数据库地址:">
-                    <Input v-model="edit_base_info.ip"></Input>
+                    <Input v-model="edit_info.ip"></Input>
                 </FormItem>
                 <FormItem label="端口:">
-                    <InputNumber :min="0" v-model="edit_base_info.port"></InputNumber>
+                    <InputNumber :min="0" v-model="edit_info.port"></InputNumber>
                 </FormItem>
                 <FormItem label="用户名:">
-                    <Input v-model="edit_base_info.username"></Input>
+                    <Input v-model="edit_info.username"></Input>
                 </FormItem>
                 <FormItem label="密码:">
-                    <Input v-model="edit_base_info.password" type="password"></Input>
+                    <Input v-model="edit_info.password" type="password"></Input>
                 </FormItem>
             </Form>
         </Modal>
@@ -220,7 +220,7 @@
             ]
         };
         comList = [];
-        edit_base_info = {};
+        edit_info = {};
 
         test_db() {
             DBCreateOrEditApi({tp:'test',db:this.general})
@@ -241,7 +241,7 @@
 
         viewConnectionModal(row: DB) {
             this.is_open = true;
-            this.edit_base_info = Object.assign({}, row)
+            this.edit_info = Object.assign({}, row)
         }
 
         delete_db(vl: { source: string; }) {
@@ -259,7 +259,7 @@
         }
 
         modifyBase() {
-            let x = Object.assign({} as any, this.edit_base_info)
+            let x = Object.assign({} as any, this.edit_info)
             DBCreateOrEditApi({tp:'edit',db:x}).finally(() => this.current_page(this.current))
         }
 

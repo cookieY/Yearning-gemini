@@ -90,10 +90,6 @@
 
         url = `${this.$config.url}/common/list`
 
-        current_page(vl = 1) {
-            this.fetch_page(vl, this.url)
-        }
-
         openOrder(row: any) {
             module_init_args.fetch_order_item(row)
             this.$router.push({

@@ -41,7 +41,7 @@
             <h3 slot="header" style="color:#2D8CF0">权限组</h3>
             <Form :model="addAuthGroupForm" :label-width="120" label-position="top">
                 <FormItem label="权限组名称:">
-                    <Input v-model="addAuthGroupForm.group_name" :readonly="isReadOnly"></Input>
+                    <Input v-model="addAuthGroupForm.group_name" :readonly="is_open"></Input>
                 </FormItem>
                 <template>
                     <FormItem label="DDL数据源:">
@@ -150,8 +150,6 @@ export default class role_group extends Mixins(att_mixins, choose_mixins) {
         open: false
     };
 
-    isReadOnly = false;
-
     url = `${this.$config.url}/manage/group`
 
     saveAddGroup() {
@@ -173,14 +171,14 @@ export default class role_group extends Mixins(att_mixins, choose_mixins) {
 
     batchOpen() {
         this.addAuthGroupForm.open = true;
-        this.isReadOnly = false;
+        this.is_open = false;
         this.addAuthGroupForm.group_name = '';
         this.permission = this.$config.clearOption(this.permission);
         this.current_page();
     }
 
     editAuthGroup(vl: { name: string; permissions: any; }) {
-        this.isReadOnly = true;
+        this.is_open = true;
         this.addAuthGroupForm.open = true;
         this.addAuthGroupForm.group_name = vl.name;
         this.permission = Object.assign({}, vl.permissions)

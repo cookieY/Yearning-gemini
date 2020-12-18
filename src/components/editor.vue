@@ -73,7 +73,8 @@
                 vm.contentBackup = content
             })
             editor.on('changeSelection', function () {
-                vm.$emit("currentSelection", editor.session.getTextRange(editor.getSelectionRange()))
+                let content = editor.session.getTextRange(editor.getSelectionRange())
+                vm.$emit("currentSelection", content)
             })
         }
     }

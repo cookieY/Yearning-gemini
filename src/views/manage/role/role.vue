@@ -35,7 +35,6 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    // eslint-disable-next-line no-unused-vars
     import {rule, Rule} from "@/views/manage/role/role_args";
     import att_mixins from "@/mixins/basic";
     import {RolesCreateOrEditApi, RolesFetchApi} from "@/apis/rolesApis";

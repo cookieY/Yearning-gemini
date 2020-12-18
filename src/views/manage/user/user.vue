@@ -122,7 +122,7 @@ export default class user_info extends Mixins(att_mixins) {
         }
     };
 
-    valideuserinfoPassword = (rule: any, value: string, callback: any) => {
+    valid_Password = (rule: any, value: string, callback: any) => {
         if (value !== this.userinfo.password) {
             callback(new Error('两次输入密码不一致'))
         } else {
@@ -180,6 +180,7 @@ export default class user_info extends Mixins(att_mixins) {
         email: '',
         real_name: ''
     };
+
     userInfoValidate = {
         username: [{
             required: true,
@@ -214,7 +215,7 @@ export default class user_info extends Mixins(att_mixins) {
                 trigger: 'blur'
             },
             {
-                validator: this.valideuserinfoPassword,
+                validator: this.valid_Password,
                 trigger: 'blur'
             }
         ],

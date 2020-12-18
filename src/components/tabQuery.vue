@@ -1,8 +1,8 @@
 <template>
     <div>
-        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
+        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions" @currentSelection="selectionWord"></editor>
         <br>
-        <span>当前选择的库: {{ dataBase }}</span> <span class="margin-left-10">查询耗时: {{ queryTime }} ms</span>
+        <span>当前选择的库: {{ dataBase }}</span> <span class="margin-left-10">查询耗时: {{ results.time }} ms</span>
         <br>
         <br>
         <Button type="error" icon="md-trash" @click.native="clearObj()">清除</Button>
@@ -17,17 +17,17 @@
         >导出查询数据
         </Button>
         <Button type="warning" @click="beauty" class="margin-left-10">美化</Button>
-        <Button type="primary" icon="md-copy" @click="openSnippet" class="margin-left-10">snippet</Button>
+        <Button type="primary" icon="md-copy" @click="is_open = !is_open" class="margin-left-10">snippet</Button>
         <br>
         <br>
         <p>查询结果:</p>
-        <Table :columns="columnsName" :data="queryRes" highlight-row ref="table" border></Table>
+        <Table :columns="results.title" :data="queryRes" highlight-row ref="table" border></Table>
         <br>
-        <Page :total="total" show-total @on-change="splice_arr" ref="total" show-sizer
+        <Page :total="results.total" show-total @on-change="splice_arr" ref="total" show-sizer
               @on-page-size-change="ex_arr" :current.sync="current"></Page>
 
         <Modal
-            v-model="expireInfo"
+            v-model="loading"
             title="查询时限过期提醒"
             @on-ok="togo">
             <span>查询时限已过期,请重新申请查询时限。</span>
@@ -35,7 +35,7 @@
             <span>点击确定,返回查询申请页面。</span>
         </Modal>
 
-        <Drawer title="snippet" v-model="openDrawer" transfer>
+        <Drawer title="snippet" v-model="is_open" transfer>
             <Card style="height:150px" v-for="i in snippetList" :key="i.title" dis-hover>
                 <p slot="title">
                     <Icon type="md-copy"></Icon>
@@ -110,6 +110,14 @@ const export_csv = function exportCsv(this: any, params: any) {
         ExportCsv.download(params.filename, data)
     }
 }
+
+interface Results {
+    time: string
+    title: object[]
+    data: never[]
+    total: number
+}
+
 @Component({components: {editor}})
 export default class tabQuery extends Mixins(att_mixins) {
 
@@ -143,14 +151,9 @@ export default class tabQuery extends Mixins(att_mixins) {
     }
 
     private sql = ''
-    openDrawer = false
-    expireInfo = false
-    page_size = 10
-    columnsName: object[] = []
-    queryRes = []
-    allQueryData = []
-    total = 0
-    fieldColumns = [
+    private page_size = 10
+    private queryRes = []
+    private fieldColumns = [
         {
             title: '字段名',
             key: 'field'
@@ -181,22 +184,28 @@ export default class tabQuery extends Mixins(att_mixins) {
             key: 'comment'
         }
     ]
-    queryTime = ''
-    spin: any = {}
+    private results: Results = {
+        time: '',
+        title: [],
+        data: [],
+        total: 0
+    }
+
+    selectionWord(vl:string) {
+        if (vl.length > 5) {
+            this.sql = vl
+        }
+    }
 
     delSnippet(vl: any) {
         module_general.snippetRemoveTag(vl)
     }
 
-    copySnippet(vl: { text: any; }) {
+    copySnippet(vl: { text: string; }) {
         this.sql = vl.text
     }
 
-    openSnippet() {
-        this.openDrawer = true
-    }
-
-    beauty () {
+    beauty() {
         this.sql = sqlFormatter.format(this.sql)
     }
 
@@ -207,7 +216,7 @@ export default class tabQuery extends Mixins(att_mixins) {
         }
         CommonGetApis('table_info', {data_base: this.dataBase, table: this.table, source: this.source})
             .then((res: AxiosResponse<Res>) => {
-                this.columnsName = this.fieldColumns;
+                this.results.title = this.fieldColumns;
                 this.queryRes = res.data.payload
                 this.$Message.success({content: "已获取表结构!"})
             })
@@ -218,26 +227,24 @@ export default class tabQuery extends Mixins(att_mixins) {
         export_csv({
             filename: 'Yearning_Data',
             original: true,
-            data: this.allQueryData,
-            columns: this.columnsName
+            data: this.results.data,
+            columns: this.results.title
         })
     }
 
     splice_arr(page: number) {
-        this.queryRes = this.allQueryData.slice(page * this.page_size - this.page_size, page * this.page_size)
+        this.queryRes = this.results.data.slice(page * this.page_size - this.page_size, page * this.page_size)
     }
 
     ex_arr(n: number) {
         this.page_size = n;
-        this.queryRes = this.allQueryData.slice(this.current * n - n, this.current * n)
+        this.queryRes = this.results.data.slice(this.current * n - n, this.current * n)
     }
 
     clearObj() {
         this.sql = ''
-        this.queryRes = [];
-        this.columnsName = [];
         this.current = 1;
-        this.total = 0
+        this.results = {} as Results
     }
 
     togo() {
@@ -248,47 +255,29 @@ export default class tabQuery extends Mixins(att_mixins) {
 
     querySQL() {
         this.$Spin.show();
-        this.columnsName = [];
-        this.queryRes = [];
         CommonPostApis('results', {
             sql: this.sql,
             data_base: this.dataBase,
             source: this.source
         })
             .then((res: AxiosResponse<Res>) => {
-                if (res.data.payload.status) {
-                    this.expireInfo = true;
-                    this.$Spin.hide()
-                    return
-                }
-                if (res.data.payload.data === null) {
-                    this.columnsName = res.data.payload.title;
-                    this.allQueryData = [];
-                } else if (!res.data.payload.data) {
-                    this.$Message.error({
-                        content: res.data.payload,
-                        duration: 4,
-                        top: 50
-                    })
+                if (res.data.code !== 5555) {
+                    if (res.data.payload.status) {
+                        this.loading = true;
+                        return
+                    }
+                    this.results = res.data.payload
+                    this.queryRes = this.results.data.slice(0, this.page_size);
                 } else {
-                    this.queryTime = res.data.payload.time;
-                    this.columnsName = res.data.payload.title;
-                    this.allQueryData = res.data.payload.data;
-                    this.queryRes = this.allQueryData.slice(0, this.page_size);
-                    this.total = res.data.payload.data.length
+                    this.results = {} as Results
+                    this.queryRes = []
                 }
-
             })
             .finally(() => this.$Spin.hide())
-
     }
 }
 </script>
 
 <style scoped>
 @import "../styles/common.less";
-
-.demo-spin-icon-load {
-    animation: ani-demo-spin 1s linear infinite;
-}
 </style>

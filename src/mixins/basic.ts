@@ -9,7 +9,6 @@ import {FetchCommonGetApis} from "@/apis/commonApis";
 @Component({components: {}})
 export default class att_mixins extends Vue {
     public $config: any;
-    public $http: any;
     public $Spin: any;
     public url = ''
     public user = sessionStorage.getItem('user')

@@ -21,7 +21,6 @@ Vue.use(iView)
 Vue.use(particles);
 Vue.use(VueRouter);
 Vue.use(mavonEditor);
-Vue.prototype.$http = axios;
 /* eslint-disable no-new */
 const RouterConfig = {
     routes: MainRoute

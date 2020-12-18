@@ -63,12 +63,12 @@
                                 </Form>
                                 <template v-if="is_tpl_edit">
                                     <Button type="text" size="small" class="margin-left-10"
-                                            @click="position_adjustment(true)">向后移动
+                                            @click="position_adjustment(true)">向前移动
                                     </Button>
                                     <Button type="info" size="small" @click="edit_tpl_save" class="margin-left-10">保存
                                     </Button>
                                     <Button type="text" size="small" class="margin-left-10"
-                                            @click="position_adjustment(false)">向前移动
+                                            @click="position_adjustment(false)">向后移动
                                     </Button>
                                 </template>
                                 <Button type="primary" size="small" @click="add_step" v-else>添加阶段</Button>

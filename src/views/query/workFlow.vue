@@ -74,7 +74,7 @@
     export default class work_flow extends Mixins(query_mixin) {
         stepData = {
             title: 'Yearning SQL查询系统',
-            describe: `欢迎你！ ${sessionStorage.getItem('user')}`
+            describe: `欢迎你！ ${this.user}`
         };
         stepList1 = [
             {
@@ -110,7 +110,6 @@
                 trigger: 'change'
             }]
         };
-        item = {};
 
         fetchDiffSource(idc: string) {
             this.fetchSource(idc, 'query')
@@ -121,13 +120,7 @@
             let is_validate: any = this.$refs['formItem'];
             is_validate.validate((valid: boolean) => {
                 if (valid) {
-                    CommonPostApis('refer',{
-                        idc: this.sql_order.idc,
-                        source: this.sql_order.source,
-                        export: this.sql_order.export,
-                        assigned: this.sql_order.assigned,
-                        text: this.sql_order.text
-                    })
+                    CommonPostApis('refer',this.sql_order)
                         .then(() => {this.$router.push({name: 'query_apply'})})
                 }
             })
