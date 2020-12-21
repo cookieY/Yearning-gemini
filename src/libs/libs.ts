@@ -60,6 +60,7 @@ libs.concat = function (arr1: Array<string>, arr2: Array<string>) {
 };
 
 
-libs.version = "Community"
+libs.patch = "Community"
+libs.version = "v 2.3.2"
 
 export default libs

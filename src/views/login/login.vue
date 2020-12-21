@@ -33,7 +33,7 @@ a:visited {
         <nav class="navbar  bg-primary fixed-top navbar-transparent " color-on-scroll="400">
             <div class="container">
                 <div>
-                    <a class="navbar-brand"> {{ $t('version') }}: v2.3.2 Interstellar GA </a>
+                    <a class="navbar-brand"> {{ $t('version') }}: {{$config.version}} Interstellar GA </a>
                     <Button v-if="switchCode" type="default" ghost @click="register = true">
                         {{ $t('sign') }}
                     </Button

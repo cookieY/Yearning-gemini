@@ -115,5 +115,4 @@ render.sub_sql = (h: any, params: { row: { sql: string } }) => {
     }
     return h('span', text)
 }
-// @ts-ignore
 export default render
