@@ -56,7 +56,11 @@
             },
             handleUnlock() {
                 LoginApi(this.single,{username:sessionStorage.getItem('user'),password:this.password})
-                    .then(() => {
+                    .then( res => {
+                        if (res.data.code === 1301) {
+                            this.$Message.error("密码错误!")
+                            return
+                        }
                         this.avatorLeft = '0px'
                         this.inputLeft = '400px'
                         this.password = ''

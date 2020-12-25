@@ -84,6 +84,9 @@ export const loginRouter = {
 export const locking = {
     path: '/locking',
     name: 'locking',
+    meta: {
+        title: '锁屏'
+    },
     component: () => import('./components/locking-page.vue')
 };
 
