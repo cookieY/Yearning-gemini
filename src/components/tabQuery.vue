@@ -1,7 +1,6 @@
 <template>
     <div>
-        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"
-                @currentSelection="selectionWord"></editor>
+        <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
         <br>
         <span>当前选择的库: {{ dataBase }}</span> <span class="margin-left-10">查询耗时: {{ results.time }} ms</span>
         <br>
