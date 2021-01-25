@@ -158,7 +158,7 @@ export default class orderSQLs extends Mixins(order_mixin) {
     }
 
     merge() {
-        FetchCommonPutApis('merge',{sql:this.order_text})
+        FetchCommonPutApis('merge',{sqls:this.order_text})
             .then((res: AxiosResponse<Res>) => {
                 if (res.data.code === 1200) {
                     this.order_text = res.data.payload

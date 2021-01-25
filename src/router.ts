@@ -224,15 +224,6 @@ export const appRouter = [
                 component: () => import('./views/manage/group/roleGroup.vue')
             },
             {
-                path: '/manage/setting',
-                name: 'setting',
-                meta: {
-                    title: '设置'
-                },
-                icon: 'md-settings',
-                component: () => import('./views/manage/settings/setting.vue')
-            },
-            {
                 path: '/manage/flow',
                 name: 'flow',
                 meta: {
@@ -258,7 +249,16 @@ export const appRouter = [
                 },
                 icon: 'md-sync',
                 component: () => import('./views/manage/autoTask/autoTask.vue')
-            }
+            },
+            {
+                path: '/manage/setting',
+                name: 'setting',
+                meta: {
+                    title: '设置'
+                },
+                icon: 'md-settings',
+                component: () => import('./views/manage/settings/setting.vue')
+            },
         ]
     }
 ];

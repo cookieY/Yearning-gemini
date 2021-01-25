@@ -118,6 +118,14 @@ import {Res, TplOrder} from '@/interface';
 import {TplAllSourceFetchApi, TplCreateOrEditApi, TplFetchProfile} from "@/apis/tplApis";
 import {AxiosResponse} from "axios";
 
+const tpl_step: TplOrder[] = [
+    {
+        desc: '提交阶段',
+        auditor: ['提交人'],
+        type: 0,  // 0 audit 1 executor
+    }
+]
+
 @Component({})
 export default class FlowTemplate extends Mixins(att_mixins) {
     tpl_logo = require("../../../assets/tpl.svg")
@@ -126,13 +134,7 @@ export default class FlowTemplate extends Mixins(att_mixins) {
     is_tpl_edit = false
     c_idx = 0
     tmp_steps: TplOrder[] = []
-    tpl_step: TplOrder[] = [
-        {
-            desc: '提交阶段',
-            auditor: ['提交人'],
-            type: 0,  // 0 audit 1 executor
-        }
-    ]
+
     source = ''
 
     edit_tpl(tpl: TplOrder, idx: number) {
@@ -180,13 +182,15 @@ export default class FlowTemplate extends Mixins(att_mixins) {
             return
         }
         TplCreateOrEditApi({steps: this.tmp_steps, source: this.source})
-            .finally(() => this.is_open = !this.is_open)
+            .finally(() => {
+                this.is_open = !this.is_open
+            })
     }
 
     open_order(vl: string) {
         TplFetchProfile(vl)
             .then((res: AxiosResponse<Res>) => {
-                res.data.payload.steps === null ? this.tmp_steps = this.tpl_step : this.tmp_steps = res.data.payload.steps
+                res.data.payload.steps === null ? this.tmp_steps = JSON.parse(JSON.stringify(tpl_step)) : this.tmp_steps = res.data.payload.steps
             })
             .finally(() => {
                 this.is_open = !this.is_open
@@ -200,7 +204,7 @@ export default class FlowTemplate extends Mixins(att_mixins) {
         TplAllSourceFetchApi()
             .then((res: AxiosResponse<Res>) => {
                 for (let i of res.data.payload) {
-                    this.tpl_list.push({title: i.source, desc: `${i.source}数据源审核流程`})
+                    this.tpl_list.push({title: i, desc: `${i} 环境审核流程`})
                 }
             })
     }
@@ -221,6 +225,7 @@ export default class FlowTemplate extends Mixins(att_mixins) {
             return
         }
         this.tmp_steps.push({desc: this.tpl.desc, auditor: this.tpl.auditor, type: this.tpl.type})
+        this.tpl = {} as TplOrder
     }
 
     mounted() {

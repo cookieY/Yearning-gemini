@@ -1,4 +1,4 @@
-// const CompressionPlugin = require("compression-webpack-plugin")
+const TerserPlugin = require('terser-webpack-plugin')
 module.exports = {
     publicPath: '/front',
     assetsDir: './assets',
@@ -10,22 +10,13 @@ module.exports = {
         }
     },
     runtimeCompiler: true,
-    productionSourceMap:false,
+    productionSourceMap: false,
     devServer: {
         proxy: 'http://localhost:8000'
+    },
+    configureWebpack: (config)=>{
+        if(process.env.NODE_ENV === 'production'){
+            config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+        }
     }
-    // chainWebpack: config => {
-    //     config.module.rule('images')
-    //         .test(/\.(png|jpe?g|gif|svg)(\?.*)?$/)
-    //         .use('image-webpack-loader')
-    //         .loader('image-webpack-loader')
-    //         .options({bypassOnDebug: true});
-    //     config.plugin('compressionPlugin')
-    //         .use(new CompressionPlugin({
-    //             test: /\.js$|\.html$|.\css/, // 匹配文件名
-    //             threshold: 10240, // 对超过10k的数据压缩
-    //             deleteOriginalAssets: false // 不删除源文件
-    //         }))
-    // },
-
 };

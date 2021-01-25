@@ -28,11 +28,9 @@ export default class fetch_mixins extends Mixins(att) {
         if (idc) {
             FetchCommonGetApis('source', {idc: idc, tp: tp})
                 .then((res: AxiosResponse<Res>) => {
-                    if (res.data.payload.x === tp) {
+                    if (res.data.payload !== null) {
                         this.fetchData.source = res.data.payload.source;
                         this.fetchData.assigned = res.data.payload.assigned
-                    } else {
-                        this.$config.notice('非法劫持参数！')
                     }
                 })
         }
@@ -43,7 +41,6 @@ export default class fetch_mixins extends Mixins(att) {
             FetchCommonGetApis('base', {source: source})
                 .then((res: AxiosResponse<Res>) => {
                     this.fetchData.base = res.data.payload.results;
-                    this.fetchData.assigned = res.data.payload.admin
                     modules_order.changed_wordList(this.$config.concat(this.wordList, res.data.payload.highlight))
                 })
         }
