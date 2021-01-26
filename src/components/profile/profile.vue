@@ -5,11 +5,11 @@
                 <Row>
                     <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
                     <Col span="5" offset="14">
-                        <Button type="warning" v-if="order.status === 1" @click.native="open_form()">
+                        <Button type="warning" v-if="order.status === 1 || order.status === 4" @click.native="open_form()">
                             查看回滚语句
                         </Button>
                         <Button type="primary"
-                                v-if="order.status === 0 || order.status ===4 || order.status ===0"
+                                v-if="order.status === 0"
                                 @click.native="open_form()">重新提交
                         </Button>
                         <Poptip
@@ -84,7 +84,7 @@ export default class profile extends Mixins(detail_mixins) {
     user = sessionStorage.getItem('user')
 
     created() {
-        TplFetchProfile(this.order.source as string)
+        TplFetchProfile(this.order.idc as string)
             .then((res: AxiosResponse<Res>) => {
                 module_init_args.fetch_order_step(res.data.payload.steps)
             })

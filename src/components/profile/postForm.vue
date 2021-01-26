@@ -23,9 +23,9 @@
                 </FormItem>
                 <FormItem>
                     <Input v-model="sqls"
-                           v-if="this.order.status === 0 || this.order.status ===4"
+                           v-if="this.order.status === 0"
                            type="textarea"></Input>
-                    <template v-if="this.order.status ===1">
+                    <template v-if="this.order.status ===1 || this.order.status === 4">
                         <Table :columns="roll_column" :data="roll_data"
                                height="300"></Table>
                         <br>
