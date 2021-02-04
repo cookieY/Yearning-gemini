@@ -217,6 +217,7 @@ export default class tabQuery extends Mixins(att_mixins) {
         CommonGetApis('table_info', {data_base: this.dataBase, table: this.table, source: this.source})
             .then((res: AxiosResponse<Res>) => {
                 this.results.title = this.fieldColumns;
+
                 this.queryRes = res.data.payload
                 this.$Message.success({content: "已获取表结构!"})
             })
@@ -271,7 +272,7 @@ export default class tabQuery extends Mixins(att_mixins) {
                         this.queryRes = []
                         return;
                     }
-                    this.results = this.results = res.data.payload
+                    this.results  = res.data.payload
                     this.queryRes = this.results.data.slice(0, this.page_size);
                 }
             })

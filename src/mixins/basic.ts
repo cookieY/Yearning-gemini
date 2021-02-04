@@ -1,7 +1,7 @@
 import {Component, Vue} from "vue-property-decorator";
-import {test_results, High_light, Connection_list, Res} from "@/interface";
+import {test_results, Res} from "@/interface";
 import modules_order from "@/store/modules/order";
-import modules_search, {Finder} from "@/store/modules/search";
+import modules_search from "@/store/modules/search";
 import {AxiosResponse} from "axios";
 import {request} from "@/libs/requests";
 import {FetchCommonGetApis} from "@/apis/commonApis";
