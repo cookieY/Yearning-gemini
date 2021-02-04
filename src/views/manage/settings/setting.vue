@@ -16,6 +16,10 @@
                                         <Input placeholder="支持钉钉/企业微信(赞助版本) webhook机器人"
                                                v-model="message.web_hook"></Input>
                                     </FormItem>
+                                    <FormItem label="webhook Secret Key:">
+                                        <Input placeholder="钉钉hook secret key"
+                                               v-model="message.key"></Input>
+                                    </FormItem>
                                     <FormItem label="邮件SMTP服务地址:">
                                         <Input placeholder="STMP服务 地址" v-model="message.host"></Input>
                                     </FormItem>
