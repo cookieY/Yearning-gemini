@@ -18,7 +18,7 @@
   "sponsor_3": "定制化需求",
   "sponsor_4": "企业可根据实际需要向Yearning作者寻求定制功能服务。",
   "sponsor_5": "联系方式",
-  "sponsor_6": "电邮：supermancookie@outlook.com",
+  "sponsor_6": "电邮：henry@yearning.io",
   "sponsor_7": "QQ: 834958386",
   "sign_up_validate": {
     "username": "请输入用户名",
@@ -64,7 +64,7 @@
     "edit_permissions": "修改邮箱/真实姓名",
     "profile": "个人信息",
     "order_count": "工单提交统计",
-    "db_top": "高频库/top 5",
+    "db_top": "高频库/top 10",
     "axis": {
       "ddl": "DDL工单提交数",
       "dml": "DML工单提交数",

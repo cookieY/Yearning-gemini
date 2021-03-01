@@ -61,6 +61,6 @@ libs.concat = function (arr1: Array<string>, arr2: Array<string>) {
 
 
 libs.patch = "Community"
-libs.version = "v 2.3.2"
+libs.version = "v 2.3.2 Neptune"
 
 export default libs

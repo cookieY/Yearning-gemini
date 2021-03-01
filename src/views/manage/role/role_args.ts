@@ -20,7 +20,7 @@ const rule: Rule[] = [
     },
     {
         name: 'DDLCheckColumnNullable',
-        desc: '强制非text,blob,json,timestamp类型字段必须为NOT NULL',
+        desc: '强制非timestamp类型字段必须为NOT NULL',
         type: 'DDL',
         tp: 0
     },
