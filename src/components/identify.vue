@@ -1,6 +1,6 @@
 <template>
     <div class="s-canvas">
-        <canvas id="s-canvas" :width="contentWidth" :height="contentHeight"></canvas>
+        <canvas id="s-canvas" :width="contentWidth" :height="contentHeight" style="opacity:0.6;border-radius:3px;margin-top: 1px"></canvas>
     </div>
 </template>
 <script>
@@ -57,7 +57,7 @@
             },
             contentHeight: {
                 type: Number,
-                default: 38
+                default: 33
             }
         },
         data() {
@@ -94,7 +94,7 @@
                 let ctx = canvas.getContext('2d')
                 ctx.textBaseline = 'bottom'
                 // 绘制背景
-                ctx.fillStyle = '#8f7979'
+                ctx.fillStyle = '#FFFFFF'
                 ctx.fillRect(0, 0, this.contentWidth, this.contentHeight)
                 // 绘制文字
                 for (let i = 0; i < this.identifyCode.length; i++) {

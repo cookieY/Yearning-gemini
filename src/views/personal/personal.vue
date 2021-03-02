@@ -1,26 +1,22 @@
 <template>
     <div>
-        <div>
-            <Form ref="userForm" label-position="right">
-                <FormItem :label="$t('general.name')" prop="name">
-                    <div>
-                        <span>{{ userForm.username }}</span>
-                    </div>
-                </FormItem>
-                <FormItem :label="$t('general.real')" prop="name">
-                    <div>
-                        <span>{{ userForm.real_name }}</span>
-                    </div>
-                </FormItem>
-                <FormItem :label="$t('general.department')">
-                    <span>{{ userForm.department }}</span>
-                </FormItem>
-                <FormItem :label="$t('general.role')">
-                    <span>{{ userForm.rule }}</span>
-                </FormItem>
-                <FormItem :label="$t('general.mail')">
-                    <span>{{ userForm.email }}</span>
-                </FormItem>
+        <Form ref="userForm" label-position="right" >
+            <FormItem :label="$t('general.name')" >
+                    <span>{{ userForm.username }}</span>
+            </FormItem>
+            <FormItem :label="$t('general.real')" >
+                    <span>{{ userForm.real_name }}</span>
+            </FormItem>
+            <FormItem :label="$t('general.department')">
+                <span>{{ userForm.department }}</span>
+            </FormItem>
+            <FormItem :label="$t('general.role')">
+                <span>{{ userForm.rule }}</span>
+            </FormItem>
+            <FormItem :label="$t('general.mail')">
+                <span>{{ userForm.email }}</span>
+            </FormItem>
+            <FormItem>
                 <Button type="warning" size="small" @click="show_edit_password">{{ $t('general.change_password') }}
                 </Button>
                 <Button type="primary" size="small" @click="openMailChange" class="margin-left-10">
@@ -29,8 +25,8 @@
                 <Button type="success" size="small" @click="is_open = true" class="margin-left-10">
                     {{ $t('general.show_permissions') }}
                 </Button>
-            </Form>
-        </div>
+            </FormItem>
+        </Form>
 
         <Modal v-model="editEmailModal" :width="500" @on-ok="saveEmail">
             <h3 slot="header" style="color:#2D8CF0">{{ $t('dash.edit_permissions') }}</h3>
@@ -63,7 +59,7 @@ import {Res} from "@/interface";
 import {DashPutApi} from "@/apis/dashApis";
 
 @Component({components: {edit_password, edit_rule}})
-export default class personal extends Mixins(att_mixins) {
+export default class Personal extends Mixins(att_mixins) {
     editEmailModal = false;
     editEmailForm = {
         email: '',
@@ -115,7 +111,3 @@ export default class personal extends Mixins(att_mixins) {
 }
 </script>
 
-<style lang="less">
-@import '../../styles/own-space.less';
-@import '../../styles/common.less';
-</style>

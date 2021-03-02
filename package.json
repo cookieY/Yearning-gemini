@@ -11,7 +11,6 @@
     "core-js": "^2.6.5",
     "countup": "^1.8.2",
     "mavon-editor": "^2.7.7",
-    "view-design": "^4.4.0",
     "vue": "^2.6.10",
     "vuex-class": "^0.3.2"
   },
@@ -41,6 +40,7 @@
     "sql-formatter": "^2.3.3",
     "terser-webpack-plugin": "^5.1.1",
     "typescript": "^3.8.3",
+    "view-design": "^4.4.0",
     "vue-i18n": "^8.18.2",
     "vue-property-decorator": "^8.4.1",
     "vue-router": "^3.0.7",

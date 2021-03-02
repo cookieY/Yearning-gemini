@@ -1,153 +1,158 @@
-<style lang="css" scoped>
-@import "../../styles/bootstrap.min.css";
-@import "../../styles/login.css";
+<style lang="less" scoped>
 
-.div-relative {
-    position: relative;
+.footer {
+    position: absolute;
+    bottom: 0;
     width: 100%;
-    height: 100%;
+    height: 40px; /*脚部的高度*/
+    clear: both;
+    margin-left: 6rem;
+    z-index: 999;
+}
+
+.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 40px; /*脚部的高度*/
+    clear: both;
+    z-index: 999;
+    margin-left: 6rem;
+    margin-top: 10px;
+}
+
+.header a {
+    color: #FFFFFF;
+}
+
+.homepage-hero-module,
+.video-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.video-container .poster img,
+.video-container video {
+    z-index: 0;
+    position: absolute;
+}
+
+.video-container .filter {
+    z-index: 1;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .div-a {
     position: absolute;
-    z-index: 1000;
     width: 100%;
-}
-
-li {
-    float: left;
-    list-style-type: none;
-}
-
-a:link {
-    color: #FFFFFF;
-}
-
-a:visited {
-    color: #FFFFFF;
 }
 </style>
 
 <template>
-    <div id="band" class="div-relative ">
-        <nav class="navbar  bg-primary fixed-top navbar-transparent " color-on-scroll="400">
-            <div class="container">
-                <div>
-                    <a class="navbar-brand"> {{ $t('version') }}: {{$config.version}} </a>
-                    <Button v-if="switchCode" type="default" ghost @click="register = true">
+    <div>
+        <div class="header">
+            <Row type="flex" justify="start" align="middle">
+                <Col span="1">
+                    <a href="https://github.com/cookieY/Yearning" target="_blank">
+                        <Icon type="logo-github" size="30"/>
+                    </a>
+                </Col>
+                <Col span="2"><a class="navbar-brand"> {{ $t('version') }}: {{ $config.version }} </a></Col>
+                <Col span="1">
+                    <Button v-if="switchCode" type="default" ghost @click="register = true" size="small"
+                            style="z-index: 9999">
                         {{ $t('sign') }}
                     </Button
                     >
-                </div>
-                <div>
-                    <ul>
-                        <li>
-                            <Button type="default" @click="sponsorship = true" ghost>{{
-                                    $t('sponsor')
-                                }}
-                            </Button>
-                        </li>
-                        <li>
-                            <div style="margin-left: 50%">
-                                <a href="https://github.com/cookieY/Yearning" target="_blank">
-                                    <Icon type="logo-github" size="30"/>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <div class="page-header div-a" filter-color="orange">
-            <div class="page-header-image"></div>
-            <div class="container">
-                <div class="content-center">
-                    <div class="card">
-                        <form style="width: 45%;margin-left: 25%">
-                            <img src="../../assets/logo.png" width="80%"/>
-                            <div class="input-group form-group-no-border input-lg">
-                                <span class="input-group-addon">
-                                    <Icon type="md-person"/>
-                                </span>
-                                <input
-                                    type="text"
-                                    class="form-control"
-                                    :placeholder="$t('account')"
-                                    v-model="formInline.user"
-                                />
-                            </div>
-                            <div class="input-group form-group-no-border input-lg">
-                                <span class="input-group-addon">
-                                    <Icon type="md-key"/>
-                                </span>
-                                <input
-                                    type="password"
-                                    :placeholder="$t('password')"
-                                    class="form-control"
-                                    v-model="formInline.password"
-                                />
-                            </div>
-                            <div class="input-group form-group-no-border input-lg">
-                                <span class="input-group-addon">
-                                    <Icon type="md-key"/>
-                                </span>
-                                <input
-                                    :placeholder="$t('pin')"
-                                    class="form-control"
-                                    v-model="formInline.code"
-                                    @keyup.enter="signIn"
-                                />
-                                <SIdentify
-                                    @identifyCode="checkCode"
-                                    class="input-group-addon"
-                                    :replace="replace"
-                                ></SIdentify>
-                            </div>
-                            <div class="footer text-center">
-                                <Checkbox v-model="is_open"> {{ $t('ldap') }}</Checkbox>
-                                <a
-                                    class="btn btn-primary btn-round btn-lg btn-block"
-                                    @click="signIn()"
-                                >
-                                    {{ $t('login') }}</a
-                                >
-                            </div>
-                        </form>
+                </Col>
+                <Col span="1">
+                    <Button type="default" @click="sponsorship = true" ghost size="small">
+                        {{ $t('sponsor') }}
+                    </Button>
+                </Col>
+            </Row>
+        </div>
+        <div style="z-index: 100" class="div-a">
+            <Row type="flex">
+                <Col span="3" offset="2">
+                    <div style="margin-top: 140%;width: 300px;">
+                        <Form label-position="right">
+                            <FormItem>
+                                <img src="../../assets/logo.png" width="300px">
+                            </FormItem>
+                            <FormItem>
+                                <Input style="opacity: 0.6" :placeholder="$t('account')"
+                                       v-model="formInline.user"></Input>
+                            </FormItem>
+                            <FormItem>
+                                <Input style="opacity: 0.6" :placeholder="$t('password')" v-model="formInline.password"
+                                       type="password"></Input>
+                            </FormItem>
+                            <FormItem>
+                                <Row>
+                                    <Col span="12">
+                                        <Input style="opacity: 0.6" :placeholder="$t('pin')"
+                                               v-model="formInline.code" @keyup.enter.native="signIn"></Input>
+                                    </Col>
+                                    <Col span="12">
+                                        <SIdentify
+                                            @identifyCode="checkCode"
+                                            :replace="replace"
+                                        ></SIdentify>
+                                    </Col>
+                                </Row>
+                            </FormItem>
+                            <FormItem>
+                                <Checkbox v-model="is_open"><span style="color: #FFFFFF;">{{ $t('ldap') }}</span>
+                                </Checkbox>
+                            </FormItem>
+                            <FormItem>
+                                <Button long type="primary" ghost @click="signIn"> 登录</Button>
+                            </FormItem>
+                        </Form>
                     </div>
-                </div>
-            </div>
-            <footer class="footer">
-                <div class="container">
-                    <nav>
-                        <ul>
-                            <li>
-                                <Tooltip content="yearning.io" placement="top-start">
-                                    <a class="nav-link" href="https://yearning.io">
-                                        {{ $t('about') }}
-                                    </a>
-                                </Tooltip>
-                            </li>
-                            <li>
-                                <Tooltip :content="$t('community_addr')" placement="top-start">
-                                    <span class="nav-link">
+                </Col>
+            </Row>
+        </div>
+        <div class="footer">
+            <Row type="flex" justify="start" align="bottom" style="z-index: 999">
+                <Col span="2">
+                    <Tooltip content="yearning.io" placement="top-start">
+                        <a href="https://yearning.io" style="color: #FFFFFF">
+                            {{ $t('about') }}
+                        </a>
+                    </Tooltip>
+                </Col>
+                <Col span="2">
+                    <Tooltip :content="$t('community_addr')" placement="top-start">
+                                    <span style="color: #FFFFFF">
                                         {{ $t('community') }}
                                     </span>
-                                </Tooltip>
-                            </li>
-                            <li>
-                                <a
-                                    href="https://www.gnu.org/licenses/agpl-3.0.en.html"
-                                    class="nav-link"
-                                >
-                                    {{ $t('license') }}
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                    <div class="copyright">{{ $t('tips') }}</div>
+                    </Tooltip>
+                </Col>
+                <Col span="2">
+                    <a
+                        href="https://www.gnu.org/licenses/agpl-3.0.en.html" style="color: #FFFFFF"
+                    >
+                        {{ $t('license') }}
+                    </a>
+                </Col>
+                <Col span="18">
+                    <div style="color: #FFFFFF">{{ $t('tips') }}</div>
+                </Col>
+            </Row>
+        </div>
+        <div class="homepage-hero-module">
+            <div class="video-container">
+                <div :style="fixStyle" class="filter">
+
                 </div>
-            </footer>
+                <video :style="fixStyle" autoplay loop class="fillWidth" v-on:canplay="canplay" muted>
+                    <source src="../../assets/groud.mp4" type="video/mp4"/>
+                </video>
+            </div>
         </div>
 
         <Modal
@@ -202,7 +207,9 @@ a:visited {
             <img height="300" width="300" src="../../assets/alipay.jpg"/>
             <img height="300" width="300" src="../../assets/wechat.jpg"/>
         </Modal>
+
     </div>
+
 </template>
 <script lang="ts">
 import SIdentify from '@/components/identify.vue'
@@ -357,9 +364,45 @@ export default class login extends Mixins(att_mixins) {
             })
     }
 
+    vedioCanPlay = false
+    fixStyle = '' as any
+
+    canplay() {
+        this.vedioCanPlay = true
+    }
+
+    mask() {
+        const windowWidth = document.body.clientWidth
+        const windowHeight = document.body.clientHeight
+        const windowAspectRatio = windowHeight / windowWidth
+        let videoWidth
+        let videoHeight
+        if (windowAspectRatio < 0.5625) {
+            videoWidth = windowWidth
+            videoHeight = videoWidth * 0.5625
+            this.fixStyle = {
+                height: windowWidth * 0.5625 + 'px',
+                width: windowWidth + 'px',
+                'margin-bottom': (windowHeight - videoHeight) / 2 + 'px',
+                'margin-left': 'initial'
+            }
+        } else {
+            videoHeight = windowHeight
+            videoWidth = videoHeight / 0.5625
+            this.fixStyle = {
+                height: windowHeight + 'px',
+                width: windowHeight / 0.5625 + 'px',
+                'margin-left': (windowWidth - videoWidth) / 2 + 'px',
+                'margin-bottom': 'initial'
+            }
+        }
+    }
+
     mounted() {
-        let windows: any = window;
-        windows.particlesJS.load('band', `${process.env.BASE_URL}particlesjs-config.json`);
+        window.onresize = () => {
+            this.mask()
+        }
+        this.mask()
         request.get(`/fetch`)
             .then((res: AxiosResponse<Res>) => {
                 this.switchCode = res.data.payload.reg;

@@ -1,5 +1,4 @@
 <style lang="less">
-@import "../../styles/home.less";
 @import "../../styles/common.less";
 </style>
 <template>
@@ -95,7 +94,7 @@
                         <Icon type="md-person" size="24"/>
                         {{ $t('dash.profile') }}
                     </p>
-                    <myself></myself>
+                    <Personal></Personal>
                 </Card>
             </Col>
             <Col span="17" >
@@ -123,7 +122,7 @@
 
 <script lang="ts">
 import info_card from '@/components/inforCard.vue'
-import myself from '@/views/personal/personal.vue'
+import Personal from '@/views/personal/personal.vue'
 import {Component, Mixins} from 'vue-property-decorator'
 import att_mixins from "@/mixins/basic";
 import {AxiosResponse} from "axios";
@@ -132,7 +131,7 @@ import {DashGetApi} from "@/apis/dashApis";
 import OrderChart from "@/views/home/orderChart.vue"
 import SourcePie from "@/views/home/sourcePie.vue";
 
-@Component({components: {SourcePie, info_card, myself, OrderChart}})
+@Component({components: {SourcePie, info_card, Personal, OrderChart}})
 export default class home extends Mixins(att_mixins) {
     count = {
         createUser: 0,
