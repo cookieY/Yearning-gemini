@@ -4,8 +4,10 @@
             <MenuItem name="main">
                 <Row>
                     <Col span="12"><img src="../assets/logo_s.png" width="90%"></Col>
-                    <Col span="12" style="font-weight: bold;font-size: 20px;padding-top: 20px;">Yearning</Col>
-                    <a style="text-align: center">{{ $config.patch }}</a>
+                    <Col span="12">
+                        <p  style="font-weight: bold;font-size: 20px;padding-top: 20px;">Yearning</p>
+                        <a style="text-align: center">{{ $config.patch }}</a>
+                    </Col>
                 </Row>
             </MenuItem>
             <MenuItem name="home_index">
