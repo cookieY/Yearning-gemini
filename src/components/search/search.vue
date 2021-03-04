@@ -19,10 +19,10 @@
 
 <script lang="ts">
 import {Component, Mixins, Prop} from "vue-property-decorator";
-import att_mixins from "../../mixins/basic";
+import Basic from "../../mixins/basic";
 import modules_search from "@/store/modules/search";
 @Component({components: {}})
-export default class search extends Mixins(att_mixins) {
+export default class search extends Mixins(Basic) {
     @Prop({
         type: Boolean,
         required: false,

@@ -2,10 +2,10 @@ import {Component, Mixins} from "vue-property-decorator";
 import {CommonDeleteApis, CommonPutApis} from "@/apis/queryApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
-import fetch_mixins from "@/mixins/fetch_mixin";
+import FetchMixins from "@/mixins/fetch";
 
 @Component({components: {}})
-export default class audit_mixins extends Mixins(fetch_mixins) {
+export default class QueryMixin extends Mixins(FetchMixins) {
 
     export_list = false;
 

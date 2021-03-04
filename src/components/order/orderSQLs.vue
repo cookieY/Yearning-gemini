@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import order_mixin from "@/mixins/order_mixin";
+import FetchMixins from "@/mixins/order";
 import {Component, Mixins} from "vue-property-decorator";
 import editor from "@/components/editor.vue";
 import orderConfirm from "@/components/order/orderConfirm.vue";
@@ -70,7 +70,7 @@ import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 
 @Component({components: {editor, orderConfirm}})
-export default class orderSQLs extends Mixins(order_mixin) {
+export default class orderSQLs extends Mixins(FetchMixins) {
     field_columns = [
         {
             title: '字段名',

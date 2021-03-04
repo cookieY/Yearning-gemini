@@ -19,13 +19,13 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import {FetchAuditQueryProfile} from "@/apis/queryApis";
     import {AxiosResponse} from "axios";
     import {Res} from "@/interface";
 
     @Component({components: {}})
-    export default class query_profile extends Mixins(att_mixins) {
+    export default class query_profile extends Mixins(Basic) {
         columns = [
             {
                 title: '序号:',

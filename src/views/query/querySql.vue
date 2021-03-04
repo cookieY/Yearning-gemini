@@ -121,8 +121,8 @@
 import tabQuery from '@/components/tabQuery.vue'
 import editor from "@/components/editor.vue";
 import {Component, Mixins, Prop} from "vue-property-decorator";
-import fetch_mixin from "@/mixins/fetch_mixin";
-import order_mixin from "@/mixins/order_mixin";
+import fetch_mixin from "@/mixins/fetch";
+import FetchMixins from "@/mixins/order";
 import modules_order from "@/store/modules/order";
 import {FetchCommonGetApis, FetchCommonPutApis, PostOrder} from "@/apis/commonApis";
 import {CommonDeleteApis, CommonGetApis, CommonPutApis} from "@/apis/queryApis";
@@ -130,7 +130,7 @@ import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 
 @Component({components: {editor, tabQuery}})
-export default class query_sql extends Mixins(fetch_mixin, order_mixin) {
+export default class query_sql extends Mixins(fetch_mixin, FetchMixins) {
     private slider2 = 19;
     private currentTab = '查询1';
     private testRes = [] as any;

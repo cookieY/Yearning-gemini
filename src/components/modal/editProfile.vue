@@ -34,11 +34,11 @@
 
 <script lang="ts">
 import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import {UserCreateOrEditApi} from "@/apis/userApis";
 
 @Component({components: {}})
-export default class edit_info extends Mixins(att_mixins) {
+export default class EditProfile extends Mixins(Basic) {
 
     edit: any = {}
 

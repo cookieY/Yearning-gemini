@@ -41,75 +41,23 @@
             <h3 slot="header" style="color:#2D8CF0">权限组</h3>
             <Form :model="addAuthGroupForm" :label-width="120" label-position="top">
                 <FormItem label="权限组名称:">
-                    <Input v-model="addAuthGroupForm.group_name" :readonly="is_open"></Input>
+                    <Input v-model="addAuthGroupForm.group_name" :readonly="disable"></Input>
                 </FormItem>
-                <template>
-                    <FormItem label="DDL数据源:">
-                        <div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
-                            <Checkbox
-                                :indeterminate="indeterminate.ddl_source"
-                                :value="checkAll.ddl_source"
-                                @click.prevent.native="check_all_args('ddl_source', 'connection')">全选
-                            </Checkbox>
-                        </div>
-                        <CheckboxGroup v-model="permission.ddl_source" @on-change="checkAllWithDDL">
-                            <Checkbox v-for="i in connectionList.connection" :label="i.source" :key="i.source">
-                                <Tag color="purple" :key="i.source"> {{ i.source }}</Tag>
-                            </Checkbox>
-                        </CheckboxGroup>
-                    </FormItem>
-                </template>
-                <hr style="height:1px;border:none;border-top:1px dashed #dddee1;"/>
-                <br>
-                <template>
-                    <FormItem label="DML数据源:">
-                        <div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
-                            <Checkbox
-                                :indeterminate="indeterminate.dml_source"
-                                :value="checkAll.dml_source"
-                                @click.prevent.native="check_all_args('dml_source',  'connection')">全选
-                            </Checkbox>
-                        </div>
-                        <CheckboxGroup v-model="permission.dml_source" @on-change="checkAllWithDML">
-                            <Checkbox v-for="i in connectionList.connection" :label="i.source" :key="i.source">
-                                <Tag color="geekblue" :key="i.source"> {{ i.source }}</Tag>
-                            </Checkbox>
-                        </CheckboxGroup>
-                    </FormItem>
-                </template>
-                <hr style="height:1px;border:none;border-top:1px dashed #dddee1;"/>
-                <br>
-                <template>
-                    <FormItem label="查询数据源:">
-                        <div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
-                            <Checkbox
-                                :indeterminate="indeterminate.query_source"
-                                :value="checkAll.query_source"
-                                @click.prevent.native="check_all_args('query_source','query')">全选
-                            </Checkbox>
-                        </div>
-                        <CheckboxGroup v-model="permission.query_source" @on-change="checkAllWithQuery">
-                            <Checkbox v-for="i in connectionList.query" :label="i.source" :key="i.source">
-                                <Tag color="blue" :key="i.source"> {{ i.source }}</Tag>
-                            </Checkbox>
-                        </CheckboxGroup>
-                    </FormItem>
-                </template>
-                <hr style="height:1px;border:none;border-top:1px dashed #dddee1;"/>
-                <br>
+                <FormItem label="DDL数据源:">
+                    <AllCheck :source-list="connectionList.connection" @onChange="isDDLSelected"
+                              :origin="permission.ddl_source" color="purple"></AllCheck>
+                </FormItem>
+                <FormItem label="DML数据源:">
+                    <AllCheck :source-list="connectionList.connection" @onChange="isDMLSelected"
+                              :origin="permission.dml_source" color="geekblue"></AllCheck>
+                </FormItem>
+                <FormItem label="查询数据源:">
+                    <AllCheck :source-list="connectionList.query" @onChange="isQuerySelected"
+                              :origin="permission.query_source" color="blue"></AllCheck>
+                </FormItem>
                 <FormItem label="查询审核人:">
-                    <div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
-                        <Checkbox
-                            :indeterminate="indeterminate.auditor"
-                            :value="checkAll.auditor"
-                            @click.prevent.native="check_all_args('auditor', 'person')">全选
-                        </Checkbox>
-                    </div>
-                    <CheckboxGroup v-model="permission.auditor" @on-change="checkAllWithPerson">
-                        <Checkbox v-for="i in connectionList.person" :label="i.username" :key="i.username">
-                            <Tag color="cyan" :key="i.username"> {{ i.username }}</Tag>
-                        </Checkbox>
-                    </CheckboxGroup>
+                    <AllCheck :source-list="connectionList.person" @onChange="isAuditorSelected"
+                              :origin="permission.auditor" color="cyan"></AllCheck>
                 </FormItem>
             </Form>
         </Modal>
@@ -118,14 +66,15 @@
 
 <script lang="ts">
 import {Mixins, Component} from "vue-property-decorator";
-import att_mixins from "@/mixins/basic";
-import choose_mixins from "@/mixins/choose_mixins";
+import Basic from "@/mixins/basic";
 import search from "@/components/search/search.vue";
 import {GroupCreateOrEditApi, GroupDeleteApi} from "@/apis/groupApis";
+import AllCheck from "@/views/manage/group/allCheck.vue";
+import {Permission} from "@/interface";
 
-@Component({components: {search}})
-export default class role_group extends Mixins(att_mixins, choose_mixins) {
-    columns = [
+@Component({components: {search, AllCheck}})
+export default class RoleGroup extends Mixins(Basic) {
+    public columns = [
         {
             title: 'ID',
             key: 'id',
@@ -144,13 +93,18 @@ export default class role_group extends Mixins(att_mixins, choose_mixins) {
             slot: 'action'
         }
     ];
-
-    addAuthGroupForm = {
+    private addAuthGroupForm = {
         group_name: '',
         open: false
     };
-
-    url = `${this.$config.url}/manage/group`
+    public url = `${this.$config.url}/manage/group`
+    private disable = false
+    private permission: Permission = {
+        ddl_source: [],
+        dml_source: [],
+        query_source: [],
+        auditor: []
+    };
 
     saveAddGroup() {
         if (this.addAuthGroupForm.group_name === '') {
@@ -168,26 +122,31 @@ export default class role_group extends Mixins(att_mixins, choose_mixins) {
         GroupDeleteApi(vl.name)
             .finally(() => this.current_page())
     }
-
     batchOpen() {
         this.addAuthGroupForm.open = true;
-        this.is_open = false;
+        this.disable = false;
         this.addAuthGroupForm.group_name = '';
         this.permission = this.$config.clearOption(this.permission);
         this.current_page();
     }
-
     editAuthGroup(vl: { name: string; permissions: any; }) {
-        this.is_open = true;
+        this.disable = true;
         this.addAuthGroupForm.open = true;
         this.addAuthGroupForm.group_name = vl.name;
         this.permission = Object.assign({}, vl.permissions)
-        this.checkAllWithQuery(this.permission.query_source)
-        this.checkAllWithDDL(this.permission.ddl_source)
-        this.checkAllWithDML(this.permission.dml_source)
-        this.checkAllWithPerson(this.permission.auditor)
     }
-
+    isDDLSelected(vl: any) {
+        this.permission.ddl_source = vl
+    }
+    isDMLSelected(vl: any) {
+        this.permission.dml_source = vl
+    }
+    isQuerySelected(vl: any) {
+        this.permission.query_source = vl
+    }
+    isAuditorSelected(vl: any) {
+        this.permission.auditor = vl
+    }
     mounted() {
         this.current_page()
     }

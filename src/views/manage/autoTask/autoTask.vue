@@ -90,7 +90,7 @@
 
 <script lang="ts">
     import {Mixins, Component} from "vue-property-decorator";
-    import fetch_mixins from "@/mixins/fetch_mixin";
+    import FetchMixins from "@/mixins/fetch";
     import {
         AutoTaskCreateOrEditApi, AutoTaskDeleteApi,
         AutoTaskFetchApi,
@@ -100,7 +100,7 @@
     import {Res} from "@/interface";
 
     @Component
-    export default class autoTask extends Mixins(fetch_mixins) {
+    export default class autoTask extends Mixins(FetchMixins) {
         fetchList = {
             source: [],
             tp: [

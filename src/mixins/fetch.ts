@@ -1,13 +1,12 @@
 import {Component, Mixins} from "vue-property-decorator";
-import att from "@/mixins/basic";
-import {Fetch_data, High_light, Res} from "@/interface";
-import axios, {AxiosResponse} from "axios";
-import sqlFormatter from "sql-formatter";
+import Basic from "@/mixins/basic";
+import {Fetch_data, Res} from "@/interface";
+import {AxiosResponse} from "axios";
 import modules_order from "@/store/modules/order";
 import {CommonFetch, FetchCommonGetApis} from "@/apis/commonApis";
 
 @Component({components: {}})
-export default class fetch_mixins extends Mixins(att) {
+export default class FetchMixins extends Mixins(Basic) {
     fetchData: Fetch_data = {
         idc: [],
         source: [],

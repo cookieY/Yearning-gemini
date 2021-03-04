@@ -1,6 +1,6 @@
 <template>
     <Modal v-model="is_open" :width="800" @on-cancel="cancel" @on-ok="is_post">
-        <h3 slot="header" style="color:#2D8CF0">用户权限</h3>
+        <h3 slot="header" >用户权限</h3>
         <Form :label-width="120" label-position="top">
             <FormItem label="用户名">
                 <Input v-model="rule.username" readonly></Input>
@@ -10,32 +10,18 @@
                     <Option v-for=" i in rule.list" :key="i.name" :value="i.name" :label="i.name"></Option>
                 </Select>
             </FormItem>
-            <template>
-                <template>
-                    <FormItem label="DDL数据源:">
-                        <Tag color="purple" v-for="i in permission.ddl_source" :key="i"> {{ i }}</Tag>
-                    </FormItem>
-                </template>
-                <hr style="height:1px;border:none;border-top:1px dashed #dddee1;"/>
-                <br>
-                <template>
-                    <FormItem label="DML数据源:">
-                        <Tag color="geekblue" v-for="i in permission.dml_source" :key="i"> {{ i }}</Tag>
-                    </FormItem>
-                </template>
-                <hr style="height:1px;border:none;border-top:1px dashed #dddee1;"/>
-                <br>
-                <template>
-                    <FormItem label="查询数据源:">
-                        <Tag color="blue" v-for="i in permission.query_source" :key="i"> {{ i }}</Tag>
-                    </FormItem>
-                </template>
-                <hr style="height:1px;border:none;border-top:1px dashed #dddee1;"/>
-                <br>
-                <FormItem label="选择查询审核人:">
-                    <Tag color="cyan" v-for="i in permission.auditor" :key="i"> {{ i }}</Tag>
-                </FormItem>
-            </template>
+            <FormItem label="DDL数据源:">
+                <Tag color="purple" v-for="i in permission.ddl_source" :key="i"> {{ i }}</Tag>
+            </FormItem>
+            <FormItem label="DML数据源:">
+                <Tag color="geekblue" v-for="i in permission.dml_source" :key="i"> {{ i }}</Tag>
+            </FormItem>
+            <FormItem label="查询数据源:">
+                <Tag color="blue" v-for="i in permission.query_source" :key="i"> {{ i }}</Tag>
+            </FormItem>
+            <FormItem label="选择查询审核人:">
+                <Tag color="cyan" v-for="i in permission.auditor" :key="i"> {{ i }}</Tag>
+            </FormItem>
         </Form>
     </Modal>
 </template>
@@ -44,14 +30,14 @@
 
 import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
 
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import module_verify from "@/store/modules/verify";
 import {GroupCreateOrEditApi, GroupFetchApi} from "@/apis/groupApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 
 @Component({components: {}})
-export default class edit_rule extends Mixins(att_mixins) {
+export default class RulesLimits extends Mixins(Basic) {
     permission = {
         ddl_source: [],
         dml_source: [],
@@ -98,7 +84,7 @@ export default class edit_rule extends Mixins(att_mixins) {
     }
 
     marge_group(g: string[]) {
-        GroupFetchApi({username:this.rule.username,group: g.toString()})
+        GroupFetchApi({username: this.rule.username, group: g.toString()})
             .then((res: AxiosResponse<Res>) => {
                 this.permission = res.data.payload;
             })

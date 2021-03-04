@@ -40,15 +40,15 @@
             </Form>
         </Modal>
 
-        <edit_rule v-model="is_open"></edit_rule>
-        <edit_password v-model="edit_password" :username="userForm.username"></edit_password>
+        <RulesLimits v-model="is_open"></RulesLimits>
+        <ChangePassword v-model="edit_password" :username="userForm.username"></ChangePassword>
     </div>
 </template>
 
 <script lang="ts">
-import edit_password from "@/components/modal/edit_password.vue";
-import edit_rule from "@/components/modal/edit_rule.vue";
-import att_mixins from "@/mixins/basic";
+import ChangePassword from "@/components/modal/changePassword.vue";
+import RulesLimits from "@/components/modal/rulesLimits.vue";
+import Basic from "@/mixins/basic";
 import {Component, Mixins} from "vue-property-decorator";
 import module_verify from "@/store/modules/verify";
 import module_general from "@/store/modules/general";
@@ -58,8 +58,8 @@ import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 import {DashPutApi} from "@/apis/dashApis";
 
-@Component({components: {edit_password, edit_rule}})
-export default class Personal extends Mixins(att_mixins) {
+@Component({components: {ChangePassword, RulesLimits}})
+export default class Personal extends Mixins(Basic) {
     editEmailModal = false;
     editEmailForm = {
         email: '',

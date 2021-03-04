@@ -33,12 +33,12 @@
 import {Component, Mixins} from "vue-property-decorator";
 import orderSteps from "./orderSteps.vue"
 import orderForm from "./orderForm.vue"
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import orderSQLs from "@/components/order/orderSQLs.vue";
 import orderIsPost from "@/components/order/orderIsPost.vue";
 
 @Component({components: {orderSteps, orderForm, orderSQLs, orderIsPost}})
-export default class orderFormContainer extends Mixins(att_mixins) {
+export default class orderFormContainer extends Mixins(Basic) {
 }
 </script>
 

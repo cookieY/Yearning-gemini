@@ -28,13 +28,13 @@
                         <Form ref="formItem" :model="sql_order" :rules="stepRules" :label-width="150">
                             <FormItem label="环境:" prop="idc">
                                 <Select v-model="sql_order.idc" @on-change="fetchDiffSource">
-                                    <Option v-for="i in fetchData.idc" :key="i" :value="i">{{i}}</Option>
+                                    <Option v-for="i in fetchData.idc" :key="i" :value="i">{{ i }}</Option>
                                 </Select>
                             </FormItem>
 
                             <FormItem label="审核人:" prop="assigned">
                                 <Select v-model="sql_order.assigned" filterable>
-                                    <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{i}}</Option>
+                                    <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
                                 </Select>
                             </FormItem>
 
@@ -65,99 +65,101 @@
 </template>
 
 <script lang="ts">
-    import {Component, Mixins} from "vue-property-decorator";
-    import modules_order from "@/store/modules/order";
-    import query_mixin from "@/mixins/query_mixin";
-    import {CommonPostApis, CommonPutApis} from "@/apis/queryApis";
+import {Component, Mixins} from "vue-property-decorator";
+import modules_order from "@/store/modules/order";
+import QueryMixin from "@/mixins/query";
+import {CommonPostApis, CommonPutApis} from "@/apis/queryApis";
 
-    @Component({components: {}})
-    export default class work_flow extends Mixins(query_mixin) {
-        stepData = {
-            title: 'Yearning SQL查询系统',
-            describe: `欢迎你！ ${this.user}`
-        };
-        stepList1 = [
-            {
-                title: '提交',
-                describe: '提交查询申请'
-            },
-            {
-                title: '审核',
-                describe: '等待审核结果'
-            },
-            {
-                title: '查询',
-                describe: '审核完毕，进入查询页面'
-            }
-        ];
-        stepRules = {
-            text: [
-                {required: true, message: '请填写查询说明', trigger: 'blur'}
-            ],
-            idc: [{
-                required: true,
-                message: '环境地址不得为空',
-                trigger: 'change'
-            }],
-            source: [{
-                required: true,
-                message: '连接名不得为空',
-                trigger: 'change'
-            }],
-            assigned: [{
-                required: true,
-                message: '审核人不得为空',
-                trigger: 'change'
-            }]
-        };
-
-        fetchDiffSource(idc: string) {
-            this.fetchSource(idc, 'query')
+@Component({components: {}})
+export default class work_flow extends Mixins(QueryMixin) {
+    stepData = {
+        title: 'Yearning SQL查询系统',
+        describe: `欢迎你！ ${sessionStorage.getItem('user')}`
+    };
+    stepList1 = [
+        {
+            title: '提交',
+            describe: '提交查询申请'
+        },
+        {
+            title: '审核',
+            describe: '等待审核结果'
+        },
+        {
+            title: '查询',
+            describe: '审核完毕，进入查询页面'
         }
+    ];
+    stepRules = {
+        text: [
+            {required: true, message: '请填写查询说明', trigger: 'blur'}
+        ],
+        idc: [{
+            required: true,
+            message: '环境地址不得为空',
+            trigger: 'change'
+        }],
+        source: [{
+            required: true,
+            message: '连接名不得为空',
+            trigger: 'change'
+        }],
+        assigned: [{
+            required: true,
+            message: '审核人不得为空',
+            trigger: 'change'
+        }]
+    };
 
-
-        handleSubmit() {
-            let is_validate: any = this.$refs['formItem'];
-            is_validate.validate((valid: boolean) => {
-                if (valid) {
-                    CommonPostApis('refer',this.sql_order)
-                        .then(() => {this.$router.push({name: 'query_apply'})})
-                }
-            })
-        }
-
-        mounted() {
-            modules_order.clear_sql_order()
-            this.query_state();
-        }
-
+    fetchDiffSource(idc: string) {
+        this.fetchSource(idc, 'query')
     }
+
+
+    handleSubmit() {
+        let is_validate: any = this.$refs['formItem'];
+        is_validate.validate((valid: boolean) => {
+            if (valid) {
+                CommonPostApis('refer', this.sql_order)
+                    .then(() => {
+                        this.$router.push({name: 'query_apply'})
+                    })
+            }
+        })
+    }
+
+    mounted() {
+        modules_order.clear_sql_order()
+        this.query_state();
+    }
+
+}
 </script>
 
 <style lang="less">
-    .step {
-        &-header-con {
-            text-align: center;
+.step {
+    &-header-con {
+        text-align: center;
 
-            h3 {
-                margin: 10px 0;
-            }
-
-            h5 {
-                margin: 0 0 5px;
-            }
+        h3 {
+            margin: 10px 0;
         }
 
-        &-content {
-            padding: 5px 20px 26px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid #dbdddf;
-        }
-
-        &-form {
-            padding-bottom: 10px;
-            border-bottom: 1px solid #dbdddf;
-            margin-bottom: 20px;
+        h5 {
+            margin: 0 0 5px;
         }
     }
+
+    &-content {
+        padding: 5px 20px 26px;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #dbdddf;
+    }
+
+    &-form {
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dbdddf;
+        margin-bottom: 20px;
+    }
+}
 </style>

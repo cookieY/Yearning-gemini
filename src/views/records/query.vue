@@ -31,13 +31,13 @@
 </template>
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import search from "@/components/search/search.vue";
     import render from "@/interface/render";
     import {DeleteEmptyAuditQuery} from "@/apis/queryApis";
 
     @Component({components: {search}})
-    export default class query_record extends Mixins(att_mixins) {
+    export default class query_record extends Mixins(Basic) {
         columns = [
             {
                 title: '工单编号:',

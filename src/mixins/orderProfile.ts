@@ -1,12 +1,12 @@
 import {Component, Mixins} from "vue-property-decorator";
-import att from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import module_init_args from "@/store/modules/init_args";
 import {FetchCommonGetApis} from "@/apis/commonApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 
 @Component({components: {}})
-export default class detail_mixins extends Mixins(att) {
+export default class OrderProfileMixins extends Mixins(Basic) {
     columns = [
         {
             title: 'sql语句',

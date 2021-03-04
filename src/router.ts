@@ -33,7 +33,7 @@ const main_child = [
             title: '查询记录详情'
         },
         name: 'query_review',
-        component: () => import('./components/profile/query_profile.vue'),
+        component: () => import('./components/profile/queryProfile.vue'),
     },
     {
         path: '/order/profile',

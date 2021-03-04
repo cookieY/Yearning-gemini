@@ -11,6 +11,9 @@
                 <FormItem label="数据库">
                     <span>{{order.data_base}}</span>
                 </FormItem>
+                <FormItem label="定时执行">
+                    <span>{{order.delay}}</span>
+                </FormItem>
             </Col>
             <Col span="8">
                 <FormItem label="数据表">
@@ -46,8 +49,8 @@
 
 <script lang="ts">
     import {Component, Vue} from "vue-property-decorator";
-    import detail_mixins from "../../mixins/detail_mixin";
-    @Component({components: {}, mixins: [detail_mixins]})
+    import OrderProfileMixins from "@/mixins/orderProfile";
+    @Component({components: {}, mixins: [OrderProfileMixins]})
     export default class basic extends Vue {
     }
 </script>

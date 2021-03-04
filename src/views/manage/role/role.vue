@@ -36,13 +36,13 @@
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
     import {rule, Rule} from "@/views/manage/role/role_args";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import {RolesCreateOrEditApi, RolesFetchApi} from "@/apis/rolesApis";
     import {AxiosResponse} from "axios";
     import {Res} from "@/interface";
 
     @Component({components: {}})
-    export default class Role extends Mixins(att_mixins) {
+    export default class Role extends Mixins(Basic) {
         juno = {
             DMLMaxInsertRows: 2
         };

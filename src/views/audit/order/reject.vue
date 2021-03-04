@@ -11,12 +11,12 @@
 
 <script lang="ts">
     import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import module_init_args from "@/store/modules/init_args";
     import {AuditStateSQL} from "@/apis/auditApis";
 
     @Component({components: {}})
-    export default class reject extends Mixins(att_mixins) {
+    export default class reject extends Mixins(Basic) {
 
         private reject = '';
 

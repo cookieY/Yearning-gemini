@@ -215,14 +215,14 @@
 import SIdentify from '@/components/identify.vue'
 import {Mixins, Component} from "vue-property-decorator";
 import i18n from '@/language';
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 import {request} from "@/libs/requests";
 import {LoginApi} from "@/apis/loginApis";
 
 @Component({components: {SIdentify}})
-export default class login extends Mixins(att_mixins) {
+export default class login extends Mixins(Basic) {
 
     valid_password = (rule: any, value: string, callback: any) => {
         if (value !== this.userinfo.password) {

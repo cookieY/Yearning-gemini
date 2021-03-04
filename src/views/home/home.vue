@@ -124,7 +124,7 @@
 import info_card from '@/components/inforCard.vue'
 import Personal from '@/views/personal/personal.vue'
 import {Component, Mixins} from 'vue-property-decorator'
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 import {DashGetApi} from "@/apis/dashApis";
@@ -132,7 +132,7 @@ import OrderChart from "@/views/home/orderChart.vue"
 import SourcePie from "@/views/home/sourcePie.vue";
 
 @Component({components: {SourcePie, info_card, Personal, OrderChart}})
-export default class home extends Mixins(att_mixins) {
+export default class home extends Mixins(Basic) {
     count = {
         createUser: 0,
         order: 0,

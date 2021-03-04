@@ -56,33 +56,11 @@ interface test_results {
     affect_rows: number
 }
 
-interface Permissions_check_all {
-    [ddl_source: string]: boolean,
-
-    dml_source: boolean,
-    query_source: boolean,
-    auditor: boolean
-}
-
 interface Permission {
-    [ddl_source: string]: string[],
-
+    ddl_source: string[],
     dml_source: string[],
     query_source: string[],
     auditor: string[],
-}
-
-
-interface con_args {
-    source: string,
-    username: string
-}
-
-interface Connection_list {
-    [connection: string]: con_args[],
-
-    query: con_args[],
-    person: con_args[]
 }
 
 interface Fetch_data {
@@ -127,9 +105,7 @@ export {
     other_modal,
     message_modal,
     test_results,
-    Permissions_check_all,
     Permission,
-    Connection_list,
     Fetch_data,
     High_light,
     StepOrder,

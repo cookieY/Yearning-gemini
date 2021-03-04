@@ -1,7 +1,7 @@
 import {Component, Mixins} from "vue-property-decorator";
-import att from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 @Component({components: {}})
-export default class order_mixins extends Mixins(att) {
+export default class OrderMixins extends Mixins(Basic) {
 
     testColumns = [
         {

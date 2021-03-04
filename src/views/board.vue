@@ -24,10 +24,10 @@ import {Component, Mixins} from "vue-property-decorator";
 import {FetchCommonGetApis} from "@/apis/commonApis";
 import {Res} from "@/interface";
 import {request} from "@/libs/requests";
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 
 @Component
-export default class board extends Mixins(att_mixins) {
+export default class board extends Mixins(Basic) {
     md_data = '';
 
     post_board(vl: string) {

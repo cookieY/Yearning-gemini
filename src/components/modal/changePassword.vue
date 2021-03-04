@@ -19,12 +19,12 @@
 <script lang="ts">
 import i18n from "@/language";
 import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import module_user from "@/store/modules/user";
 import {AdminChangePassword, CommonChangePassword} from "@/apis/changePasswordApis";
 
 @Component({})
-export default class edit_password extends Mixins(att_mixins) {
+export default class ChangePassword extends Mixins(Basic) {
 
     regExp_password = (rule: any, value: string, callback: any) => {
         let pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;

@@ -6,37 +6,17 @@
                     <Icon type="md-settings"></Icon>
                     添加用户
                 </p>
-                <div class="edittable-testauto-con">
-                    <Form :model="userinfo" :label-width="80" ref="register" :rules="userInfoValidate">
-                        <FormItem label="用户名" prop="username">
-                            <Input v-model="userinfo.username" placeholder="请输入"></Input>
-                        </FormItem>
-                        <FormItem label="密码" prop="password">
-                            <Input v-model="userinfo.password" placeholder="请输入" type="password"></Input>
-                        </FormItem>
-                        <FormItem label="确认密码" prop="confirm_password">
-                            <Input v-model="userinfo.confirm_password" placeholder="请输入" type="password"></Input>
-                        </FormItem>
-                        <FormItem label="部门" prop="department">
-                            <Input v-model="userinfo.department" placeholder="请输入"></Input>
-                        </FormItem>
-                        <FormItem label="姓名" prop="real_name">
-                            <Input v-model="userinfo.real_name" placeholder="请输入"></Input>
-                        </FormItem>
-                        <FormItem label="角色" prop="rule">
-                            <Select v-model="userinfo.rule" placeholder="请选择">
-                                <Option value="admin">操作人</Option>
-                                <Option value="guest">提交人</Option>
-                            </Select>
-                        </FormItem>
-                        <FormItem label="电子邮箱" prop="email">
-                            <Input v-model="userinfo.email" placeholder="请输入"></Input>
-                        </FormItem>
-                        <Button type="primary" @click.native="registered" style="margin-left: 35%" :loading="loading">
-                            注册
-                        </Button>
-                    </Form>
-                </div>
+                <CustomForm :item="userinfo" :rule="userInfoValidate" :label-value="userLabelValue" ref="reg">
+                    <template slot="rule">
+                        <Select v-model="userinfo.rule" placeholder="请选择">
+                            <Option value="admin">操作人</Option>
+                            <Option value="guest">提交人</Option>
+                        </Select>
+                    </template>
+                </CustomForm>
+                <Button type="primary" @click.native="registered" style="margin-left: 35%" :loading="loading">
+                    注册
+                </Button>
             </Card>
         </Col>
         <Col span="19" class="padding-left-10">
@@ -45,13 +25,15 @@
                     <Icon type="md-people"></Icon>
                     系统用户表
                 </p>
-                <Input v-model="find.username" placeholder="请填写用户名" style="width: 20%" clearable></Input>
-                <Input v-model="find.dept" placeholder="请填写部门" style="width: 20%" clearable
-                       class="margin-left-10"></Input>
-                <Button @click="queryData" type="primary" class="margin-left-10">查询</Button>
-                <Button @click="queryCancel" type="warning" class="margin-left-10">重置</Button>
-                <div class="edittable-con-1">
-                    <Table border :columns="columns" :data="table_data" stripe height="520">
+                <Form>
+                    <Input v-model="find.username" placeholder="请填写用户名" style="width: 20%" clearable></Input>
+                    <Input v-model="find.dept" placeholder="请填写部门" style="width: 20%" clearable
+                           class="margin-left-10"></Input>
+                    <Button @click="queryData" type="primary" class="margin-left-10">查询</Button>
+                    <Button @click="queryCancel" type="warning" class="margin-left-10">重置</Button>
+                </Form>
+                <div class="edit-table-con-1">
+                    <Table border :columns="columns" :data="table_data" stripe>
                         <template slot-scope="{ row }" slot="rule">
                             <span v-if="row.rule === 'admin'">操作人</span>
                             <span v-else-if="row.rule === 'guest'">提交人</span>
@@ -89,30 +71,28 @@
             </div>
         </Modal>
 
-        <edit_password v-model="edit_password" is_admin></edit_password>
-
-        <edit_rule is_admin v-model="is_open" @success="current_page(current)"></edit_rule>
-
-        <edit_info v-model="is_edit" @call="current_page(current)" :user_info="payload"></edit_info>
+        <ChangePassword v-model="edit_password" is_admin></ChangePassword>
+        <RulesLimits is_admin v-model="is_open" @success="current_page(current)"></RulesLimits>
+        <EditProfile v-model="is_edit" @call="current_page(current)" :user_info="payload"></EditProfile>
     </div>
 </template>
 <script lang="ts">
-import '../../../styles/tablesmargintop.css'
-import edit_password from "@/components/modal/edit_password.vue";
+import ChangePassword from "@/components/modal/changePassword.vue";
 import {Mixins, Component} from "vue-property-decorator";
-import att_mixins from "@/mixins/basic";
-import edit_rule from "@/components/modal/edit_rule.vue";
-import edit_info from "@/components/modal/edit_info.vue";
+import Basic from "@/mixins/basic";
+import RulesLimits from "@/components/modal/rulesLimits.vue";
+import EditProfile from "@/components/modal/editProfile.vue";
 import module_verify from "@/store/modules/verify";
 import module_user from "@/store/modules/user";
-import {DependUser} from "@/views/manage/user/types";
+import {DependUser, UserInfo} from "@/views/manage/user/types";
 import {UserCreateOrEditApi, UserDeleteApi, UserDependGetApi} from "@/apis/userApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 import i18n from "@/language";
+import CustomForm, {Label} from "@/components/customForm/customForm.vue";
 
-@Component({components: {edit_password, edit_rule, edit_info}})
-export default class user_info extends Mixins(att_mixins) {
+@Component({components: {ChangePassword, RulesLimits, EditProfile, CustomForm}})
+export default class user_info extends Mixins(Basic) {
 
     regExp_password = (rule: any, value: string, callback: any) => {
         let pPattern = /^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).*$/;
@@ -132,9 +112,7 @@ export default class user_info extends Mixins(att_mixins) {
     };
 
     is_depend = false
-
     is_edit = false
-
     columns = [
         {
             title: '用户名',
@@ -171,15 +149,23 @@ export default class user_info extends Mixins(att_mixins) {
         }
     ];
     // 新建用户
-    userinfo = {
+    userinfo: UserInfo = {
         username: '',
         password: '',
         confirm_password: '',
         rule: '',
-        checkbox: '',
         department: '',
         email: '',
         real_name: ''
+    };
+    userLabelValue: Label = {
+        username: {name: '用户名'},
+        password: {name: '密码', type: 'password'},
+        confirm_password: {name: '确认密码', type: 'password'},
+        rule: {name: '角色'},
+        department: {name: '部门'},
+        email: {name: '电子邮件'},
+        real_name: {name: '姓名'},
     };
 
     userInfoValidate = {
@@ -223,8 +209,8 @@ export default class user_info extends Mixins(att_mixins) {
         rule: [
             {
                 required: true,
-                message: '请输入权限',
-                trigger: 'blur'
+                message: '请输入角色',
+                trigger: 'change'
             }
         ],
         department: [
@@ -288,7 +274,6 @@ export default class user_info extends Mixins(att_mixins) {
 
     edit_user(row: any) {
         this.payload = JSON.parse(JSON.stringify(row))
-        this.payload.multi = this.connectionList.multi
         this.is_edit = true;
     }
 
@@ -303,18 +288,16 @@ export default class user_info extends Mixins(att_mixins) {
     }
 
     registered() {
-        let is_validate: any = this.$refs['register'];
-        is_validate.validate((valid: boolean) => {
-            if (valid) {
-                this.loading = true;
-                UserCreateOrEditApi({tp: 'create', user: this.userinfo})
-                    .finally(() => {
-                        this.current_page(this.current);
-                        is_validate.resetFields()
-                        this.loading = !this.loading;
-                    })
-            }
-        })
+        const verify = this.$config.formVerify(this.$refs.reg)
+        if (verify.isOk) {
+            this.loading = true;
+            UserCreateOrEditApi({tp: 'create', user: this.userinfo})
+                .finally(() => {
+                    verify.next.resetFields()
+                    this.current_page(this.current);
+                    this.loading = !this.loading;
+                })
+        }
     }
 
     show_depend(row: { username: string; }) {

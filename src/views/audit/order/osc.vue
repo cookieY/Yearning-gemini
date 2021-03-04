@@ -29,14 +29,14 @@
 
 <script lang="ts">
     import {Component, Prop, Mixins, Watch} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import modules_order from "@/store/modules/order";
     import {request} from "@/libs/requests";
     import {AxiosResponse} from "axios";
     import {Res} from "@/interface";
 
     @Component({components: {}})
-    export default class osc extends Mixins(att_mixins) {
+    export default class osc extends Mixins(Basic) {
         osc = {
             percent: 0,
             current: 0

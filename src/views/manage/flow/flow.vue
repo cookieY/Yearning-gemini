@@ -101,7 +101,7 @@
 
 <script lang="ts">
 import {Component, Mixins} from "vue-property-decorator";
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import {Res, TplOrder} from '@/interface';
 import {TplAllSourceFetchApi, TplCreateOrEditApi, TplFetchProfile} from "@/apis/tplApis";
 import {AxiosResponse} from "axios";
@@ -115,7 +115,7 @@ const tpl_step: TplOrder[] = [
 ]
 
 @Component({})
-export default class FlowTemplate extends Mixins(att_mixins) {
+export default class FlowTemplate extends Mixins(Basic) {
     tpl_logo = require("../../../assets/tpl.svg")
     tpl_list: any = []
     tpl = {} as TplOrder

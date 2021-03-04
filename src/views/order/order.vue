@@ -11,10 +11,10 @@
     import editor from '@/components/editor.vue'
     import {Component, Mixins} from "vue-property-decorator";
     import orderFormContainer from "@/components/order/orderFormContainer.vue";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
 
     @Component({components: {editor, orderFormContainer}})
-    export default class dml_order extends Mixins(att_mixins) {
+    export default class dml_order extends Mixins(Basic) {
 
     }
 </script>

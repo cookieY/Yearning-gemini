@@ -3,24 +3,34 @@
         <editor v-model="sql" @init="editorInit" @setCompletions="setCompletions"></editor>
         <br>
         <span>当前选择的库: {{ dataBase }}</span> <span class="margin-left-10">查询耗时: {{ results.time }} ms</span>
-        <br>
-        <br>
-        <Button type="error" icon="md-trash" @click.native="clearObj()">清除</Button>
-        <Button type="info" icon="ios-analytics" @click.native="fetchTableField()" class="margin-left-10">获取表结构</Button>
-        <Button type="success" icon="ios-redo" @click.native="querySQL()" class="margin-left-10">查询</Button>
-        <Button
-            type="primary"
-            icon="ios-cloud-download"
-            @click.native="exportdata()"
-            v-if="export_data"
-            class="margin-left-10"
-        >导出查询数据
-        </Button>
-        <Button type="warning" @click="beauty" class="margin-left-10">美化</Button>
-        <Button type="primary" icon="md-copy" @click="is_open = !is_open" class="margin-left-10">snippet</Button>
-        <br>
-        <br>
+        <Form inline>
+            <FormItem>
+                <Button type="error" icon="md-trash" @click.native="clearObj()">清除</Button>
+            </FormItem>
+            <FormItem>
+                <Button type="info" icon="ios-analytics" @click.native="fetchTableField()">获取表结构</Button>
+            </FormItem>
+            <FormItem>
+                <Button type="success" icon="ios-redo" @click.native="querySQL()">查询</Button>
+            </FormItem>
+            <FormItem  v-if="export_data">
+                <Button
+                    type="primary"
+                    icon="ios-cloud-download"
+                    @click.native="exportdata()"
+                >导出查询数据
+                </Button>
+            </FormItem>
+            <FormItem>
+                <Button type="warning" @click="beauty">美化</Button>
+            </FormItem>
+            <FormItem>
+                <Button type="primary" icon="md-copy" @click="is_open = !is_open">snippet
+                </Button>
+            </FormItem>
+        </Form>
         <p>查询结果:</p>
+        <br>
         <Table :columns="results.title" :data="queryRes" highlight-row ref="table" border></Table>
         <br>
         <Page :total="results.total" show-total @on-change="splice_arr" ref="total" show-sizer
@@ -74,7 +84,7 @@ import Csv from 'view-design/src/utils/csv'
 import ExportCsv from 'view-design/src/components/table/export-csv'
 import editor from "@/components/editor.vue";
 import {Component, Mixins, Prop} from "vue-property-decorator";
-import att_mixins from "@/mixins/basic";
+import Basic from "@/mixins/basic";
 import module_general from "@/store/modules/general";
 import {CommonGetApis, CommonPostApis} from "@/apis/queryApis";
 import {AxiosResponse} from "axios";
@@ -119,7 +129,7 @@ interface Results {
 }
 
 @Component({components: {editor}})
-export default class tabQuery extends Mixins(att_mixins) {
+export default class tabQuery extends Mixins(Basic) {
 
     @Prop({
         required: false,
@@ -189,12 +199,6 @@ export default class tabQuery extends Mixins(att_mixins) {
         title: [],
         data: [],
         total: 0
-    }
-
-    selectionWord(vl: string) {
-        if (vl.length > 5) {
-            this.sql = vl
-        }
     }
 
     delSnippet(vl: any) {
@@ -272,7 +276,7 @@ export default class tabQuery extends Mixins(att_mixins) {
                         this.queryRes = []
                         return;
                     }
-                    this.results  = res.data.payload
+                    this.results = res.data.payload
                     this.queryRes = this.results.data.slice(0, this.page_size);
                 }
             })

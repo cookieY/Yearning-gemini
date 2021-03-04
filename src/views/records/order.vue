@@ -40,11 +40,11 @@
 </template>
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import search from "@/components/search/search.vue";
     import module_init_args from "@/store/modules/init_args";
     @Component({components: {search}})
-    export default class record extends Mixins(att_mixins) {
+    export default class record extends Mixins(Basic) {
       columns = [
         {
           title: '工单',

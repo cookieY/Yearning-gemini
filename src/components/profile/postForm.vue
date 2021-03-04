@@ -50,13 +50,13 @@
 
 <script lang="ts">
 import {Component, Mixins, Prop, Watch} from "vue-property-decorator";
-import detail_mixins from "../../mixins/detail_mixin";
+import OrderProfileMixins from "@/mixins/orderProfile";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 import {FetchCommonGetApis, FetchCommonPostApis} from "@/apis/commonApis";
 
 @Component({components: {}})
-export default class postForm extends Mixins(detail_mixins) {
+export default class postForm extends Mixins(OrderProfileMixins) {
 
     @Prop({
         type: Boolean,

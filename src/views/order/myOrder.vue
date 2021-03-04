@@ -34,13 +34,13 @@
 </template>
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import render from "@/interface/render";
     import search from "@/components/search/search.vue";
     import module_init_args from "@/store/modules/init_args";
 
     @Component({components: {search}})
-    export default class my_order extends Mixins(att_mixins) {
+    export default class my_order extends Mixins(Basic) {
 
         columns = [
             {

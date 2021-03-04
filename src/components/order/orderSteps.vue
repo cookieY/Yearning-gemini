@@ -8,10 +8,10 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
 
    @Component({})
-   export default class orderSteps extends Mixins(att_mixins){
+   export default class orderSteps extends Mixins(Basic){
    }
 </script>
 

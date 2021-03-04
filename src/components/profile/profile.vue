@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import detail_mixins from "../../mixins/detail_mixin";
+import OrderProfileMixins from "@/mixins/orderProfile";
 import {Component, Mixins} from "vue-property-decorator";
 import collapse from "@/components/profile/collapse.vue";
 import basic from "@/components/profile/basic.vue";
@@ -75,7 +75,7 @@ import {Res} from "@/interface";
 import {TplFetchProfile} from "@/apis/tplApis";
 
 @Component({components: {collapse, basic, postForm, Testing, reject, StepDetail}})
-export default class profile extends Mixins(detail_mixins) {
+export default class profile extends Mixins(OrderProfileMixins) {
 
     get order_step() {
         return module_init_args.order_step

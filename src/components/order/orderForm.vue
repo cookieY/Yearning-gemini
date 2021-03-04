@@ -70,7 +70,7 @@
 
 <script lang="ts">
 import {Mixins, Component} from "vue-property-decorator";
-import fetch_mixin from "@/mixins/fetch_mixin";
+import fetch_mixin from "@/mixins/fetch";
 import modules_order from "@/store/modules/order";
 
 

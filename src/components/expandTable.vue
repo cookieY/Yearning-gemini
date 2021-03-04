@@ -4,10 +4,10 @@
 
 <script lang="ts">
     import {Component, Mixins, Prop} from "vue-property-decorator";
-    import att from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
 
     @Component({components: {}})
-    export default class expandTable extends Mixins(att) {
+    export default class expandTable extends Mixins(Basic) {
         @Prop({
             type: String,
             required: true,

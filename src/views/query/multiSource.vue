@@ -44,10 +44,10 @@ import {FetchCommonGetApis} from "@/apis/commonApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
 import {CommonPutApis} from "@/apis/queryApis";
-import query_mixin from "@/mixins/query_mixin";
+import QueryMixin from "@/mixins/query";
 
 @Component({components: {query_sql}})
-export default class multiSource extends Mixins(query_mixin) {
+export default class multiSource extends Mixins(QueryMixin) {
     focus = '';
     addSnippet = {
         title: '',

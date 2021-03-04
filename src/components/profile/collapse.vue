@@ -38,10 +38,10 @@
 
 import {Component, Mixins} from "vue-property-decorator";
 import Editor from "../editor.vue";
-import detail_mixins from "../../mixins/detail_mixin";
+import OrderProfileMixins from "@/mixins/orderProfile";
 
 @Component({components: {Editor}})
-export default class collapse extends Mixins(detail_mixins) {
+export default class collapse extends Mixins(OrderProfileMixins) {
     mounted () {
         this.current_page()
     }

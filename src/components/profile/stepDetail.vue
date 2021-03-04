@@ -13,13 +13,13 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import detail_mixins from "@/mixins/detail_mixin";
+    import OrderProfileMixins from "@/mixins/orderProfile";
     import {FetchCommonGetApis} from "@/apis/commonApis";
     import {AxiosResponse} from "axios";
     import {Res} from "@/interface";
 
     @Component({components: {}})
-    export default class StepDetail extends Mixins(detail_mixins) {
+    export default class StepDetail extends Mixins(OrderProfileMixins) {
         col = [
             {
                 title: '相关人',

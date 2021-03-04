@@ -36,10 +36,10 @@
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
     import modules_order from "@/store/modules/order";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
 
     @Component({components: {}})
-    export default class orderIsPost extends Mixins(att_mixins) {
+    export default class orderIsPost extends Mixins(Basic) {
         toOriginal() {
             modules_order.changed_is_dml(false)
             modules_order.clear_order()

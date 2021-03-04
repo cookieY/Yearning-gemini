@@ -7,11 +7,10 @@ import {request} from "@/libs/requests";
 import {FetchCommonGetApis} from "@/apis/commonApis";
 
 @Component({components: {}})
-export default class att_mixins extends Vue {
+export default class Basic extends Vue {
     public $config: any;
     public $Spin: any;
     public url = ''
-    public user = sessionStorage.getItem('user')
 
     get steps() {
         return modules_order.steps
@@ -123,14 +122,14 @@ export default class att_mixins extends Vue {
 
     general = {
         id: 0,
-        ip: '',
-        username: '',
-        password: '',
-        port: 0,
-        is_query: 2,
-        tp: 0,
         idc: '',
         source: '',
+        ip: '',
+        port: 0,
+        username: '',
+        password: '',
+        is_query: 2,
+        tp: 0,
         name: '',
         data_base: '',
         table: '',
@@ -205,6 +204,11 @@ export default class att_mixins extends Vue {
         reset.resetFields()
     }
 
+    restCustomFields(key: string) {
+        const verify = this.$config.formVerify(this.$refs[key])
+        verify.next.resetFields()
+    }
+
     fetch_page(vl: number, url: string) {
         request.put(url, {
             page: vl,
@@ -215,9 +219,9 @@ export default class att_mixins extends Vue {
                 this.table_data = res.data.payload.data;
                 this.page_number = res.data.payload.page;
                 // 权限组fetch
-                this.connectionList.connection = res.data.payload.source;
-                this.connectionList.query = res.data.payload.query;
-                this.connectionList.person = res.data.payload.auditor;
+                this.connectionList.connection = res.data.payload.source.map((vl: { source: string; }) => vl.source);
+                this.connectionList.query = res.data.payload.query.map((vl: { source: string; }) => vl.source);
+                this.connectionList.person = res.data.payload.auditor.map((vl: { username: string; }) => vl.username);
                 // 用户
                 this.connectionList.multi = res.data.payload.multi;
             })
@@ -230,8 +234,8 @@ export default class att_mixins extends Vue {
     };
 
     fetch_perform() {
-        FetchCommonGetApis('perform',{})
-            .then((res:AxiosResponse<Res>) => {
+        FetchCommonGetApis('perform', {})
+            .then((res: AxiosResponse<Res>) => {
                 this.multi_list = res.data.payload.perform
             })
     }

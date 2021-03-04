@@ -103,10 +103,10 @@
     import module_general from "@/store/modules/general";
     import module_init_args from "@/store/modules/init_args";
     import {DashPutApi} from "@/apis/dashApis";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
 
 @Component({components: {sidebarMenu, breadcrumbNav}})
-export default class main_farm extends Mixins(att_mixins) {
+export default class main_farm extends Mixins(Basic) {
     userName = sessionStorage.getItem('user');
     isFullScreen = false;
     lockScreenSize = 0;

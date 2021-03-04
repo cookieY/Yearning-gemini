@@ -28,7 +28,7 @@
 <script lang="ts">
 import {Component, Mixins, Prop} from "vue-property-decorator";
 import render from "@/interface/render";
-import detail_mixin from "@/mixins/detail_mixin";
+import detail_mixin from "@/mixins/orderProfile";
 import reject from "@/views/audit/order/reject.vue";
 import module_init_args from "@/store/modules/init_args";
 import {AuditExecuteSQL, AuditStateSQL, AuditTestSQL} from "@/apis/auditApis";

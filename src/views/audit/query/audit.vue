@@ -41,13 +41,13 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import att_mixins from "@/mixins/basic";
+    import Basic from "@/mixins/basic";
     import render from "@/interface/render";
     import search from "@/components/search/search.vue";
     import {ChangeAuditQueryState} from "@/apis/queryApis";
 
     @Component({components: {search}})
-    export default class query_audit extends Mixins(att_mixins) {
+    export default class query_audit extends Mixins(Basic) {
         columns = [
             {
                 title: '申请编号',

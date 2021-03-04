@@ -59,6 +59,15 @@ libs.concat = function (arr1: Array<string>, arr2: Array<string>) {
     return arr;
 };
 
+libs.formVerify = (vm: any) => {
+    const next: any = vm.$refs.ruleForm
+    let isOk = false
+    next.validate((valid: boolean) => {
+        isOk = valid
+    })
+    return {isOk, next}
+}
+
 
 libs.patch = "Community"
 libs.version = "v 2.3.2 Neptune"

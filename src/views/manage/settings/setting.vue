@@ -249,7 +249,7 @@
 import {Component, Mixins} from "vue-property-decorator";
 // eslint-disable-next-line no-unused-vars
 import {other_modal, message_modal, Res} from "@/interface";
-import att_mixins from "../../../mixins/basic";
+import Basic from "../../../mixins/basic";
 import {
     SettingCreateOrEditApi,
     SettingDeleteTestApi,
@@ -260,7 +260,7 @@ import {
 import {AxiosResponse} from "axios";
 
 @Component
-export default class setting extends Mixins(att_mixins) {
+export default class setting extends Mixins(Basic) {
     ldap = {};
     message = {
         push_type: false,

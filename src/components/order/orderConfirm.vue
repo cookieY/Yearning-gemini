@@ -59,7 +59,7 @@
 
 <script lang="ts">
     import {Component, Mixins} from "vue-property-decorator";
-    import fetch_mixin from "@/mixins/fetch_mixin";
+    import fetch_mixin from "@/mixins/fetch";
 
     @Component({})
     export default class orderConfirm extends Mixins(fetch_mixin) {
