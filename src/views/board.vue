@@ -1,20 +1,18 @@
 <template>
     <div>
-        <Row>
-            <Card>
-                <p slot="title">
-                    <Icon type="md-clipboard"></Icon>
-                    公告
-                </p>
-                <template v-if="user === 'admin'">
-                    <mavon-editor v-model="md_data" :ishljs="true" @save="post_board" :boxShadow="false"/>
-                </template>
-                <template v-else>
-                    <mavon-editor v-model="md_data" :ishljs="true" :subfield="false" defaultOpen="preview"
-                                  :editable="false" :toolbarsFlag="false" :boxShadow="false"/>
-                </template>
-            </Card>
-        </Row>
+        <Card>
+            <p slot="title">
+                <Icon type="md-clipboard"></Icon>
+                公告
+            </p>
+            <template v-if="user === 'admin'">
+                <mavon-editor v-model="md_data" :ishljs="true" @save="post_board" :boxShadow="false"/>
+            </template>
+            <template v-else>
+                <mavon-editor v-model="md_data" :ishljs="true" :subfield="false" defaultOpen="preview"
+                              :editable="false" :toolbarsFlag="false" :boxShadow="false"/>
+            </template>
+        </Card>
     </div>
 </template>
 

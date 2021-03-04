@@ -1,17 +1,15 @@
 <template>
-    <div>
+    <Card>
+        <div class="step-header-con">
+            <h3>{{ stepData.title }}</h3>
+            <h5>{{ stepData.describe }}</h5>
+        </div>
+        <p class="step-content"></p>
         <Row>
-            <Card>
-                <div class="step-header-con">
-                    <h3>{{ stepData.title }}</h3>
-                    <h5>{{ stepData.describe }}</h5>
-                </div>
-                <p class="step-content"></p>
-                <Row>
-                    <i-col span="8">
-                        <Alert type="warning" show-icon>
-                            注意事项:
-                            <span slot="desc">
+            <i-col span="8">
+                <Alert type="warning" show-icon>
+                    注意事项:
+                    <span slot="desc">
               1.必须填写查询说明
               <br>
               2.根据查询条件预估所需的查询时间
@@ -22,46 +20,44 @@
               <br>
               5.已限制最大limit数，如自己输入的limit数大于平台配置的最大limit数则以平台配置的Limit数为准
             </span>
-                        </Alert>
-                    </i-col>
-                    <i-col span="12">
-                        <Form ref="formItem" :model="sql_order" :rules="stepRules" :label-width="150">
-                            <FormItem label="环境:" prop="idc">
-                                <Select v-model="sql_order.idc" @on-change="fetchDiffSource">
-                                    <Option v-for="i in fetchData.idc" :key="i" :value="i">{{ i }}</Option>
-                                </Select>
-                            </FormItem>
+                </Alert>
+            </i-col>
+            <i-col span="12">
+                <Form ref="formItem" :model="sql_order" :rules="stepRules" :label-width="150">
+                    <FormItem label="环境:" prop="idc">
+                        <Select v-model="sql_order.idc" @on-change="fetchDiffSource">
+                            <Option v-for="i in fetchData.idc" :key="i" :value="i">{{ i }}</Option>
+                        </Select>
+                    </FormItem>
 
-                            <FormItem label="审核人:" prop="assigned">
-                                <Select v-model="sql_order.assigned" filterable>
-                                    <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
-                                </Select>
-                            </FormItem>
+                    <FormItem label="审核人:" prop="assigned">
+                        <Select v-model="sql_order.assigned" filterable>
+                            <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
+                        </Select>
+                    </FormItem>
 
-                            <FormItem label="是否需要导出数据:" prop="export" v-if="export_list">
-                                <RadioGroup v-model="sql_order.export">
-                                    <Radio :label=1>是</Radio>
-                                    <Radio :label=0>否</Radio>
-                                </RadioGroup>
-                            </FormItem>
+                    <FormItem label="是否需要导出数据:" prop="export" v-if="export_list">
+                        <RadioGroup v-model="sql_order.export">
+                            <Radio :label=1>是</Radio>
+                            <Radio :label=0>否</Radio>
+                        </RadioGroup>
+                    </FormItem>
 
-                            <FormItem label="查询说明：" prop="text">
-                                <Input v-model="sql_order.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}"
-                                       placeholder="请填写查询说明"/>
-                            </FormItem>
-                            <FormItem label="">
-                                <Button @click="handleSubmit" style="width:100px;" type="primary">提交</Button>
-                            </FormItem>
-                        </Form>
-                    </i-col>
-                </Row>
-                <Steps>
-                    <Step v-for="item in stepList1" :title="item.title" :content="item.describe"
-                          :key="item.title"></Step>
-                </Steps>
-            </Card>
+                    <FormItem label="查询说明：" prop="text">
+                        <Input v-model="sql_order.text" type="textarea" :autosize="{minRows: 4,maxRows: 8}"
+                               placeholder="请填写查询说明"/>
+                    </FormItem>
+                    <FormItem label="">
+                        <Button @click="handleSubmit" style="width:100px;" type="primary">提交</Button>
+                    </FormItem>
+                </Form>
+            </i-col>
         </Row>
-    </div>
+        <Steps>
+            <Step v-for="item in stepList1" :title="item.title" :content="item.describe"
+                  :key="item.title"></Step>
+        </Steps>
+    </Card>
 </template>
 
 <script lang="ts">

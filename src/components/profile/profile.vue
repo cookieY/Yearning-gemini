@@ -1,58 +1,54 @@
 <template>
     <div>
-        <Row>
-            <Card dis-hover>
-                <Row>
-                    <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
-                    <Col span="5" offset="14">
-                        <Button type="warning" v-if="order.status === 1 || order.status === 4" @click.native="open_form()">
-                            查看回滚语句
+        <Card dis-hover>
+            <Row>
+                <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
+                <Col span="5" offset="14">
+                    <Button type="warning" v-if="order.status === 1 || order.status === 4" @click.native="open_form()">
+                        查看回滚语句
+                    </Button>
+                    <Button type="primary"
+                            v-if="order.status === 0"
+                            @click.native="open_form()">重新提交
+                    </Button>
+                    <Poptip
+                        confirm
+                        title="确定要撤销工单吗？"
+                        @on-ok="delOrder(order.work_id)"
+                        transfer>
+                        <Button type="primary" v-if="order.status === 2 && !JSON.parse($route.query.isAdmin) "
+                                ghost>工单撤销
                         </Button>
-                        <Button type="primary"
-                                v-if="order.status === 0"
-                                @click.native="open_form()">重新提交
-                        </Button>
-                        <Poptip
-                            confirm
-                            title="确定要撤销工单吗？"
-                            @on-ok="delOrder(order.work_id)"
-                            transfer>
-                            <Button type="primary" v-if="order.status === 2 && !JSON.parse($route.query.isAdmin) "
-                                    ghost>工单撤销
-                            </Button>
-                        </Poptip>
-                        <Button type="info" @click.native="$router.go(-1)" style="margin-left: 2%">返回</Button>
-                    </Col>
-                </Row>
-                <br>
-                <basic></basic>
-            </Card>
-            <br>
-            <Row type="flex" justify="center">
-                <Card dis-hover style="width: 98%;">
-                    <p slot="title">执行进度</p>
-                    <Tabs name="step">
-                        <TabPane label="流程步骤" name="step">
-                            <Steps :current="order.current_step" size="small">
-                                <Step v-for="i in order_step" :key="i.title" :title="i.desc"
-                                      :content="`相关人员:${i.auditor}`"></Step>
-                            </Steps>
-                        </TabPane>
-                        <TabPane label="阶段详情">
-                            <StepDetail></StepDetail>
-                        </TabPane>
-                    </Tabs>
-                    <br>
-                    <br>
-                    <h3>SQL审核</h3>
-                    <collapse></collapse>
-                    <br>
-                    <template v-if="order.assigned === user && JSON.parse($route.query.isAdmin)">
-                        <Testing></Testing>
-                    </template>
-                </Card>
+                    </Poptip>
+                    <Button type="info" @click.native="$router.go(-1)" style="margin-left: 2%">返回</Button>
+                </Col>
             </Row>
-        </Row>
+            <br>
+            <basic></basic>
+        </Card>
+        <br>
+        <Card dis-hover>
+            <p slot="title">执行进度</p>
+            <Tabs name="step">
+                <TabPane label="流程步骤" name="step">
+                    <Steps :current="order.current_step" size="small">
+                        <Step v-for="i in order_step" :key="i.title" :title="i.desc"
+                              :content="`相关人员:${i.auditor}`"></Step>
+                    </Steps>
+                </TabPane>
+                <TabPane label="阶段详情">
+                    <StepDetail></StepDetail>
+                </TabPane>
+            </Tabs>
+            <br>
+            <br>
+            <h3>SQL审核</h3>
+            <collapse></collapse>
+            <br>
+            <template v-if="order.assigned === user && JSON.parse($route.query.isAdmin)">
+                <Testing></Testing>
+            </template>
+        </Card>
         <BackTop :height="100" :bottom="200">
             <div class="top">返回顶端</div>
         </BackTop>

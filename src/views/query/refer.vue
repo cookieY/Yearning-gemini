@@ -1,25 +1,21 @@
 <template>
-    <div>
-        <Row>
-            <Card>
-                <div class="step-header-con">
-                    <h3>{{ stepData.title }}</h3>
-                    <h5>{{ stepData.describe }}</h5>
-                    <h4 style="margin-top: 5%">{{ stepData.content }}</h4>
-                    <br>
-                    <br>
-                    <Button @click="back">返回</Button>
-                    <Button @click="deferReply" class="margin-left-10">撤销</Button>
-                </div>
-                <div class="step-content" style="height: 150px">
-                </div>
-                <Steps :current="1" style="margin-left: 10%">
-                    <Step v-for="item in stepList1" :title="item.title" :content="item.describe"
-                          :key="item.title"></Step>
-                </Steps>
-            </Card>
-        </Row>
-    </div>
+    <Card>
+        <div class="step-header-con">
+            <h3>{{ stepData.title }}</h3>
+            <h5>{{ stepData.describe }}</h5>
+            <h4 style="margin-top: 5%">{{ stepData.content }}</h4>
+            <br>
+            <br>
+            <Button @click="back">返回</Button>
+            <Button @click="deferReply" class="margin-left-10">撤销</Button>
+        </div>
+        <div class="step-content" style="height: 150px">
+        </div>
+        <Steps :current="1" style="margin-left: 10%">
+            <Step v-for="item in stepList1" :title="item.title" :content="item.describe"
+                  :key="item.title"></Step>
+        </Steps>
+    </Card>
 </template>
 
 <script lang="ts">

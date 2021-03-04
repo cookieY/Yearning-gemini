@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <Row>
         <Col span="5">
             <Card>
                 <p slot="title">
@@ -74,7 +74,7 @@
         <ChangePassword v-model="edit_password" is_admin></ChangePassword>
         <RulesLimits is_admin v-model="is_open" @success="current_page(current)"></RulesLimits>
         <EditProfile v-model="is_edit" @call="current_page(current)" :user_info="payload"></EditProfile>
-    </div>
+    </Row>
 </template>
 <script lang="ts">
 import ChangePassword from "@/components/modal/changePassword.vue";

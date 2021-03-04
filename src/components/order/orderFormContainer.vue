@@ -8,22 +8,20 @@
                     </Col>
                 </Row>
                 <br>
-                <Row>
-                    <div>
-                        <transition name="fade">
-                            <div v-if="always.one">
-                                <orderForm></orderForm>
-                            </div>
-                            <div v-if="always.two">
-                                <orderSQLs></orderSQLs>
-                            </div>
+                <div>
+                    <transition name="fade">
+                        <div v-if="always.one">
+                            <orderForm></orderForm>
+                        </div>
+                        <div v-if="always.two">
+                            <orderSQLs></orderSQLs>
+                        </div>
 
-                            <div v-if="always.three">
-                                <orderIsPost></orderIsPost>
-                            </div>
-                        </transition>
-                    </div>
-                </Row>
+                        <div v-if="always.three">
+                            <orderIsPost></orderIsPost>
+                        </div>
+                    </transition>
+                </div>
             </div>
         </Card>
     </div>
