@@ -128,6 +128,7 @@ import {FetchCommonGetApis, FetchCommonPutApis, PostOrder} from "@/apis/commonAp
 import {CommonDeleteApis, CommonGetApis, CommonPutApis} from "@/apis/queryApis";
 import {AxiosResponse} from "axios";
 import {Res} from "@/interface";
+import sqlFormatter from "sql-formatter";
 
 @Component({components: {editor, tabQuery}})
 export default class query_sql extends Mixins(fetch_mixin, FetchMixins) {
@@ -166,6 +167,10 @@ export default class query_sql extends Mixins(fetch_mixin, FetchMixins) {
 
     cur(vl: string) {
         this.currentTab = vl
+    }
+
+    beauty() {
+        this.test_sql = sqlFormatter.format(this.test_sql)
     }
 
     getTable(vl: any) {
@@ -238,7 +243,7 @@ export default class query_sql extends Mixins(fetch_mixin, FetchMixins) {
     }
 
     clearForm() {
-        this.resetFields('formItem')
+        this.test_sql = ''
     }
 
     openDrawer() {

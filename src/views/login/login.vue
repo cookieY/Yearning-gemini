@@ -77,7 +77,7 @@
         <div style="z-index: 100" class="div-a">
             <Row type="flex">
                 <Col span="3" offset="2">
-                    <div style="margin-top: 140%;width: 300px;">
+                    <div style="margin:180px 0 0 ;;width: 300px;">
                         <Form label-position="right">
                             <FormItem>
                                 <img src="../../assets/logo.png" width="300px">

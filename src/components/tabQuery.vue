@@ -247,7 +247,6 @@ export default class tabQuery extends Mixins(Basic) {
     }
 
     clearObj() {
-        this.sql = ''
         this.current = 1;
         this.results = {} as Results
     }
