@@ -10,7 +10,7 @@
             </template>
             <template v-else>
                 <mavon-editor v-model="md_data" :ishljs="true" :subfield="false" defaultOpen="preview"
-                              :editable="false" :toolbarsFlag="false" :boxShadow="false"/>
+                              :editable="false" :toolbarsFlag="false" :boxShadow="false" style="z-index: 1"/>
             </template>
         </Card>
     </div>

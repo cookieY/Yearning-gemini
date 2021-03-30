@@ -226,6 +226,7 @@ export default class query_sql extends Mixins(fetch_mixin, FetchMixins) {
                     })
             } else {
                 this.$Message.error('请填写具体地址或sql语句后再测试!')
+                this.$Spin.hide()
             }
         })
     }

@@ -157,7 +157,7 @@
                                         </Button>
                                     </FormItem>
                                     <Row>
-                                        <Col span="6">
+                                        <Col span="12">
                                             <Form-item label="查询审核:">
                                                 <i-switch size="large" v-model="other.query">
                                                     <span slot="open">开</span>
@@ -165,7 +165,7 @@
                                                 </i-switch>
                                             </Form-item>
                                         </Col>
-                                        <Col span="6">
+                                        <Col span="12">
                                             <Form-item label="允许注册:">
                                                 <i-switch size="large" v-model="other.register">
                                                     <span slot="open">开</span>
@@ -175,7 +175,7 @@
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span="6">
+                                        <Col span="12">
                                             <Form-item label="查询导出:">
                                                 <i-switch size="large" v-model="other.export">
                                                     <span slot="open">开</span>
@@ -183,7 +183,7 @@
                                                 </i-switch>
                                             </Form-item>
                                         </Col>
-                                        <Col span="6">
+                                        <Col span="12">
                                             <Form-item label="查询时限:">
                                                 <InputNumber :max="600" :min="0" v-model="other.ex_query_time"
                                                              :formatter="value => `${value}分钟`"></InputNumber>
