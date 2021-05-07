@@ -20,7 +20,7 @@ export const loginRender = (t: CreateElement | undefined) => {
         }),
         h('br'),
         h('br'),
-        h('Checkbox', {
+        h('checkbox', {
             props: {
                 value: module_general.openReLogin,
             },
@@ -28,7 +28,7 @@ export const loginRender = (t: CreateElement | undefined) => {
                 marginLeft: '40%'
             },
             on: {
-                checkbox: (val: boolean) => {
+                'on-change': (val: boolean) => {
                     module_general.changed_openReLogin_status(val)
                 }
             }

@@ -32,7 +32,7 @@ function ReLoginHandler() {
             })
                 .then((res: AxiosResponse<Res>) => {
                     sessionStorage.setItem('jwt', `Bearer ${res.data.payload.token}`);
-                    Message.success("已重新登录!");
+                    Message.success("已重新登录,请重新刷新页面");
                 })
                 .catch(() => {
                     router.push({name: 'login'}).then(() => {
@@ -50,6 +50,7 @@ const errorHandler = (error: { response: { data: { message: string }; status: nu
     if (error.response) {
         if (error.response.status === 401) {
             ReLoginHandler()
+            return Promise.reject(error)
         }
         const data = error.response.data
         Notice.error({
