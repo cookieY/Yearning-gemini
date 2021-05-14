@@ -96,9 +96,12 @@
 
       openOrder(row: any) {
         module_init_args.fetch_order_item(row)
-        this.$router.push({
-          name: 'profile',
-        })
+          this.$router.push({
+              name: 'profile',
+              query: {
+                  isAdmin: JSON.stringify(false)
+              }
+          })
       }
 
       mounted() {
