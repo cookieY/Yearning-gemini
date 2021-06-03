@@ -164,6 +164,11 @@ export default class Basic extends Vue {
         person: []
     };
 
+    common_search () {
+        this.current = 1
+        this.current_page()
+    }
+
     queryData() {
         this.find.valve = true;
         modules_search.post_search_args(this.find)
@@ -219,9 +224,11 @@ export default class Basic extends Vue {
                 this.table_data = res.data.payload.data;
                 this.page_number = res.data.payload.page;
                 // 权限组fetch
-                this.connectionList.connection = res.data.payload.source.map((vl: { source: string; }) => vl.source);
-                this.connectionList.query = res.data.payload.query.map((vl: { source: string; }) => vl.source);
-                this.connectionList.person = res.data.payload.auditor.map((vl: { username: string; }) => vl.username);
+                if (url === "/api/v2/manage/group") {
+                    this.connectionList.connection = res.data.payload.source.map((vl: { source: string; }) => vl.source);
+                    this.connectionList.query = res.data.payload.query.map((vl: { source: string; }) => vl.source);
+                    this.connectionList.person = res.data.payload.auditor.map((vl: { username: string; }) => vl.username);
+                }
                 // 用户
                 this.connectionList.multi = res.data.payload.multi;
             })

@@ -1,45 +1,43 @@
-<style lang="less">
-@import '../../styles/common.less';
-@import '../../styles/table.less';
-</style>
 <template>
-    <Card>
-        <template slot="title">
+    <div>
+        <Card>
+            <template slot="title">
+                <Row type="flex" justify="end">
+                    <Col span="10">
+                        <p><Icon type="md-person"></Icon>我的工单</p>
+                    </Col>
+                    <Col span="14">
+                    <nav-search @search="search"></nav-search>
+                    </Col>
+                </Row>
+            </template>
 
-        </template>
-        <p slot="title">
-            <Icon type="md-person"></Icon>
-            我的工单
-        </p>
-        <search text="工单说明" @refresh="current_page" is_order></search>
-        <Row>
-            <Col span="24">
-                <Table border :columns="columns" :data="table_data" stripe size="small">
-                    <template slot-scope="{ row }" slot="action">
-                        <Button type="success" @click="openOrder(row)" size="small"
-                                ghost
-                                class="margin-left-10">
-                            工单信息
-                        </Button>
-                    </template>
-                </Table>
-            </Col>
-        </Row>
-        <br>
-        <Page :total="page_number" show-elevator @on-change="current_page" :page-size="20"
-              :current.sync="current"></Page>
-    </Card>
+            <Table border :columns="columns" :data="table_data" stripe size="small">
+                <template slot-scope="{ row }" slot="action">
+                    <Button type="success" @click="openOrder(row)" size="small"
+                            ghost
+                            class="margin-left-10">
+                        工单信息
+                    </Button>
+                </template>
+            </Table>
+            <br>
+            <Page :total="page_number" show-elevator @on-change="current_page" :page-size="15"
+                  :current.sync="current"></Page>
+        </Card>
+    </div>
+
 </template>
+
 <script lang="ts">
 import {Component, Mixins} from "vue-property-decorator";
 import Basic from "@/mixins/basic";
 import render from "@/interface/render";
-import search from "@/components/search/search.vue";
 import module_init_args from "@/store/modules/init_args";
+import NavSearch from "@/components/search/navSearch.vue";
 
-@Component({components: {search}})
-export default class my_order extends Mixins(Basic) {
-
+@Component({components: {NavSearch}})
+export default class BasicList extends Mixins(Basic) {
     columns = [
         {
             title: '工单编号:',
@@ -88,6 +86,11 @@ export default class my_order extends Mixins(Basic) {
 
     url = `${this.$config.url}/common/list`
 
+    search() {
+        this.current = 1
+        this.current_page()
+    }
+
     openOrder(row: any) {
         module_init_args.fetch_order_item(row)
         this.$router.push({
@@ -103,4 +106,3 @@ export default class my_order extends Mixins(Basic) {
     }
 }
 </script>
-<!-- remove delete request -->

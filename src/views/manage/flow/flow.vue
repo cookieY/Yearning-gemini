@@ -1,10 +1,21 @@
 <template>
     <Row type="flex" justify="center">
+        <BackTop></BackTop>
         <Card style="min-height: 800px;width: 98%">
             <p slot="title">
                 <Icon type="md-trophy"/>
                 流程模板
             </p>
+            <Row>
+                <Col :span="15">
+                    <Input placeholder="根据名称信息搜索" v-model="find.text"
+                           clearable @on-clear="clear_data" @on-enter="search_data"/>
+
+                </Col>
+                <Col :span="1">
+                    <Button @click="search_data" class="margin-left-10" type="primary">搜索</Button>
+                </Col>
+            </Row>
             <div>
                 <List>
                     <ListItem v-for="i in tpl_list" :key="i.title">
@@ -122,9 +133,22 @@ export default class FlowTemplate extends Mixins(Basic) {
     is_tpl_edit = false
     c_idx = 0
     tmp_steps: TplOrder[] = []
-
     source = ''
+    tpl_list_all = [] as any
 
+    clear_data() {
+        this.tpl_list = this.tpl_list_all
+    }
+
+    search_data() {
+        let tb: any[] = []
+        this.tpl_list.forEach((item: any) => {
+            if (item.desc.indexOf(this.find.text) !== -1) {
+                tb.push(item)
+            }
+        })
+        this.tpl_list = tb
+    }
     edit_tpl(tpl: TplOrder, idx: number) {
         this.tpl = Object.assign({} as TplOrder, tpl)
         this.is_tpl_edit = true
@@ -192,7 +216,8 @@ export default class FlowTemplate extends Mixins(Basic) {
         TplAllSourceFetchApi()
             .then((res: AxiosResponse<Res>) => {
                 for (let i of res.data.payload) {
-                    this.tpl_list.push({title: i, desc: `${i} 环境审核流程`})
+                    this.tpl_list_all.push({title: i, desc: `${i}数据源审核流程`})
+                    this.tpl_list = this.tpl_list_all
                 }
             })
     }

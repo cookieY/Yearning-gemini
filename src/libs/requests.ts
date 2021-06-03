@@ -17,13 +17,11 @@ const ACCESS_TOKEN = sessionStorage.getItem("jwt")
 const request: AxiosInstance = axios.create({})
 
 function ReLoginHandler() {
-    let text = 'Token过期！请重新登录!';
-    Message.warning(text);
-    Modal.confirm({
+    Modal.warning({
         title: '重新登录',
-        cancelText: '退出',
         okText: '登录',
-        closable: true,
+        closable: false,
+        loading: true,
         render: loginRender,
         onOk: () => {
             LoginApi(module_general.openReLogin, {
@@ -32,16 +30,13 @@ function ReLoginHandler() {
             })
                 .then((res: AxiosResponse<Res>) => {
                     sessionStorage.setItem('jwt', `Bearer ${res.data.payload.token}`);
-                    Message.success("已重新登录,请重新刷新页面");
+                    window.location.reload()
                 })
                 .catch(() => {
                     router.push({name: 'login'}).then(() => {
                     })
                 })
-        },
-        onCancel: () => {
-            router.push({name: 'login'}).then(() => {
-            })
+                .finally(() => Modal.remove())
         }
     })
 }
@@ -49,6 +44,10 @@ function ReLoginHandler() {
 const errorHandler = (error: { response: { data: { message: string }; status: number } }) => {
     if (error.response) {
         if (error.response.status === 401) {
+            if (document.getElementsByClassName('ivu-message-notice').length === 0) {
+                let text = 'Token过期！请重新登录!';
+                Message.warning({content: text, duration: 5});
+            }
             ReLoginHandler()
             return Promise.reject(error)
         }

@@ -27,7 +27,7 @@ import Basic from "@/mixins/basic";
 @Component
 export default class board extends Mixins(Basic) {
     md_data = '';
-
+    user = sessionStorage.getItem("user")
     post_board(vl: string) {
         request.post(`${this.$config.url}/manage/board/post`, {
             board: vl

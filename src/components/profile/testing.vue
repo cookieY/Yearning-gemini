@@ -8,7 +8,7 @@
             </FormItem>
             <FormItem>
                 <Button type="primary" @click.native="testTo()" :loading="loading">
-                    <span v-if="!loading">检测sql</span>
+                    <span v-if="!loading">检测</span>
                     <span v-else>检测中</span>
                 </Button>
                 <Button type="error" @click="reject()" class="margin-left-10">驳回</Button>
@@ -18,7 +18,7 @@
                 <Button type="success" @click="perform()" :disabled="summit" class="margin-left-10" v-else>执行</Button>
             </FormItem>
             <FormItem>
-                <Table :columns="sql_columns" :data="testing_sql" :max-height="300"></Table>
+                <Table :columns="sql_columns" :data="testing_sql" :max-height="300"  no-data-text="点击 检测 按钮获取检测结果"></Table>
             </FormItem>
         </Form>
         <reject v-model="is_open"></reject>

@@ -1,60 +1,69 @@
 <template>
-    <Form :label-width="80" :model="order">
-        <Row>
-            <Col span="8">
-                <FormItem label="环境">
-                    <span>{{order.idc}}</span>
-                </FormItem>
-                <FormItem label="数据源">
-                    <span>{{order.source}}</span>
-                </FormItem>
-                <FormItem label="数据库">
-                    <span>{{order.data_base}}</span>
-                </FormItem>
-                <FormItem label="定时执行">
-                    <span>{{order.delay}}</span>
-                </FormItem>
-            </Col>
-            <Col span="8">
-                <FormItem label="数据表">
-                    <span>{{order.table}}</span>
-                </FormItem>
-                <FormItem label="当前状态">
-                    <Tag color="primary" v-if="order.status === 2">审核中</Tag>
-                    <Tag color="error" v-else-if="order.status === 0">驳回</Tag>
-                    <Tag color="success" v-else-if="order.status === 1">已执行</Tag>
-                    <Tag color="error" v-else-if="order.status === 4">执行失败</Tag>
-                    <Tag color="primary" v-else-if="order.status === 5">待执行</Tag>
-                    <Tag color="warning" v-else-if="order.status === 2">执行中</Tag>
-                </FormItem>
-                <FormItem label="提交时间">
-                    <span>{{order.date}}</span>
-                </FormItem>
-            </Col>
-            <Col span="8">
-                <FormItem label="提交人">
-                    <span>{{order.username}}</span>
-                </FormItem>
-                <FormItem label="工单说明">
-                    <span>{{order.text}}</span>
-                </FormItem>
-                <FormItem label="工单类型">
-                    <Tag color="success" v-if="order.type===0">ddl</Tag>
-                    <Tag color="magenta" v-else-if="order.type === 1">dml</Tag>
-                </FormItem>
-            </Col>
-        </Row>
-    </Form>
+    <Row type="flex" justify="center" align="top">
+        <Col span="6" class="cell">
+            <div class="title">环境: {{ order.idc }}</div>
+            <br>
+            <div class="title">数据源: {{ order.source }}</div>
+            <br>
+            <div class="title">数据库: {{ order.data_base }}</div>
+            <br>
+            <div class="title">数据表: {{ order.table }}</div>
+            <br>
+            <div class="title">是否备份: {{ order.backup===0?"否":"是" }}</div>
+        </Col>
+        <Col span="6" class="cell">
+            <div class="title">提交人: {{ order.username }}</div>
+            <br>
+            <div class="title">提交时间: {{ order.date }}</div>
+            <br>
+            <div class="title">工单说明: {{ order.text }}</div>
+            <br>
+            <div class="title">定时执行: {{ order.delay }}</div>
+        </Col>
+        <Col span="5">
+            <div style="text-align: center">
+                <p>当前状态</p>
+                <h1 style="color: #2b85e4" v-if="order.status === 2">审核中</h1>
+                <h1 style="color: #c1273e" v-else-if="order.status === 0">驳回</h1>
+                <h1 style="color: #35ba71" v-else-if="order.status === 1">已执行</h1>
+                <h1 style="color: #e42b47" v-else-if="order.status === 4">执行失败</h1>
+                <h1 style="color: #2b85e4" v-else-if="order.status === 5">待执行</h1>
+                <h1 style="color: #ee881a" v-else-if="order.status === 2">执行中</h1>
+            </div>
+        </Col>
+        <Col span="7">
+            <div style="text-align: center">
+                <p>SQL类型</p>
+                <h3 v-if="order.type===0">DDL</h3>
+                <h3 v-else>DML</h3>
+            </div>
+
+        </Col>
+    </Row>
 </template>
 
 <script lang="ts">
-    import {Component, Vue} from "vue-property-decorator";
-    import OrderProfileMixins from "@/mixins/orderProfile";
-    @Component({components: {}, mixins: [OrderProfileMixins]})
-    export default class basic extends Vue {
-    }
+import {Component, Vue} from "vue-property-decorator";
+import OrderProfileMixins from "@/mixins/orderProfile";
+
+@Component({components: {}, mixins: [OrderProfileMixins]})
+export default class basic extends Vue {
+}
 </script>
 
 <style scoped>
+.cell {
+    display: table-cell;
+    padding-bottom: 16px;
+    line-height: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
 
+.title {
+    font-size: 13px;
+    color: #515a6e;
+    white-space: nowrap;
+    font-weight: bolder;
+}
 </style>

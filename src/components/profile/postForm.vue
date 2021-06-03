@@ -1,41 +1,43 @@
 <template>
     <div>
-        <Modal v-model="is_open" :ok-text="'提交工单'" width="800" @on-ok="referOrder" @on-cancel="cancel">
-            <div class="step-header-con">
-                <h3>Yearning SQL平台审核工单</h3>
-            </div>
-            <p class="step-content"></p>
-            <Form class="step-form">
-                <FormItem label="用户名:">
-                    <p>{{ order.username }}</p>
-                </FormItem>
-                <FormItem label="环境:">
-                    <p>{{ order.idc }}</p>
-                </FormItem>
-                <FormItem label="连接名:">
-                    <p>{{ order.source }}</p>
-                </FormItem>
-                <FormItem label="数据库库名:">
-                    <p>{{ order.data_base }}</p>
-                </FormItem>
-                <FormItem label="定时执行:">
-                    <p>{{ order.delay }}</p>
-                </FormItem>
-                <FormItem>
-                    <Input v-model="sqls"
-                           v-if="this.order.status === 0"
-                           type="textarea"></Input>
-                    <template v-if="this.order.status ===1 || this.order.status === 4">
-                        <Table :columns="roll_column" :data="roll_data"
-                               height="300"></Table>
-                        <br>
-                        <Page :total="page_number" show-elevator @on-change="rollback" :page-size="5"
-                              :current.sync="current"></Page>
-                    </template>
+        <Modal v-model="is_open" :ok-text="'提交工单'" width="800" @on-ok="referOrder" @on-cancel="cancel" >
+            <Divider plain orientation="left">基本信息</Divider>
+            <Row type="flex" justify="end" align="bottom">
+                <Col span="12" class="cell">
+                    <div class="title">用户名: {{ order.username }}</div>
+                    <br>
+                    <div class="title">环境: {{ order.idc }}</div>
+                    <br>
+                    <div class="title">定时执行: {{ order.delay }}</div>
+                    <br>
+                </Col>
+                <Col span="12" class="cell">
+                    <div class="title">连接名: {{ order.source }}</div>
+                    <br>
+                    <div class="title">数据库库名: {{ order.data_base }}</div>
+                    <br>
+                </Col>
+            </Row>
+            <template  v-if="this.order.status === 0">
+                <Divider plain orientation="left">重新提交的语句</Divider>
+                <Input v-model="sqls"
 
-                </FormItem>
+                       type="textarea" :rows="5"></Input>
+            </template>
+
+            <template v-if="this.order.status ===1 || this.order.status === 4">
+                <Divider plain orientation="left">回滚语句</Divider>
+                <Table :columns="roll_column" :data="roll_data"
+                       height="200" :show-header="false" size="small"
+                       no-data-text="该工单没有生成回滚语句! 请检查提交工单时是否已选择备份/数据库设置是否正确。<br/>详细情况请访问:https://guide.yearning.io/attention.html"></Table>
+                <br>
+                <Page :total="page_number" show-elevator @on-change="rollback" :page-size="5"
+                      :current.sync="current"></Page>
+            </template>
+            <Divider plain orientation="left">提交信息</Divider>
+            <Form>
                 <FormItem label="工单提交说明:">
-                    <Input v-model="order.text" placeholder="最多不超过20个字"></Input>
+                    <Input v-model="order.text" placeholder="最多不超过20个字" style="width: 600px" type="textarea" :rows="3"></Input>
                 </FormItem>
                 <FormItem label="是否备份">
                     <RadioGroup v-model="order.backup">
@@ -118,5 +120,18 @@ export default class postForm extends Mixins(OrderProfileMixins) {
 </script>
 
 <style scoped>
+.cell {
+    display: table-cell;
+    padding-bottom: 16px;
+    line-height: 20px;
+    padding-left: 16px;
+    padding-right: 16px;
+}
 
+.title {
+    font-size: 13px;
+    color: #515a6e;
+    white-space: nowrap;
+    font-weight: bolder;
+}
 </style>

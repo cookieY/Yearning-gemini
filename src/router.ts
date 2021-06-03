@@ -50,7 +50,7 @@ const main_child = [
             title: '我的工单'
         },
         icon: 'person',
-        component: () => import('./views/order/myOrder.vue')
+        component: () => import('./views/order/basicList.vue')
     },
     {
         path: 'order',
@@ -171,7 +171,7 @@ export const appRouter = [
                 meta: {
                     title: '工单记录'
                 },
-                icon: 'md-list',
+                icon: 'md-send',
                 component: () => import('./views/records/order.vue')
             },
             {

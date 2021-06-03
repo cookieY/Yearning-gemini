@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Table :columns="col" :data="table_data" max-height="200">
+        <Table :columns="col" :data="table_data" max-height="200" border>
             <template slot-scope="{row}" slot="action">
                 <Tag color="blue" v-if="row.action === '已提交'">{{row.action}}</Tag>
                 <Tag color="error" v-else-if="row.action === '驳回'">{{row.action}}</Tag>

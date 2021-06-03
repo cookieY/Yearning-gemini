@@ -4,23 +4,25 @@
             <Row>
                 <Col span="5"><h2>工单编号:{{ this.order.work_id }}</h2></Col>
                 <Col span="5" offset="14">
-                    <Button type="warning" v-if="order.status === 1 || order.status === 4" @click.native="open_form()">
-                        查看回滚语句
-                    </Button>
-                    <Button type="primary"
-                            v-if="order.status === 0"
-                            @click.native="open_form()">重新提交
-                    </Button>
-                    <Poptip
-                        confirm
-                        title="确定要撤销工单吗？"
-                        @on-ok="delOrder(order.work_id)"
-                        transfer>
-                        <Button type="primary" v-if="order.status === 2 && !JSON.parse($route.query.isAdmin) "
-                                ghost>工单撤销
+                    <ButtonGroup>
+                        <Button type="default" @click.native="$router.go(-1)">返回</Button>
+                        <Button type="default" v-if="order.status === 1 || order.status === 4" @click.native="open_form()">
+                            查看回滚语句
                         </Button>
-                    </Poptip>
-                    <Button type="info" @click.native="$router.go(-1)" style="margin-left: 2%">返回</Button>
+                        <Button type="default"
+                                v-if="order.status === 0"
+                                @click.native="open_form()">重新提交
+                        </Button>
+                        <Poptip
+                            confirm
+                            title="确定要撤销工单吗？"
+                            @on-ok="delOrder(order.work_id)"
+                            transfer>
+                            <Button type="default" v-if="order.status === 2 && !JSON.parse($route.query.isAdmin) ">工单撤销
+                            </Button>
+                        </Poptip>
+                    </ButtonGroup>
+
                 </Col>
             </Row>
             <br>
@@ -28,21 +30,20 @@
         </Card>
         <br>
         <Card dis-hover>
-            <p slot="title">执行进度</p>
-            <Tabs name="step">
-                <TabPane label="流程步骤" name="step">
-                    <Steps :current="order.current_step" size="small">
-                        <Step v-for="i in order_step" :key="i.title" :title="i.desc"
-                              :content="`相关人员:${i.auditor}`"></Step>
-                    </Steps>
-                </TabPane>
-                <TabPane label="阶段详情">
-                    <StepDetail></StepDetail>
-                </TabPane>
-            </Tabs>
-            <br>
-            <br>
-            <h3>SQL审核</h3>
+            <p slot="title">流程步骤</p>
+            <Steps :current="order.current_step">
+                <Step v-for="i in order_step" :key="i.title" :title="i.desc"
+                      :content="`相关人员:${i.auditor}`"></Step>
+            </Steps>
+        </Card>
+        <br>
+        <Card>
+            <p slot="title">流程记录</p>
+            <StepDetail></StepDetail>
+        </Card>
+        <br>
+        <Card>
+            <p slot="title">SQL审核</p>
             <collapse></collapse>
             <br>
             <template v-if="order.assigned === user && JSON.parse($route.query.isAdmin)">

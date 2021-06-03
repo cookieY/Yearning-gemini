@@ -2,58 +2,55 @@
     <div>
         <Row>
             <Card>
-                <p slot="title">
-                    <Icon type="md-person"></Icon>
-                    工单审核
-                </p>
-                <Row>
-                    <Col span="24">
-                        <Form inline>
-                            <FormItem>
-                                <Poptip trigger="hover" title="提示" content="此开关用于打开实时表格数据更新功能">
-                                    <i-switch v-model="valve" @on-change="refreshForm" size="large">
-                                        <span slot="open">打开</span>
-                                        <span slot="close">关闭</span>
-                                    </i-switch>
-                                </Poptip>
-                            </FormItem>
-                        </Form>
-                        <search text="工单说明" @refresh="current_page" is_order></search>
-                        <Table border :columns="columns" :data="table_data" stripe>
-                            <template slot-scope="{ row }" slot="action">
-                                <div>
-                                    <template v-if="row.status !== 5">
-                                        <Button type="success" @click="orderDetail(row)"
-                                                size="small" ghost>
-                                            详情
-                                        </Button>
-                                        <Poptip
-                                            confirm
-                                            title="确定要中止该工单吗？"
-                                            @on-ok="delayKill(row)"
-                                            transfer>
-                                            <Button type="error" v-if="row.status === 3 && row.delay !== 'none'"
-                                                    size="small" ghost class="margin-left-10">
-                                                延时工单中止
-                                            </Button>
-                                        </Poptip>
+                <template slot="title">
+                    <Row type="flex" justify="end">
+                        <Col span="2">
+                            <p><Icon type="md-create"></Icon>工单审核</p>
+                        </Col>
+                        <Col span="8">
+                            <Poptip trigger="hover" title="提示" content="此开关用于打开实时表格数据更新功能">
+                                <i-switch v-model="valve" @on-change="refreshForm" size="large">
+                                    <span slot="open">打开</span>
+                                    <span slot="close">关闭</span>
+                                </i-switch>
+                            </Poptip>
+                        </Col>
+                        <Col span="14">
+                            <nav-search @search="search"></nav-search>
+                        </Col>
+                    </Row>
+                </template>
+                <Table border :columns="columns" :data="table_data" stripe size="small">
+                    <template slot-scope="{ row }" slot="action">
+                        <template v-if="row.status !== 5">
+                            <Button type="success" @click="orderDetail(row)"
+                                    size="small" ghost>
+                                详情
+                            </Button>
+                            <Poptip
+                                confirm
+                                title="确定要中止该工单吗？"
+                                @on-ok="delayKill(row)"
+                                transfer>
+                                <Button type="error" v-if="row.status === 3 && row.delay !== 'none'"
+                                        size="small" ghost class="margin-left-10">
+                                    延时工单中止
+                                </Button>
+                            </Poptip>
 
-                                        <Button ghost size="small" class="margin-left-10" @click="timerOsc(row)"
-                                                type="warning" v-if="row.status === 3 && row.type === 0">osc进度
-                                        </Button>
-                                    </template>
-                                </div>
-                            </template>
-                            <template slot-scope="{ row }" slot="delay">
-                                <span v-if="row.delay !== 'none'">{{ row.delay }}</span>
-                                <span v-else>无</span>
-                            </template>
-                        </Table>
-                        <br>
-                        <Page :total="page_number" show-elevator @on-change="current_page" :page-size="20"
-                              :current.sync="current"></Page>
-                    </Col>
-                </Row>
+                            <Button ghost size="small" class="margin-left-10" @click="timerOsc(row)"
+                                    type="warning" v-if="row.status === 3 && row.type === 0">osc进度
+                            </Button>
+                        </template>
+                    </template>
+                    <template slot-scope="{ row }" slot="delay">
+                        <span v-if="row.delay !== 'none'">{{ row.delay }}</span>
+                        <span v-else>无</span>
+                    </template>
+                </Table>
+                <br>
+                <Page :total="page_number" show-elevator @on-change="current_page" :page-size="15"
+                      :current.sync="current"></Page>
             </Card>
         </Row>
         <osc v-model="is_osc"></osc>
@@ -70,8 +67,9 @@ import {AuditKillOrder} from "@/apis/auditApis";
 import modules_order from "@/store/modules/order";
 import module_init_args from "@/store/modules/init_args";
 import Basic from "@/mixins/basic";
+import NavSearch from "@/components/search/navSearch.vue";
 
-@Component({components: {search, profile, osc, reject}})
+@Component({components: {search, profile, osc, reject, NavSearch}})
 export default class platform_audit extends Mixins(Basic) {
     columns = [
         {
@@ -90,11 +88,6 @@ export default class platform_audit extends Mixins(Basic) {
             title: '工单类型',
             key: 'type',
             render: render.type
-        },
-        {
-            title: '是否备份',
-            key: 'backup',
-            render: render.backup
         },
         {
             title: '提交时间:',
@@ -140,6 +133,11 @@ export default class platform_audit extends Mixins(Basic) {
     valve = true;
     is_osc = false;
     url = `${this.$config.url}/audit/order/list`
+
+    search() {
+        this.current = 1
+        this.current_page()
+    }
 
     delayKill(vl: { work_id: string }) {
         AuditKillOrder({work_id: vl.work_id})

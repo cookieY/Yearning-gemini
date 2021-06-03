@@ -19,7 +19,12 @@
                                                max-height="250"></Table>
                                     </TabPane>
                                     <TabPane label="索引详情" name="order3" icon="md-folder">
-                                        <Table :columns="idx_columns" :data="idx_data" border max-height="250"></Table>
+                                        <Table :columns="idx_columns" :data="idx_data" border max-height="250">
+                                            <template slot-scope="{row}" slot="NonUnique">
+                                                <span v-if="row.NonUnique === 0">是</span>
+                                                <span v-else>否</span>
+                                            </template>
+                                        </Table>
                                     </TabPane>
                                 </template>
                             </Tabs>
@@ -104,8 +109,9 @@ export default class orderSQLs extends Mixins(FetchMixins) {
             key: 'IndexName'
         },
         {
-            title: '是否非唯一',
-            key: 'NonUnique'
+            title: '是否唯一',
+            key: 'NonUnique',
+            slot: 'NonUnique'
         },
         {
             title: '字段名',
@@ -158,7 +164,7 @@ export default class orderSQLs extends Mixins(FetchMixins) {
     }
 
     merge() {
-        FetchCommonPutApis('merge',{sqls:this.order_text})
+        FetchCommonPutApis('merge', {sqls: this.order_text})
             .then((res: AxiosResponse<Res>) => {
                 if (res.data.code === 1200) {
                     this.order_text = res.data.payload
