@@ -88,28 +88,14 @@
                             </FormItem>
                             <FormItem>
                                 <Input style="opacity: 0.6" :placeholder="$t('password')" v-model="formInline.password"
-                                       type="password"></Input>
-                            </FormItem>
-                            <FormItem>
-                                <Row>
-                                    <Col span="12">
-                                        <Input style="opacity: 0.6" :placeholder="$t('pin')"
-                                               v-model="formInline.code" @keyup.enter.native="signIn"></Input>
-                                    </Col>
-                                    <Col span="12">
-                                        <SIdentify
-                                            @identifyCode="checkCode"
-                                            :replace="replace"
-                                        ></SIdentify>
-                                    </Col>
-                                </Row>
+                                       type="password" @keyup.enter.native="is_verify=true"></Input>
                             </FormItem>
                             <FormItem>
                                 <Checkbox v-model="is_open"><span style="color: #FFFFFF;">{{ $t('ldap') }}</span>
                                 </Checkbox>
                             </FormItem>
                             <FormItem>
-                                <Button long type="primary" ghost @click="signIn"> 登录</Button>
+                                <Button long type="primary" ghost @click="is_verify=true"> 登录</Button>
                             </FormItem>
                         </Form>
                     </div>
@@ -154,6 +140,24 @@
                 </video>
             </div>
         </div>
+
+        <Modal v-model="is_verify" width="340"
+               transfer
+               footer-hide
+               title="拼图验证"
+               draggable
+               :styles="{top:'150px'}"
+        >
+            <slide-verify :l="42"
+                          :r="10"
+                          :w="310"
+                          :h="155"
+                          @success="onSuccess"
+                          @fail="() => $Message.error('验证失败')"
+                          slider-text="向右滑动"
+                          ref="slideblock"
+            ></slide-verify>
+        </Modal>
 
         <Modal
             v-model="register"
@@ -204,8 +208,8 @@
             {{ $t('sponsor_7') }}
             <br/>
             <br/>
-            <img height="300" width="300" src="../../assets/alipay.jpg"/>
-            <img height="300" width="300" src="../../assets/wechat.jpg"/>
+            <img style="height:300px;width:300px" src="../../assets/alipay.jpg" alt=""/>
+            <img style="height:300px;width:300px" src="../../assets/wechat.jpg" alt=""/>
         </Modal>
 
     </div>
@@ -239,6 +243,7 @@ export default class login extends Mixins(Basic) {
             callback()
         }
     };
+    is_verify = false
     switchCode = false;
     sponsorship = false;
     register = false;
@@ -312,13 +317,14 @@ export default class login extends Mixins(Basic) {
     formInline = {
         user: '',
         password: '',
-        code: ''
     };
-    check_code = '';
-    replace = false;
 
-    checkCode(vl: string) {
-        this.check_code = vl.toLowerCase()
+    onSuccess() {
+        this.$Message.success('验证成功!')
+        this.signIn()
+        this.is_verify = false
+        let ref = this.$refs.slideblock as any
+        ref.reset();
     }
 
     LoginRegister() {
@@ -334,11 +340,6 @@ export default class login extends Mixins(Basic) {
     }
 
     signIn() {
-        if (this.check_code !== this.formInline.code.toLowerCase()) {
-            this.$config.message('warning', i18n.t('sign_up_validate.pin') as string)
-            this.replace = !this.replace;
-            return;
-        }
         LoginApi(this.is_open, {
             username: this.formInline.user,
             password: this.formInline.password

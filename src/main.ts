@@ -13,10 +13,11 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import {LoadingBar} from 'view-design'
 import i18n from "@/language";
-
+import SlideVerify from 'vue-monoplasty-slide-verify';
 Vue.config.productionTip = false;
 Vue.prototype.$config = config;
 Vue.use(iView)
+Vue.use(SlideVerify)
 Vue.use(particles);
 Vue.use(VueRouter);
 Vue.use(mavonEditor);
