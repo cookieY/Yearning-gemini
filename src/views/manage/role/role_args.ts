@@ -31,6 +31,12 @@ const rule: Rule[] = [
         tp: 0
     },
     {
+        name: 'DDLCheckFloatDouble',
+        desc: '强制float/double类型变更为decimal类型',
+        type: 'DDL',
+        tp: 0
+    },
+    {
         name: 'DDLEnableAutoincrementInit',
         desc: '强制自增列初始值为1',
         type: 'DDL',

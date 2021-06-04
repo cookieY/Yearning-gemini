@@ -47,8 +47,8 @@
                     <Table :columns="columns" :data="table_data">
                         <template slot-scope="{ row }" slot="is_query">
                             <Tag checkable color="primary" v-if="row.is_query === 0">写</Tag>
-                            <Tag checkable color="success" v-if="row.is_query === 1">读</Tag>
-                            <Tag checkable color="warning" v-if="row.is_query === 2">读写</Tag>
+                            <Tag checkable color="success" v-else-if="row.is_query === 1">读</Tag>
+                            <Tag checkable color="warning" v-else>读写</Tag>
                         </template>
                         <template slot-scope="{ row }" slot="action">
                             <Button type="info" size="small" @click="viewConnectionModal(row)"
@@ -75,6 +75,14 @@
             <CustomForm :label-value="dbLabelValue" :item="dbInfoEdit" :label-width="100">
                 <template slot="port">
                     <InputNumber :min="0" v-model="dbInfoEdit.port"></InputNumber>
+                </template>
+                <template slot="source">
+                    <p>{{dbInfoEdit.source}}</p>
+                </template>
+                <template slot="idc">
+                    <Select v-model="dbInfoEdit.idc">
+                        <Option v-for="list in idcList" :value="list" :key="list">{{ list }}</Option>
+                    </Select>
                 </template>
                 <template slot="is_query">
                     <RadioGroup v-model="dbInfoEdit.is_query">
