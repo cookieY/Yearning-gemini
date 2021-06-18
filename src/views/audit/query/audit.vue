@@ -25,7 +25,7 @@
                             ghost>中止查询
                     </Button>
                 </template>
-                <template v-else>
+                <template v-else-if="row.query_per !== 3">
                     <Button type="error" @click="change_order_state(row,'reject')" ghost size="small">
                         驳回
                     </Button>
@@ -34,7 +34,6 @@
                             class="margin-left-10">同意
                     </Button>
                 </template>
-
             </template>
         </Table>
         <br>
