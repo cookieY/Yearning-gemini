@@ -37,7 +37,7 @@ export default class board extends Mixins(Basic) {
     mounted() {
         FetchCommonGetApis('board', {})
             .then((res: AxiosResponse<Res>) => {
-                this.md_data = res.data.payload.board
+                this.md_data = res.data.payload.Board
             })
     }
 }
