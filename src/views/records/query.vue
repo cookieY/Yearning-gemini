@@ -12,7 +12,10 @@
                         查询审计
                     </p>
                 </Col>
-                <Col span="17">
+                <Col span="2">
+                    <Button type="warning" @click="query_empty" class="margin-left-10" size="small">删除空查询记录</Button>
+                </Col>
+                <Col span="15">
                     <nav-search is_record @search="common_search" text="输入工单编号,回车搜索"></nav-search>
                 </Col>
             </Row>
@@ -31,6 +34,7 @@ import {Component, Mixins} from "vue-property-decorator";
 import Basic from "@/mixins/basic";
 import NavSearch from "@/components/search/navSearch.vue";
 import render from "@/interface/render";
+import {DeleteEmptyAuditQuery} from "@/apis/queryApis";
 
 @Component({components: {NavSearch}})
 export default class query_record extends Mixins(Basic) {
@@ -70,6 +74,13 @@ export default class query_record extends Mixins(Basic) {
         }
     ];
     url = `${this.$config.url}/audit/query/record`
+
+    query_empty() {
+        DeleteEmptyAuditQuery()
+            .then(() => {
+                this.current_page()
+            })
+    }
 
     open_detail(row: { work_id: string, username: string }) {
         this.$router.push({
