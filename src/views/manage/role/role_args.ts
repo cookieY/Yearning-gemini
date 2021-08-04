@@ -152,7 +152,7 @@ const rule: Rule[] = [
     },
     {
         name: 'MustHaveColumns',
-        desc: '建表必须拥有的字段',
+        desc: '建表必须拥有的字段,多个字段请用逗号分隔',
         type: 'DDL',
         tp: 2
     },
@@ -191,6 +191,12 @@ const rule: Rule[] = [
         desc: 'Insert最大插入行数上限',
         type: 'DML',
         tp: 1
+    },
+    {
+        name: 'DMLAllowLimitSTMT',
+        desc: '允许update/insert 语句使用limit关键字',
+        type: 'DML',
+        tp: 0
     },
     {
         name: 'DDLImplicitTypeConversion',
@@ -243,6 +249,12 @@ const rule: Rule[] = [
     {
         name: 'OscSize',
         desc: '当表体积大于该值且开启pt-osc时,该表DDL语句将使用pt-osc进行变更 单位:M',
+        type: 'Pt-osc',
+        tp: 1
+    },
+    {
+        name: 'OscChunkSize',
+        desc: '--chunk-time 当需要复制的块大于设置的chunk_size时则不复制',
         type: 'Pt-osc',
         tp: 1
     },
