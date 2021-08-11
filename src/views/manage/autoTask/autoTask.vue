@@ -25,6 +25,10 @@
                     <Tag checkable color="warning" v-if="row.tp === 1">Update</Tag>
                     <Tag checkable color="error" v-if="row.tp === 2">Delete</Tag>
                 </Template>
+                <template slot-scope="{ row }" slot="affect_rows">
+                    <span v-if="!is_edit">{{ row.affect_rows }}</span>
+                    <InputNumber :min="1" v-model="row.affect_rows" v-else></InputNumber>
+                </template>
                 <template slot-scope="{ row }" slot="status">
                     <i-switch v-model="row.status" @on-change="activityStatus(row)">
                         <span slot="open">开</span>
@@ -32,7 +36,8 @@
                     </i-switch>
                 </template>
                 <template slot-scope="{ row }" slot="action">
-                    <Button type="primary" @click="openEditModal(row)" size="small">编辑</Button>
+                    <Button type="primary" @click="is_edit = true" size="small" v-if="!is_edit">编辑</Button>
+                    <Button type="primary" @click="editRecord(row)" size="small" v-else>保存</Button>
                     <Poptip
                         confirm
                         title="确定要删除吗？"
@@ -50,7 +55,7 @@
         <Modal v-model="is_open" title="AutoTask信息" @on-ok="postAutoTask">
             <Form :model="general" ref="general" :rules="ruleValidate">
                 <FormItem label="Task名称" prop="name">
-                    <Input v-model="general.name" :disabled="disable"></Input>
+                    <Input v-model="general.name" ></Input>
                 </FormItem>
                 <FormItem label="类型" required>
                     <Select v-model="general.tp">
@@ -73,7 +78,7 @@
                     </Select>
                 </FormItem>
                 <FormItem label="表" prop="table">
-                    <Select v-model="general.table" filterable>
+                    <Select v-model="general.table" filterable >
                         <Option v-for="i in fetchData.table" :key="i" :value="i">{{ i }}</Option>
                     </Select>
                 </FormItem>
@@ -98,6 +103,7 @@ import {Res} from "@/interface";
 
 @Component
 export default class autoTask extends Mixins(FetchMixins) {
+    is_edit = false
     fetchList = {
         source: [],
         tp: [
@@ -140,6 +146,7 @@ export default class autoTask extends Mixins(FetchMixins) {
         {
             title: '最大影响行数',
             key: 'affect_rows',
+            slot: 'affect_rows'
         },
         {
             title: '状态',
@@ -153,13 +160,9 @@ export default class autoTask extends Mixins(FetchMixins) {
         },
     ];
     task_data = [] as any;
-    disable = false;
-    resType = ''
 
     createTask() {
         this.is_open = !this.is_open
-        this.disable = false;
-        this.resType = 'create'
     }
 
     fetchDiffSource(idc: string) {
@@ -170,7 +173,7 @@ export default class autoTask extends Mixins(FetchMixins) {
         let is_validate: any = this.$refs['general'];
         is_validate.validate((valid: boolean) => {
             if (valid) {
-                AutoTaskCreateOrEditApi({tp: this.resType, task: this.general})
+                AutoTaskCreateOrEditApi({tp: "create", task: this.general})
                     .then(() => {
                         this.current_page(this.current);
                     })
@@ -191,16 +194,13 @@ export default class autoTask extends Mixins(FetchMixins) {
             })
     }
 
-    openEditModal(vl: { id: string; affect_rows: number; name: string; tp: number; }) {
-        this.is_open = !this.is_open;
-        this.general = {
-            id: vl.id,
-            row: vl.affect_rows,
-            name: vl.name,
-            tp: vl.tp
-        } as any;
-        this.disable = true;
-        this.resType = 'edit'
+    editRecord(vl: any) {
+        this.is_edit = false
+        vl.status = vl.status ? 1 : 0
+        AutoTaskCreateOrEditApi({tp: 'edit', task: vl})
+            .then(() => {
+                this.current_page(this.current);
+            })
     }
 
     delAutoTask(vl: { id: number }) {

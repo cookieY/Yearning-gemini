@@ -95,7 +95,7 @@
                                 </Checkbox>
                             </FormItem>
                             <FormItem>
-                                <Button long type="primary" ghost @click="is_verify=true"> 登录</Button>
+                                <Button long type="primary" ghost @click="signIn"> 登录</Button>
                             </FormItem>
                         </Form>
                     </div>
@@ -141,23 +141,23 @@
             </div>
         </div>
 
-        <Modal v-model="is_verify" width="340"
-               transfer
-               footer-hide
-               title="拼图验证"
-               draggable
-               :styles="{top:'150px'}"
-        >
-            <slide-verify :l="42"
-                          :r="10"
-                          :w="310"
-                          :h="155"
-                          @success="onSuccess"
-                          @fail="() => $Message.error('验证失败')"
-                          slider-text="向右滑动"
-                          ref="slideblock"
-            ></slide-verify>
-        </Modal>
+<!--        <Modal v-model="is_verify" width="340"-->
+<!--               transfer-->
+<!--               footer-hide-->
+<!--               title="拼图验证"-->
+<!--               draggable-->
+<!--               :styles="{top:'150px'}"-->
+<!--        >-->
+<!--            <slide-verify :l="42"-->
+<!--                          :r="10"-->
+<!--                          :w="310"-->
+<!--                          :h="155"-->
+<!--                          @success="onSuccess"-->
+<!--                          @fail="() => $Message.error('验证失败')"-->
+<!--                          slider-text="向右滑动"-->
+<!--                          ref="slideblock"-->
+<!--            ></slide-verify>-->
+<!--        </Modal>-->
 
         <Modal
             v-model="register"
