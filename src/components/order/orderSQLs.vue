@@ -153,6 +153,7 @@ export default class orderSQLs extends Mixins(FetchMixins) {
     }
 
     commitOrder() {
+        this.validate_gen = true
         let ty = this.is_dml ? 1 : 0
         let order = {sql: this.order_text, type: ty, real_name: sessionStorage.getItem("real_name")}
         Object.assign(order, this.formItem)
@@ -161,6 +162,7 @@ export default class orderSQLs extends Mixins(FetchMixins) {
                 modules_order.changed_step(3)
                 modules_order.changed_always({one: false, two: false, three: true})
             })
+            .finally(() => this.validate_gen = false)
     }
 
     merge() {
