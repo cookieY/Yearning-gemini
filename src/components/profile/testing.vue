@@ -1,8 +1,8 @@
 <template>
     <div>
-        <Form v-if="order.status ===2">
+        <Form v-if="order.status === 2">
             <FormItem v-if="c_flag === 0">
-                <Select v-model="personal" placeholder="请选择下一级审核人" style="width: 20%">
+                <Select v-model="personal" placeholder="请选择下一级审核人" style="width: 20%" multiple>
                     <Option v-for="i in p_flag" :key="i" :value="i" :label="i"></Option>
                 </Select>
             </FormItem>
@@ -111,7 +111,7 @@ export default class Testing extends Mixins(detail_mixin) {
             width: '120'
         }
     ];
-    private personal = ''
+    private personal = []
     private testing_sql = [] as any[]
 
     get c_flag() {
@@ -141,14 +141,14 @@ export default class Testing extends Mixins(detail_mixin) {
     }
 
     agreed() {
-        if (this.personal === '') {
+        if (this.personal.length === 0) {
             this.$Message.error({content: '请选择下一级审核人!'})
             return
         }
         AuditStateSQL({
             work_id: this.order.work_id as string,
             flag: this.order.current_step as number,
-            perform: this.personal,
+            perform: this.personal.join(),
             tp: 'agree'
         })
             .finally(() => {
@@ -184,6 +184,7 @@ export default class Testing extends Mixins(detail_mixin) {
     }
 
     mounted() {
+        console.log(  this.order.status)
         if (this.mobile) {
             this.sql_columns = this.wap_col as any
         }

@@ -46,7 +46,7 @@
             <p slot="title">SQL审核</p>
             <collapse></collapse>
             <br>
-            <template v-if="order.assigned === user && JSON.parse($route.query.isAdmin)">
+            <template v-if="order.assigned.indexOf(user) !== -1  && JSON.parse($route.query.isAdmin)">
                 <Testing></Testing>
             </template>
         </Card>

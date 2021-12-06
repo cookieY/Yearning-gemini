@@ -29,7 +29,7 @@ class order_local extends VuexModule {
         table: '',
         text: '',
         delay: '',
-        assigned: '',
+        assigned: [],
         backup: 1,
         export: 0,
         uuid: ''
@@ -67,7 +67,7 @@ class order_local extends VuexModule {
             table: '',
             text: '',
             delay: '',
-            assigned: '',
+            assigned: [],
             backup: 1,
             export: 0,
             tp: 0

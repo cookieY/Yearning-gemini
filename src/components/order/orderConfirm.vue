@@ -31,7 +31,7 @@
             </FormItem>
 
             <FormItem label="审核人:">
-                <span>{{ formItem.assigned}}</span>
+                <Tag color="primary" v-for="i in formItem.assigned" :key="i">{{i}}</Tag>
             </FormItem>
 
             <FormItem label="定时执行">

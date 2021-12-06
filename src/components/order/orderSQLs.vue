@@ -155,8 +155,9 @@ export default class orderSQLs extends Mixins(FetchMixins) {
     commitOrder() {
         this.validate_gen = true
         let ty = this.is_dml ? 1 : 0
-        let order = {sql: this.order_text, type: ty, real_name: sessionStorage.getItem("real_name")}
+        let order = {sql: this.order_text, type: ty, real_name: sessionStorage.getItem("real_name")} as any
         Object.assign(order, this.formItem)
+        order.assigned = order.assigned.join()
         PostOrder(order)
             .then(() => {
                 modules_order.changed_step(3)

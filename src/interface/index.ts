@@ -15,7 +15,7 @@ interface order {
     date?: string,
     execute_time?: string
     rejected?: string
-    assigned?: string
+    assigned?: string[]
     backup?: number,
     export?: number
     current_step?: number

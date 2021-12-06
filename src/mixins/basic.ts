@@ -100,7 +100,9 @@ export default class Basic extends Vue {
             {
                 required: true,
                 message: '审核人不得为空',
-                trigger: 'change'
+                trigger: 'change',
+                type: 'array',
+                min: 1
             }
         ],
         backup: {required: true, type: 'number', message: '备份不得为空', trigger: 'change'}

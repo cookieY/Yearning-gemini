@@ -33,8 +33,8 @@
                         <Input v-model="formItem.text" placeholder="请输入" type="textarea" :rows=4 maxlength="100"
                                show-word-limit></Input>
                     </FormItem>
-                    <FormItem label="审核人:" prop="assigned" required>
-                        <Select v-model="formItem.assigned" filterable>
+                    <FormItem label="审核人:" prop="assigned" required >
+                        <Select v-model="formItem.assigned" filterable multiple>
                             <Option v-for="i in fetchData.assigned" :value="i" :key="i">{{ i }}</Option>
                         </Select>
                     </FormItem>

@@ -19,7 +19,7 @@ class init_args extends VuexModule {
         rejected: '',
         execute_time: '',
         backup: 0,
-        assigned: '',
+        assigned: [],
         current_step: 0
     }
 
