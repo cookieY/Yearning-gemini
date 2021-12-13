@@ -14,6 +14,16 @@ export default class OrderProfileMixins extends Mixins(Basic) {
 
         },
         {
+            title: 'IP',
+            key: 'ip',
+
+        },
+        {
+            title: '数据库',
+            key: 'schema',
+
+        },
+        {
             title: '状态',
             key: 'state',
         },
