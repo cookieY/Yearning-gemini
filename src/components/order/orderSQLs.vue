@@ -49,7 +49,6 @@
                             type="success"
                             icon="ios-redo"
                             @click.native="commitOrder()"
-                            :disabled="this.validate_gen"
                             class="margin-left-10"
                         >提交工单
                         </Button>
