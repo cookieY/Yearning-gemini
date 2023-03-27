@@ -110,7 +110,7 @@ const rule: Rule[] = [
     },
     {
         name: 'DDLAllowColumnType',
-        desc: '允许字段进行类型转换(不同字段之间的转换或长度从长变短。如:int -> bigint,int(50) -> int(20))',
+        desc: '允许字段进行类型转换(不同字段之间的转换或长度从长变短。如:bigint -> int,int(50) -> int(20))',
         type: 'DDL',
         tp: 0
     },
