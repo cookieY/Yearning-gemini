@@ -36,7 +36,7 @@ VueRouter.prototype.push = function push(location: import("vue-router").RawLocat
 
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to: any, from, next) => {
     LoadingBar.start();
     config.title(to.meta.title);
     if (sessionStorage.getItem('locking') === '1' && to.name !== 'locking') { // 判断当前是否是锁定状态
